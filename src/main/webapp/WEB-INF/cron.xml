@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+    <cron>
+        <url>/cron/countTripByRegion</url>
+        <description>Calculation of number of trips by region</description>
+        <schedule>every day 00:00</schedule>
+    </cron>
+    <cron>
+        <url>/cron/deleteTripsWithUserUnknownServlet</url>
+        <description>Deletion of trip with user unknown</description>
+        <schedule>every day 01:00</schedule>
+    </cron>
+    <cron>
+        <url>/cron/deleteTripsCancelledOneMonthAgoServlet</url>
+        <description>Deletion of trip cancelled one month ago</description>
+        <schedule>every day 02:00</schedule>
+    </cron>
+</cronentries>
