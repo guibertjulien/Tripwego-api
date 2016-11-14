@@ -26,6 +26,7 @@ public class TripRepository {
     private TripEntityMapper tripEntityMapper = new TripEntityMapper();
     private TripMapper tripMapper = new TripMapper();
     private StepRepository stepRepository = new StepRepository();
+    private AccommodationRepository accommodationRepository = new AccommodationRepository();
     private TripQueries tripQueries = new TripQueries();
     private UserRepository userRepository = new UserRepository();
     private UserQueries userQueries = new UserQueries();
@@ -68,6 +69,7 @@ public class TripRepository {
                 // TODO make other trip default
                 // create steps
                 stepRepository.createAll(trip.getSteps(), entity);
+                accommodationRepository.createAll(trip.getAccommodations(), entity);
             }
             // update trip
             else {
@@ -76,6 +78,7 @@ public class TripRepository {
                 tripEntityMapper.map(parent, trip, Optional.of(user));
                 // update steps
                 stepRepository.updateAll(trip.getSteps(), entity);
+                accommodationRepository.updateAll(trip.getAccommodations(), entity);
             }
             entity.setProperty(Constants.STATUS, TripStatus.SAVED.name());
             entity.setProperty(Constants.UPDATED_AT, new Date());
@@ -110,6 +113,7 @@ public class TripRepository {
             datastore.put(entity);
             //
             stepRepository.updateAll(trip.getSteps(), entity);
+            accommodationRepository.updateAll(trip.getAccommodations(), entity);
             result = tripMapper.map(entity, Optional.of(trip.getSteps()), user);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.example.tripwegoapi.dto;
 
+import com.example.tripwegoapi.dto.tripitem.Accommodation;
 import com.google.appengine.api.datastore.Category;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Rating;
@@ -43,6 +44,7 @@ public class Trip {
     private Rating rating = null;
 
     private List<Step> steps = new ArrayList<Step>();
+    private final List<Accommodation> accommodations = new ArrayList<>();
 
     private MyUser user = null;
 
@@ -290,5 +292,9 @@ public class Trip {
 
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
+    }
+
+    public List<Accommodation> getAccommodations() {
+        return accommodations;
     }
 }

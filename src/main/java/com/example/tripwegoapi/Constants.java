@@ -16,6 +16,7 @@ public class Constants {
     public static final String KIND_TAG = "TAG";
     public static final String KIND_USER = "MY_USER";
     public static final String KIND_REGION_COUNTER = "REGION_COUNTER";
+    public static final String KIND_ACCOMMODATION = "ACCOMMODATION";
     // embedded
     public static final String EMBEDDED_VERSION = "version";
     public static final String EMBEDDED_PROVIDER = "provider";
