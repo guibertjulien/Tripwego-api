@@ -20,7 +20,7 @@
     <!-- CRON Servlet -->
     <servlet>
         <servlet-name>CountTripByRegionServlet</servlet-name>
-        <servlet-class>com.example.tripwegoapi.batch.CountTripByRegionServlet</servlet-class>
+        <servlet-class>com.tripwego.api.batch.CountTripByRegionServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CountTripByRegionServlet</servlet-name>
@@ -29,7 +29,7 @@
 
     <servlet>
         <servlet-name>DeleteTripsWithUserUnknownServlet</servlet-name>
-        <servlet-class>com.example.tripwegoapi.batch.DeleteTripsWithUserUnknownServlet</servlet-class>
+        <servlet-class>com.tripwego.api.batch.DeleteTripsWithUserUnknownServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DeleteTripsWithUserUnknownServlet</servlet-name>
@@ -38,7 +38,7 @@
 
     <servlet>
         <servlet-name>DeleteTripsCancelledOneMonthAgoServlet</servlet-name>
-        <servlet-class>com.example.tripwegoapi.batch.DeleteTripsCancelledOneMonthAgoServlet</servlet-class>
+        <servlet-class>com.tripwego.api.batch.DeleteTripsCancelledOneMonthAgoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DeleteTripsCancelledOneMonthAgoServlet</servlet-name>

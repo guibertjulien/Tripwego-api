@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
+
     <packaging>war</packaging>
+
+    <groupId>com.github.tripwego</groupId>
+    <artifactId>tripwego-api</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <groupId>com.example.tripwegoapi</groupId>
-    <artifactId>tripwego-api</artifactId>
+    <name>TripWeGo API</name>
+    <description>API TripWeGo</description>
+
+    <developers>
+        <developer>
+            <name>GUIBERT Julien</name>
+            <email>guibertjulien@gmail.com</email>
+            <organization>TripWeGo</organization>
+            <organizationUrl>http://www.tripwego.com</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
-        <appengine.app.version>1</appengine.app.version>
+        <project.encoding>UTF-8</project.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <source.version>1.7</source.version>
+        <target.version>1.7</target.version>
+
+        <appengine.app.version>1</appengine.app.version>
+
+        <tripwego-model.version>1.0-SNAPSHOT</tripwego-model.version>
     </properties>
 
     <prerequisites>
@@ -19,11 +39,17 @@
     </prerequisites>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.tripwego</groupId>
+            <artifactId>tripwego-model</artifactId>
+            <version>${tripwego-model.version}</version>
+        </dependency>
+
         <!-- Compile/runtime dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.30</version>
+            <version>1.9.46</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
