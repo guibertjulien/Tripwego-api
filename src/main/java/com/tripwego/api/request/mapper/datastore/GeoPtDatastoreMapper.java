@@ -7,7 +7,7 @@ import com.google.appengine.api.datastore.GeoPt;
  */
 public class GeoPtDatastoreMapper {
 
-    public GeoPt map(com.tripwego.dto.datastore.GeoPt geoPt) {
+    public GeoPt map(com.tripwego.domain.datastore.GeoPt geoPt) {
         return new GeoPt(geoPt.getLatitude().floatValue(), geoPt.getLongitude().floatValue());
     }
 }

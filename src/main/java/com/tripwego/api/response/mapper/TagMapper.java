@@ -3,7 +3,7 @@ package com.tripwego.api.response.mapper;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.tripwego.api.Constants;
-import com.tripwego.dto.Tag;
+import com.tripwego.domain.Tag;
 
 import java.util.logging.Logger;
 

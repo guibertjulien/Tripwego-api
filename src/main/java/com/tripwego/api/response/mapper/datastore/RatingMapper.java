@@ -7,9 +7,12 @@ import com.google.appengine.api.datastore.Rating;
  */
 public class RatingMapper {
 
-    public com.tripwego.dto.datastore.Rating map(Rating rating) {
-        final com.tripwego.dto.datastore.Rating result = new com.tripwego.dto.datastore.Rating();
-        result.setRating(rating.getRating());
+    public int map(Object property) {
+        int result = 0;
+        if (property != null) {
+            final Rating rating = (Rating) property;
+            result = rating.getRating();
+        }
         return result;
     }
 }

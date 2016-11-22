@@ -2,7 +2,7 @@ package com.tripwego.api.request.mapper;
 
 import com.google.appengine.api.datastore.Entity;
 import com.tripwego.api.Constants;
-import com.tripwego.dto.MyUser;
+import com.tripwego.domain.MyUser;
 
 import java.util.logging.Logger;
 

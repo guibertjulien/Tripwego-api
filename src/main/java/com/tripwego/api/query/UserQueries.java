@@ -7,7 +7,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.tripwego.api.Constants;
 import com.tripwego.api.response.mapper.UserMapper;
-import com.tripwego.dto.MyUser;
+import com.tripwego.domain.MyUser;
 
 
 /**

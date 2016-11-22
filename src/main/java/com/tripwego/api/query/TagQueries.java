@@ -3,7 +3,7 @@ package com.tripwego.api.query;
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.Constants;
 import com.tripwego.api.response.mapper.TagMapper;
-import com.tripwego.dto.Tag;
+import com.tripwego.domain.Tag;
 
 import java.util.ArrayList;
 import java.util.List;

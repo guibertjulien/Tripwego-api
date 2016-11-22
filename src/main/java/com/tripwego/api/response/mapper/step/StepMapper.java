@@ -3,7 +3,7 @@ package com.tripwego.api.response.mapper.step;
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.Constants;
 import com.tripwego.api.response.mapper.datastore.*;
-import com.tripwego.dto.Step;
+import com.tripwego.domain.Step;
 
 import java.util.Date;
 import java.util.logging.Logger;
@@ -36,7 +36,7 @@ public class StepMapper {
         }
         step.setName(String.valueOf(entity.getProperty(Constants.NAME)));
         if (entity.getProperty(Constants.ADDRESS) != null) {
-            step.setAddress(postalAddressMapper.map((PostalAddress) entity.getProperty(Constants.ADDRESS)));
+            step.setAddress(postalAddressMapper.map(entity.getProperty(Constants.ADDRESS)));
         }
         if (entity.getProperty(Constants.AVOID_HIGHWAYS) != null) {
             step.setAvoidHighways((Boolean) entity.getProperty(Constants.AVOID_HIGHWAYS));

@@ -3,7 +3,7 @@ package com.tripwego.api;
 import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.tripwego.api.query.TagQueries;
-import com.tripwego.dto.Tag;
+import com.tripwego.domain.Tag;
 
 import java.util.List;
 

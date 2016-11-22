@@ -3,7 +3,7 @@ package com.tripwego.api.entity;
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.Constants;
 import com.tripwego.api.query.TripQueries;
-import com.tripwego.dto.Trip;
+import com.tripwego.domain.Trip;
 
 import java.util.*;
 import java.util.logging.Logger;

@@ -10,10 +10,10 @@ import com.tripwego.api.request.mapper.trip.TripEntityMapper;
 import com.tripwego.api.request.mapper.trip.TripEntityMapperFactory;
 import com.tripwego.api.response.mapper.trip.TripMapper;
 import com.tripwego.api.response.mapper.trip.TripMapperFactory;
-import com.tripwego.dto.MyUser;
-import com.tripwego.dto.Step;
-import com.tripwego.dto.Trip;
-import com.tripwego.dto.TripProvider;
+import com.tripwego.domain.MyUser;
+import com.tripwego.domain.Step;
+import com.tripwego.domain.Trip;
+import com.tripwego.domain.TripProvider;
 
 import java.util.ArrayList;
 import java.util.Date;

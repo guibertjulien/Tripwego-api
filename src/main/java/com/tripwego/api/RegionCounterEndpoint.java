@@ -3,7 +3,7 @@ package com.tripwego.api;
 import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.tripwego.api.query.RegionCounterQueries;
-import com.tripwego.dto.RegionCounter;
+import com.tripwego.domain.RegionCounter;
 
 import java.util.List;
 

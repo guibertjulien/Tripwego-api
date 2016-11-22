@@ -3,7 +3,7 @@ package com.tripwego.api.query;
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.Constants;
 import com.tripwego.api.response.mapper.RegionCounterMapper;
-import com.tripwego.dto.RegionCounter;
+import com.tripwego.domain.RegionCounter;
 
 import java.util.ArrayList;
 import java.util.List;

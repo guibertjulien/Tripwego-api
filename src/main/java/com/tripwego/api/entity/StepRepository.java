@@ -7,7 +7,7 @@ import com.google.appengine.repackaged.com.google.common.collect.ImmutableCollec
 import com.tripwego.api.Constants;
 import com.tripwego.api.request.mapper.step.StepEntityMapper;
 import com.tripwego.api.request.mapper.step.StepEntityMapperFactory;
-import com.tripwego.dto.Step;
+import com.tripwego.domain.Step;
 
 import java.util.ArrayList;
 import java.util.List;

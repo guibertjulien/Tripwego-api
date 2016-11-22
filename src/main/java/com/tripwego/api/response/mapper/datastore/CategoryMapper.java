@@ -1,5 +1,6 @@
 package com.tripwego.api.response.mapper.datastore;
 
+
 import com.google.appengine.api.datastore.Category;
 
 /**
@@ -7,9 +8,12 @@ import com.google.appengine.api.datastore.Category;
  */
 public class CategoryMapper {
 
-    public com.tripwego.dto.datastore.Category map(Category category) {
-        final com.tripwego.dto.datastore.Category result = new com.tripwego.dto.datastore.Category();
-        result.setCategory(category.getCategory());
+    public String map(Object property) {
+        String result = "";
+        if (property != null) {
+            final Category category = (Category) property;
+            result = category.getCategory();
+        }
         return result;
     }
 }

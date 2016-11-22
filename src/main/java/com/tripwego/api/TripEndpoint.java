@@ -8,7 +8,7 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.tripwego.api.entity.TripRepository;
 import com.tripwego.api.query.TripQueries;
-import com.tripwego.dto.Trip;
+import com.tripwego.domain.Trip;
 
 import javax.inject.Named;
 import java.util.List;

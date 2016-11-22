@@ -7,9 +7,12 @@ import com.google.appengine.api.datastore.Link;
  */
 public class LinkMapper {
 
-    public com.tripwego.dto.datastore.Link map(Link link) {
-        final com.tripwego.dto.datastore.Link result = new com.tripwego.dto.datastore.Link();
-        result.setValue(link.getValue());
+    public String map(Object property) {
+        String result = "";
+        if (property != null) {
+            final Link link = (Link) property;
+            result = link.getValue();
+        }
         return result;
     }
 }

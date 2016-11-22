@@ -6,7 +6,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.tripwego.api.Constants;
 import com.tripwego.api.request.mapper.UserEntityMapper;
 import com.tripwego.api.response.mapper.UserMapper;
-import com.tripwego.dto.MyUser;
+import com.tripwego.domain.MyUser;
 
 import java.util.logging.Logger;
 

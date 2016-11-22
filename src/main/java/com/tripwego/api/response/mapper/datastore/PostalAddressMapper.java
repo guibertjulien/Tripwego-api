@@ -7,9 +7,12 @@ import com.google.appengine.api.datastore.PostalAddress;
  */
 public class PostalAddressMapper {
 
-    public com.tripwego.dto.datastore.PostalAddress map(PostalAddress postalAddress) {
-        final com.tripwego.dto.datastore.PostalAddress result = new com.tripwego.dto.datastore.PostalAddress();
-        result.setAddress(postalAddress.getAddress());
+    public String map(Object property) {
+        String result = "";
+        if (property != null) {
+            final PostalAddress postalAddress = (PostalAddress) property;
+            result = postalAddress.getAddress();
+        }
         return result;
     }
 }

@@ -5,7 +5,7 @@ import com.google.appengine.repackaged.com.google.common.base.Function;
 import com.google.appengine.repackaged.com.google.common.collect.FluentIterable;
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableCollection;
 import com.tripwego.api.Constants;
-import com.tripwego.dto.tripitem.Accommodation;
+import com.tripwego.domain.tripitem.Accommodation;
 
 import java.util.ArrayList;
 import java.util.List;
