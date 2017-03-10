@@ -19,5 +19,33 @@
     <datastore-index kind="STEP" ancestor="true" source="manual">
         <property name="indexOnRoadMap" direction="asc"/>
     </datastore-index>
+    <!-- PlaceResult : findPlaces -->
+    <datastore-index kind="PLACE_RESULT" ancestor="false" source="manual">
+        <property name="countryCode" direction="asc"/>
+        <property name="step_categories" direction="asc"/>
+        <property name="latitude" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="PLACE_RESULT" ancestor="false" source="manual">
+        <property name="countryCode" direction="asc"/>
+        <property name="step_categories" direction="asc"/>
+        <property name="longitude" direction="asc"/>
+    </datastore-index>
+    <!-- PlaceResult : updateCounter -->
+    <datastore-index kind="STEP" ancestor="true" source="manual">
+        <property name="place_result_id" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="STEP" ancestor="false" source="manual">
+        <property name="__key__" direction="asc"/>
+        <property name="place_result_id" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="STEP" ancestor="false" source="manual">
+        <property name="__key__" direction="asc"/>
+        <property name="place_result_id" direction="asc"/>
+    </datastore-index>
+    <!--
+    <datastore-index kind="PLACE_RESULT"  source="manual">
+        <property name="center_pt" mode="geospatial"/>
+    </datastore-index>
+    -->
 </datastore-indexes>
 

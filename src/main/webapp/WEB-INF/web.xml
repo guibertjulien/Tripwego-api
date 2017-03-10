@@ -45,6 +45,15 @@
         <url-pattern>/cron/deleteTripsCancelledOneMonthAgoServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>RefreshServlet</servlet-name>
+        <servlet-class>com.tripwego.api.batch.RefreshServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RefreshServlet</servlet-name>
+        <url-pattern>/cron/refreshServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- Securing URLs for CRON -->
     <security-constraint>
         <web-resource-collection>

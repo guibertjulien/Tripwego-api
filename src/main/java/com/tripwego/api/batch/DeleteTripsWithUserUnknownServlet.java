@@ -1,6 +1,6 @@
 package com.tripwego.api.batch;
 
-import com.tripwego.api.entity.TripRepository;
+import com.tripwego.api.trip.TripRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -1,6 +1,6 @@
 package com.tripwego.api.batch;
 
-import com.tripwego.api.entity.RegionCounterRepository;
+import com.tripwego.api.region.RegionCounterRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -15,4 +15,9 @@
         <description>Deletion of trip cancelled one month ago</description>
         <schedule>every day 02:00</schedule>
     </cron>
+    <cron>
+        <url>/cron/refreshServlet</url>
+        <description>Five minute run</description>
+        <schedule>every 5 minutes</schedule>
+    </cron>
 </cronentries>

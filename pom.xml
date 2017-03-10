@@ -31,7 +31,7 @@
 
         <appengine.app.version>1</appengine.app.version>
 
-        <tripwego.domain.version>1.0-SNAPSHOT</tripwego.domain.version>
+        <tripwego.dto.version>1.0-SNAPSHOT</tripwego.dto.version>
     </properties>
 
     <prerequisites>
@@ -41,20 +41,20 @@
     <dependencies>
         <dependency>
             <groupId>com.tripwego</groupId>
-            <artifactId>domain</artifactId>
-            <version>${tripwego.domain.version}</version>
+            <artifactId>tripwego-dto</artifactId>
+            <version>${tripwego.dto.version}</version>
         </dependency>
 
         <!-- Compile/runtime dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.46</version>
+            <version>1.9.50</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-endpoints</artifactId>
-            <version>1.9.46</version>
+            <version>1.9.50</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -89,13 +89,13 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.46</version>
+            <version>1.9.50</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.46</version>
+            <version>1.9.50</version>
             <scope>test</scope>
         </dependency>
         <dependency>
