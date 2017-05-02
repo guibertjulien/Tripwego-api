@@ -30,6 +30,7 @@ class PlaceResultEntityMapper {
         entity.setProperty(NAME, placeResult.getName());
         if (placeResult.getCountry() != null) {
             entity.setProperty(COUNTRY_CODE, placeResult.getCountry().getCode());
+            entity.setProperty(COUNTRY_NAME, placeResult.getCountry().getName());
         }
         //
         entity.setProperty(CERTIFIED, false);

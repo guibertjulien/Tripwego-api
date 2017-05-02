@@ -1,14 +1,8 @@
 package com.tripwego.api;
 
 public class Constants {
-    public static final String WEB_CLIENT_ID = "509664468083-6a624dfd647ekvcaajt8q1dko64jq093.apps.googleusercontent.com";
-    public static final String ANDROID_CLIENT_ID = "replace this with your Android client ID";
-    public static final String IOS_CLIENT_ID = "replace this with your iOS client ID";
-    public static final String ANDROID_AUDIENCE = WEB_CLIENT_ID;
 
     public static final String DEFAULT_COLOR = "black";
-
-    public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
 
     // tables name
     public static final String KIND_TRIP = "TRIP";

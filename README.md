@@ -5,7 +5,25 @@ tripwego-api
 
 MacBook-Pro-de-Julien:~ JG$ rm .appcfg_oauth2_tokens_java
 
-# deploy to App Engine
+gcloud components update
+gcloud config set project tripwego-api
 
-mvn appengine:update
+# build
 
+mvn clean package
+mvn exec:java -DGetSwaggerDoc
+
+gcloud service-management deploy openapi.json
+
+# deploy to Google Cloud
+
+mvn appengine:deploy
+
+# updating index.yaml
+
+gcloud datastore cleanup-indexes /Users/JG/Documents/DEV/WK_TRIPWEGO/tripwego-api/src/main/webapp/WEB-INF/index.yaml
+gcloud datastore create-indexes /Users/JG/Documents/DEV/WK_TRIPWEGO/tripwego-api/src/main/webapp/WEB-INF/index.yaml
+
+# updating app.yaml
+
+???

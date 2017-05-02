@@ -7,6 +7,7 @@ import com.tripwego.dto.common.LatLngBoundsDto;
 import com.tripwego.dto.placeresult.PlaceGeometryDto;
 import com.tripwego.dto.placeresult.PlaceResultDto;
 import com.tripwego.dto.placeresult.Provider;
+import com.tripwego.dto.trip.CountryDto;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +41,7 @@ class PlaceResultDtoMapper {
         result.setPlaceKey(KeyFactory.keyToString(entity.getKey()));
         // strings
         result.setName(String.valueOf(entity.getProperty(NAME)));
+        result.setCountry(extractCountry(entity));
         result.setFormatted_phone_number(String.valueOf(entity.getProperty(PHONE_NUMBER)));
         result.setHtml_attributions(String.valueOf(entity.getProperty(HTML_ATTRIBUTIONS)));
         result.setIcon(String.valueOf(entity.getProperty(ICON)));
@@ -87,6 +89,10 @@ class PlaceResultDtoMapper {
         updateGeometry(entity, result);
         LOGGER.info("--> PlaceResultDto.map - END");
         return result;
+    }
+
+    private CountryDto extractCountry(Entity entity) {
+        return new CountryDto(String.valueOf(entity.getProperty(COUNTRY_CODE)), String.valueOf(entity.getProperty(COUNTRY_NAME)));
     }
 
     private void updateGeometry(Entity entity, PlaceResultDto result) {

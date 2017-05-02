@@ -1,30 +1,36 @@
 package com.tripwego.api.trip;
 
-import com.google.api.server.spi.config.Api;
-import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiNamespace;
-import com.google.api.server.spi.config.Nullable;
+import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.tripwego.dto.trip.Trip;
 
-import javax.inject.Named;
 import java.util.List;
 import java.util.logging.Logger;
 
-
 /**
- * Defines v1 of a helloworld API, which provides simple "greeting" methods.
+ * The Echo API which Endpoints will be exposing.
  */
-/*
-@Api(name = "helloworld",
+// [START echo_api_annotation]
+@Api(
+        name = "tripendpoint",
         version = "v1",
-        scopes = {Constants.EMAIL_SCOPE},
-        clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID},
-        audiences = {Constants.ANDROID_AUDIENCE}
+        namespace =
+        @ApiNamespace(
+                ownerDomain = "tripwego.com",
+                ownerName = "tripwego.com",
+                packagePath = ""
+        ),
+        // [START_EXCLUDE]
+        issuers = {
+                @ApiIssuer(
+                        name = "firebase",
+                        issuer = "https://securetoken.google.com/tripwego-api",
+                        jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
+        }
+        // [END_EXCLUDE]
 )
-*/
-@Api(name = "tripendpoint", namespace = @ApiNamespace(ownerDomain = "tripwego.com", ownerName = "tripwego.com", packagePath = "endpoints"))
+// [END echo_api_annotation]
 public class TripEndpoint {
 
     private static final Logger _logger = Logger.getLogger(TripEndpoint.class.getName());
@@ -57,6 +63,11 @@ public class TripEndpoint {
         return tripRepository.retrieveEager(id);
     }
 
+    @ApiMethod(name = "get_trip", path = "get_trip", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
+    public Trip retrieveTrip(@Named("id") String id) {
+        return tripRepository.retrieveEager(id);
+    }
+
     /**
      * This method is used for updating an existing entity. If the entity does
      * not exist in the datastore, an exception is thrown. It uses HTTP PUT
@@ -72,9 +83,9 @@ public class TripEndpoint {
 
     @SuppressWarnings("unchecked")
     @ApiMethod(name = "findTripsByUser", path = "findTripsByUser", httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<Trip> findTripsByUser(@Named("userId") String userId) {
+    public CollectionResponse<Trip> findTripsByUser(@Named("userId") String userId, @Nullable @Named("cursor") String cursorString, @Nullable @Named("limit") Integer limit) {
         final List<Trip> trips = tripQueries.findTripsByUser(userId);
-        return CollectionResponse.<Trip>builder().setItems(trips).build();
+        return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
     }
 
     @SuppressWarnings({"unchecked", "unused"})

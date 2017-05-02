@@ -1,0 +1,63 @@
+indexes:
+# -- findTripsByUser --
+- kind: TRIP
+  ancestor: no
+  properties:
+  - name: isDefault
+  - name: userId
+  - name: isCancelled
+  - name: createdAt
+    direction: desc
+# -- findAllTrips --
+- kind: TRIP
+  ancestor: no
+  properties:
+  - name: isDefault
+  - name: isPrivate
+  - name: userId
+  - name: isCancelled
+  - name: createdAt
+    direction: desc
+- kind: TRIP
+  properties:
+  - name: isDefault
+  - name: isPrivate
+  - name: isPublished
+  - name: isCancelled
+  - name: createdAt
+    direction: desc
+# -- findStepEntitiesKeyByTrip --
+- kind: STEP
+  ancestor: true
+  properties:
+  - name: indexOnRoadMap
+# -- PlaceResult : updateCounter --
+- kind: STEP
+  ancestor: true
+  properties:
+  - name: place_result_id
+- kind: STEP
+  ancestor: false
+  properties:
+  - name: __key__
+  - name: place_result_id
+#-- PlaceResult : findPlaces --
+- kind: PLACE_RESULT
+  ancestor: false
+  properties:
+  - name: step_categories
+  - name: latitude
+- kind: PLACE_RESULT
+  ancestor: false
+  properties:
+  - name: step_categories
+  - name: longitude
+- kind: PLACE_RESULT
+  ancestor: false
+  properties:
+  - name: countryCode
+  - name: step_categories
+  - name: counter
+    direction: desc
+  - name: rating
+    direction: desc

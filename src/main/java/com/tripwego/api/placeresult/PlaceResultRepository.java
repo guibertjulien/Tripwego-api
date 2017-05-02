@@ -53,11 +53,11 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         return entity;
     }
 
-    public PlaceResultDto retrieveEager(String id) {
-        LOGGER.info("--> retrieveEager - START : " + id);
+    public PlaceResultDto retrieveEager(String placeKeyString) {
+        LOGGER.info("--> retrieveEager - START : " + placeKeyString);
         PlaceResultDto placeResult = null;
         try {
-            final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(id));
+            final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(placeKeyString));
             placeResult = placeResultDtoMapper.map(placeResultEntity);
             for (Entity entity : addressComponentQueries.find(placeResultEntity, KIND_ADDRESS_COMPONENT)) {
                 final AddressComponentDto addressComponent = addressComponentDtoMapper.map(entity);
