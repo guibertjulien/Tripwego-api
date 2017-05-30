@@ -58,6 +58,7 @@ public class TripRepository {
         entity.setProperty(CREATED_AT, new Date());
         entity.setProperty(UPDATED_AT, new Date());
         entity.setProperty(IS_PUBLISHED, true); // TODO false ?
+        entity.setProperty(TAGS, trip.getTags());
         updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
         entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));

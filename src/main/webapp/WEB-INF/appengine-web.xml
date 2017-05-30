@@ -3,11 +3,12 @@
     <application>${endpoints.project.id}</application>
     <version>1</version>
     <module>default</module>
-    <threadsafe>true</threadsafe>
 
-    <instance-class>B4_1G</instance-class>
+    <!--<instance-class>B4_1G</instance-class>-->
+    <threadsafe>true</threadsafe>
+    <instance-class>B1</instance-class>
     <basic-scaling>
-        <max-instances>8</max-instances>
+        <max-instances>1</max-instances>
         <idle-timeout>10m</idle-timeout>
     </basic-scaling>
 

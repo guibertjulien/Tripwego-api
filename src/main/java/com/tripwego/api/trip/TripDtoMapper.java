@@ -14,6 +14,7 @@ import com.tripwego.dto.trip.TripProvider;
 import com.tripwego.dto.trip.TripVersion;
 import com.tripwego.dto.user.MyUser;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -120,6 +121,12 @@ public class TripDtoMapper {
         //trip.setManualTags(entity.getProperty(NAME));
         //trip.setTravelers(entity.getProperty(NAME));
         //trip.setUrlStaticMap(entity.getProperty(NAME));
+
+        if (entity.getProperty(TAGS) != null) {
+            Object property = entity.getProperty(TAGS);
+            trip.getTags().addAll((ArrayList<String>) property);
+        }
+
         LOGGER.info("--> TripMapper.map - END");
         return trip;
     }

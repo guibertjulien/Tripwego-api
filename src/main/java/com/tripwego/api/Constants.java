@@ -98,6 +98,7 @@ public class Constants {
     public static final String WEBSITE = "website";
     public static final String CENTER_PT = "center_pt";
     public static final String COMMENT = "comment";
+    public static final String TAGS = "tags";
     // TODO remomve workaround
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";

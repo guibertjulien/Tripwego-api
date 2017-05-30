@@ -72,19 +72,25 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
 
     private void update(Entity entity, PlaceResultDto placeResult) {
         LOGGER.info("--> update - START");
-        final Set<String> categories = new HashSet<>();
+        final Set<String> stepCategories = new HashSet<>();
+        final Set<String> stepTypes = new HashSet<>();
         final Set<String> types = new HashSet<>();
         if (entity.getProperty(STEP_CATEGORIES) != null) {
             Object property = entity.getProperty(STEP_CATEGORIES);
-            categories.addAll((ArrayList<String>) property);
+            stepCategories.addAll((ArrayList<String>) property);
         }
         if (entity.getProperty(STEP_TYPES) != null) {
-            types.addAll((ArrayList<String>) entity.getProperty(STEP_TYPES));
+            stepTypes.addAll((ArrayList<String>) entity.getProperty(STEP_TYPES));
         }
-        categories.addAll(placeResult.getStepCategories());
-        entity.setProperty(STEP_CATEGORIES, categories);
-        types.addAll(placeResult.getStepTypes());
-        entity.setProperty(STEP_TYPES, types);
+        if (entity.getProperty(TYPES) != null) {
+            types.addAll((ArrayList<String>) entity.getProperty(TYPES));
+        }
+        stepCategories.addAll(placeResult.getStepCategories());
+        entity.setProperty(STEP_CATEGORIES, stepCategories);
+        stepTypes.addAll(placeResult.getStepTypes());
+        entity.setProperty(STEP_TYPES, stepTypes);
+        types.addAll(placeResult.getTypes());
+        entity.setProperty(TYPES, types);
         datastore.put(entity);
         LOGGER.info("--> update - END");
     }

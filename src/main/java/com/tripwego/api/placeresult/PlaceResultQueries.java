@@ -30,9 +30,11 @@ public class PlaceResultQueries {
     public List<PlaceResultDto> findDestinationSuggestions(PlaceResultDtoSearchCriteria criteria) {
         final List<PlaceResultDto> result = new ArrayList<>();
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, FilterOperator.EQUAL, "DESTINATION");
-        final Query query = new Query(KIND_PLACE_RESULT).setFilter(byStepCategory);
-        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_DESTINATION_SUGGESTION));
-        for (Entity entity : entities) {
+        final Filter byType = new FilterPredicate(TYPES, FilterOperator.EQUAL, "country");
+        final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
+        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        Collections.shuffle(entities);
+        for (Entity entity : entities.size() > 5 ? entities.subList(0, 5) : entities) {
             final PlaceResultDto placeResultDto = placeResultDtoMapper.map(entity);
             result.add(placeResultDto);
         }
@@ -57,7 +59,7 @@ public class PlaceResultQueries {
      * @return
      */
     public List<Entity> findPlaceEntities(PlaceResultDtoSearchCriteria criteria) {
-        final List<Entity> result = new ArrayList<>();
+        List<Entity> result = new ArrayList<>();
         final String firstStepCategory = criteria.getStepCategories().get(0);
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, FilterOperator.EQUAL, firstStepCategory);
         if (criteria.getCountry() != null) {
@@ -78,6 +80,9 @@ public class PlaceResultQueries {
             result.retainAll(entitiesWithLng);
             // sorting by COUNTER and RATING in JAVA
             Collections.sort(result, new PlaceComparator());
+            if (result.size() > LIMIT_PLACES) {
+                result = result.subList(0, LIMIT_PLACES);
+            }
         }
         return result;
     }

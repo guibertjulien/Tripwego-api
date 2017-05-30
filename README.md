@@ -24,6 +24,6 @@ mvn appengine:deploy
 gcloud datastore cleanup-indexes /Users/JG/Documents/DEV/WK_TRIPWEGO/tripwego-api/src/main/webapp/WEB-INF/index.yaml
 gcloud datastore create-indexes /Users/JG/Documents/DEV/WK_TRIPWEGO/tripwego-api/src/main/webapp/WEB-INF/index.yaml
 
-# updating app.yaml
+# updating cron task (update or remove)
 
-???
+gcloud app deploy /Users/JG/Documents/DEV/WK_TRIPWEGO/tripwego-api/src/main/webapp/WEB-INF/cron.yaml

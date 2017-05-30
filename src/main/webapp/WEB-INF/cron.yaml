@@ -1,0 +1,13 @@
+cron:
+- description: Calculation of number of trips by region
+  url: /cron/countTripByRegion
+  target: beta
+  schedule: every day 00:00
+- description: Deletion of trip with user unknown
+  url: /cron/deleteTripsWithUserUnknownServlet
+  target: beta
+  schedule: every day 00:00
+- description: Deletion of trip cancelled one month ago
+  url: /cron/deleteTripsCancelledOneMonthAgoServlet
+  target: beta
+  schedule: every day 00:00
