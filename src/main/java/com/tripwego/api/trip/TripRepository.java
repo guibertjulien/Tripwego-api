@@ -2,6 +2,9 @@ package com.tripwego.api.trip;
 
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.repackaged.com.google.common.base.Optional;
+import com.google.appengine.repackaged.org.joda.time.DateTime;
+import com.google.appengine.repackaged.org.joda.time.Days;
+import com.tripwego.api.common.AbstractRepository;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.placeresult.addresscomponent.AddressComponentDtoMapper;
 import com.tripwego.api.tripitem.TripItemQueries;
@@ -16,13 +19,14 @@ import com.tripwego.dto.tripitem.*;
 import com.tripwego.dto.user.MyUser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 import static com.tripwego.api.Constants.*;
 
-public class TripRepository {
+public class TripRepository extends AbstractRepository<Trip> {
 
     private static final Logger LOGGER = Logger.getLogger(TripRepository.class.getName());
     private static final int NUMBER_VERSION_DEFAULT = 1;
@@ -61,7 +65,7 @@ public class TripRepository {
         entity.setProperty(TAGS, trip.getTags());
         updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
-        entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
+        entity.setProperty(PLACE_RESULT_ID_FOR_TRIP, KeyFactory.keyToString(placeResultEntity.getKey()));
         datastore.put(entity);
         // no step
         // no user
@@ -92,7 +96,7 @@ public class TripRepository {
                 railRepository.createAll(trip.getRails(), entity);
                 rentalRepository.createAll(trip.getRentals(), entity);
                 final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
-                entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
+                entity.setProperty(PLACE_RESULT_ID_FOR_TRIP, KeyFactory.keyToString(placeResultEntity.getKey()));
             }
             // update trip
             else {
@@ -117,7 +121,7 @@ public class TripRepository {
 
     public Trip copy(Trip trip) {
         Trip result = null;
-        LOGGER.info("--> copy - DEB");
+        LOGGER.info("--> copy- START");
         Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
         try {
             final Entity copyFrom = datastore.get(KeyFactory.stringToKey(trip.getParentTripId()));
@@ -261,7 +265,7 @@ public class TripRepository {
     }
 
     private void updateTripVersion(Trip trip, Entity entity, long number) {
-        LOGGER.info("--> updateTripVersion - DEB : " + number);
+        LOGGER.info("--> updateTripVersion- START : " + number);
         // no parent id
         // version = 1
         final EmbeddedEntity embeddedVersion = new EmbeddedEntity();
@@ -274,7 +278,7 @@ public class TripRepository {
     }
 
     private void updateTripProvider(Trip trip, Entity entity) {
-        LOGGER.info("--> updateTripProvider - DEB");
+        LOGGER.info("--> updateTripProvider- START");
         final EmbeddedEntity embeddedProvider = new EmbeddedEntity();
         TripProvider tripProvider = trip.getTripProvider();
         embeddedProvider.setProperty(NAME, tripProvider.getName());
@@ -285,21 +289,40 @@ public class TripRepository {
         LOGGER.info("--> updateTripProvider - END");
     }
 
-    public void deleteTripsWithUserUnknown() {
-        deleteTripEntities(tripQueries.findTripEntitiesWithUserUnknown());
+    public void deleteTripsWithUserUnknown(int delay) {
+        LOGGER.info("--> deleteTripsCancelled - START");
+        final Date today = Calendar.getInstance().getTime();
+        final List<Entity> tripWithUserUnknown = tripQueries.findTripEntitiesWithUserUnknown();
+        final List<Entity> tripsToDelete = new ArrayList<>();
+        for (Entity entity : tripWithUserUnknown) {
+            final Date createdDate = (Date) entity.getProperty(CREATED_AT);
+            final int days = Days.daysBetween(new DateTime(createdDate), new DateTime(today)).getDays();
+            if (days >= delay) {
+                tripsToDelete.add(entity);
+            }
+        }
+        if (tripsToDelete.size() > 0) {
+            deleteTripEntities(tripsToDelete);
+        }
+        LOGGER.info("--> deleteTripsCancelled - END");
     }
 
-    public void deleteTripsCancelled() {
-        LOGGER.info("--> deleteTripsCancelled - DEB");
+    public void deleteTripsCancelled(int delay) {
+        LOGGER.info("--> deleteTripsCancelled- START");
         // BEGIN TRANSACTION
-        final List<Key> keysToKill = new ArrayList<>();
-        final List<Entity> tripsToDelete = tripQueries.findTripEntitiesCancelled();
-        for (Entity entity : tripsToDelete) {
-            deleteChild(entity);
-            keysToKill.add(entity.getKey());
+        final Date today = Calendar.getInstance().getTime();
+        final List<Entity> tripsCancelled = tripQueries.findTripEntitiesCancelled();
+        final List<Entity> tripsToDelete = new ArrayList<>();
+        for (Entity entity : tripsCancelled) {
+            final Date cancellationDate = (Date) entity.getProperty(CANCELLATION_DATE);
+            final int days = Days.daysBetween(new DateTime(cancellationDate), new DateTime(today)).getDays();
+            if (days >= delay) {
+                tripsToDelete.add(entity);
+            }
         }
-        LOGGER.info("--> deleteTripsCancelled : " + keysToKill.size());
-        datastore.delete(keysToKill);
+        if (tripsToDelete.size() > 0) {
+            deleteTripEntities(tripsToDelete);
+        }
         LOGGER.info("--> deleteTripsCancelled - END");
     }
 
@@ -309,11 +332,15 @@ public class TripRepository {
 
     private void deleteTripEntities(List<Entity> tripsToDelete) {
         final List<Key> keysToKill = new ArrayList<>();
+        keysToKill.addAll(extractKeys(tripsToDelete));
         for (Entity entity : tripsToDelete) {
             deleteChild(entity);
-            keysToKill.add(entity.getKey());
         }
-        datastore.delete(keysToKill);
+        if (keysToKill.size() > 0) {
+            datastore.delete(keysToKill);
+            // after trip deletion
+            placeResultRepository.deletePlaceAssociated(tripsToDelete, KIND_TRIP, PLACE_RESULT_ID_FOR_TRIP);
+        }
     }
 
     private void deleteChild(Entity parent) {
@@ -331,5 +358,15 @@ public class TripRepository {
         flightRepository.updateAll(trip.getFlights(), entity);
         railRepository.updateAll(trip.getRails(), entity);
         rentalRepository.updateAll(trip.getRentals(), entity);
+    }
+
+    @Override
+    protected void createCollection(Entity parent, List<Trip> collection) {
+
+    }
+
+    @Override
+    public Entity entityToCreate(Entity parent, Trip trip) {
+        return null;
     }
 }

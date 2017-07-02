@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import static com.tripwego.api.ConfigurationConstants.NB_DAYS_BEFORE_REMOVE;
+
 @SuppressWarnings("serial")
 public class DeleteTripsCancelledOneMonthAgoServlet extends HttpServlet {
 
@@ -18,7 +20,7 @@ public class DeleteTripsCancelledOneMonthAgoServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            tripRepository.deleteTripsCancelled();
+            tripRepository.deleteTripsCancelled(NB_DAYS_BEFORE_REMOVE);
             LOGGER.info("Cron Job has been executed");
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());

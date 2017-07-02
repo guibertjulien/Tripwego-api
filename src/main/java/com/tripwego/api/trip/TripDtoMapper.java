@@ -115,7 +115,7 @@ public class TripDtoMapper {
             trip.setUrlPhoto(linkDtoMapper.map(entity.getProperty(URL_PHOTO)));
         }
         //
-        trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+        trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID_FOR_TRIP)));
         // TODO
         //trip.setAutoTags(entity.getProperty(NAME));
         //trip.setManualTags(entity.getProperty(NAME));

@@ -17,21 +17,18 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static com.tripwego.api.Constants.*;
 
 public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
 
     private static final Logger LOGGER = Logger.getLogger(PlaceResultRepository.class.getName());
 
-    protected final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     private PlaceResultEntityMapper placeResultEntityMapper = new PlaceResultEntityMapper(new GeoPtEntityMapper());
     private PlaceResultDtoMapper placeResultDtoMapper = new PlaceResultDtoMapper(new PostalAddressDtoMapper(), new CategoryDtoMapper(), new LinkDtoMapper(), new RatingDtoMapper(), new LatLngDtoMapper());
-
     private AddressComponentRepository addressComponentRepository = new AddressComponentRepository();
     private AddressComponentQueries addressComponentQueries = new AddressComponentQueries();
     private AddressComponentDtoMapper addressComponentDtoMapper = new AddressComponentDtoMapper();
-
     private PlaceRatingRepository placeRatingRepository = new PlaceRatingRepository();
 
     public Entity create(PlaceResultDto placeResult) {
@@ -101,11 +98,11 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
             final List<Entity> entitiesToUpdate = new ArrayList();
             final Entity tripEntity = datastore.get(KeyFactory.stringToKey(tripUpdated.getId()));
             final Query stepQuery = new Query(KIND_STEP).setAncestor(tripEntity.getKey());
-            stepQuery.addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
+            stepQuery.addProjection(new PropertyProjection(PLACE_RESULT_ID_FOR_STEP, String.class));
             stepQuery.setDistinct(true);
             final List<Entity> stepsEntitiesProjection = datastore.prepare(stepQuery).asList(FetchOptions.Builder.withDefaults());
             for (Entity stepEntityProjection : stepsEntitiesProjection) {
-                final String placeResultId = (String) stepEntityProjection.getProperty(PLACE_RESULT_ID);
+                final String placeResultId = (String) stepEntityProjection.getProperty(PLACE_RESULT_ID_FOR_STEP);
                 final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(placeResultId));
                 final MyUser user = tripUpdated.getUser();
                 final String userId = user.getUserId();
@@ -176,5 +173,39 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         } catch (EntityNotFoundException e) {
         }
         LOGGER.info("--> updateRating - END");
+    }
+
+    /**
+     * remove place if this is not associated with STEP or TRIP
+     *
+     * @param entities
+     * @param kind
+     */
+    public void deletePlaceAssociated(List<Entity> entities, String kind, String propertyName) {
+        LOGGER.info("--> deletePlaceAssociated - START : " + kind + " / size : " + entities.size());
+        for (Entity entity : entities) {
+            final String placeId = String.valueOf(entity.getProperty(propertyName));
+            LOGGER.info("--> placeId : " + placeId);
+            final Query.Filter byPlace = new Query.FilterPredicate(propertyName, EQUAL, placeId);
+            final Query queryEntityAssociated = new Query(kind).setFilter(byPlace);
+            final Entity entityAssociated = datastore.prepare(queryEntityAssociated).asSingleEntity();
+            if (entityAssociated == null) {
+                delete(placeId);
+            }
+        }
+        LOGGER.info("--> deletePlaceAssociated - END");
+    }
+
+    public void delete(String placeId) {
+        LOGGER.info("--> delete - START : " + placeId);
+        try {
+            final Entity entity = datastore.get(KeyFactory.stringToKey(placeId));
+            placeRatingRepository.deleteCollection(KIND_PLACE_RATING, entity);
+            addressComponentRepository.deleteCollection(KIND_ADDRESS_COMPONENT, entity);
+            datastore.delete(entity.getKey());
+        } catch (EntityNotFoundException e) {
+            LOGGER.warning("--> place not found : " + placeId);
+        }
+        LOGGER.info("--> delete - END");
     }
 }

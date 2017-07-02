@@ -1,7 +1,6 @@
 package com.tripwego.api.placeresult;
 
 import com.google.appengine.api.datastore.*;
-import com.tripwego.api.Constants;
 import com.tripwego.api.common.mapper.*;
 import com.tripwego.dto.common.LatLngBoundsDto;
 import com.tripwego.dto.placeresult.PlaceGeometryDto;
@@ -76,8 +75,9 @@ class PlaceResultDtoMapper {
         if (entity.getProperty(RATING) != null) {
             result.setRating(ratingDtoMapper.map((Rating) entity.getProperty(RATING)));
         }
-        result.setPrice_level((long) entity.getProperty(Constants.PRICE_LEVEL));
-        result.setCounter((long) entity.getProperty(Constants.COUNTER));
+        result.setPrice_level((long) entity.getProperty(PRICE_LEVEL));
+        result.setCounter((long) entity.getProperty(COUNTER));
+        result.setOrder((long) entity.getProperty(ORDER));
         // booleans
         result.setEvaluated((Boolean) entity.getProperty(IS_EVALUATED));
         result.setCertifiedByTripwego((Boolean) entity.getProperty(CERTIFIED));

@@ -26,6 +26,20 @@ indexes:
   - name: isCancelled
   - name: createdAt
     direction: desc
+# -- suppression
+- kind: TRIP
+  properties:
+  - name: isCancelled
+  - name: userId
+  - name: place_result_id_for_trip
+- kind: TRIP
+  properties:
+  - name: isCancelled
+  - name: place_result_id_for_trip
+- kind: TRIP
+  properties:
+  - name: userId
+  - name: place_result_id_for_trip
 # -- findStepEntitiesKeyByTrip --
 - kind: STEP
   ancestor: true
@@ -35,12 +49,12 @@ indexes:
 - kind: STEP
   ancestor: true
   properties:
-  - name: place_result_id
+  - name: place_result_id_for_step
 - kind: STEP
   ancestor: false
   properties:
   - name: __key__
-  - name: place_result_id
+  - name: place_result_id_for_step
 #-- PlaceResult : findPlaces --
 - kind: PLACE_RESULT
   ancestor: false
@@ -61,3 +75,10 @@ indexes:
     direction: desc
   - name: rating
     direction: desc
+- kind: PLACE_RESULT
+  ancestor: false
+  properties:
+  - name: countryCode
+  - name: step_categories
+  - name: order
+    direction: asc

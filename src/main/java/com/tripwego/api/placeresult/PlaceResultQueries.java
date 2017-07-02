@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.appengine.api.datastore.Query.*;
-import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
+import static com.google.appengine.api.datastore.Query.SortDirection.ASCENDING;
 import static com.tripwego.api.Constants.*;
 
 /**
@@ -19,7 +19,7 @@ import static com.tripwego.api.Constants.*;
 public class PlaceResultQueries {
 
     private static final int LIMIT_DESTINATION_SUGGESTION = 5;
-    private static final int LIMIT_PLACES = 50;
+    private static final int LIMIT_PLACES = 25;
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     private PlaceResultDtoMapper placeResultDtoMapper = new PlaceResultDtoMapperFactory().create();
@@ -34,7 +34,7 @@ public class PlaceResultQueries {
         final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         Collections.shuffle(entities);
-        for (Entity entity : entities.size() > 5 ? entities.subList(0, 5) : entities) {
+        for (Entity entity : entities.size() > LIMIT_DESTINATION_SUGGESTION ? entities.subList(0, LIMIT_DESTINATION_SUGGESTION) : entities) {
             final PlaceResultDto placeResultDto = placeResultDtoMapper.map(entity);
             result.add(placeResultDto);
         }
@@ -65,7 +65,8 @@ public class PlaceResultQueries {
         if (criteria.getCountry() != null) {
             final Filter byCountry = new FilterPredicate(COUNTRY_CODE, FilterOperator.EQUAL, criteria.getCountry().getCode());
             final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byCountry))
-                    .addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
+                    //.addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
+                    .addSort(ORDER, ASCENDING);
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
             result.addAll(entities);
         }

@@ -85,7 +85,7 @@ public class StepDtoMapper {
             step.setWayType(String.valueOf(entity.getProperty(WAY_TYPE)));
         }
         //
-        step.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+        step.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID_FOR_STEP)));
         LOGGER.info("--> StepDtoMapper.map - END");
         return step;
     }
