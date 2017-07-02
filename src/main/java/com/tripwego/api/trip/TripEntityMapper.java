@@ -29,6 +29,7 @@ public class TripEntityMapper {
         entity.setProperty(IS_PUBLISHED, trip.isPublished());
         entity.setProperty(IS_ANONYMOUS, trip.isAnonymous());
         entity.setProperty(IS_CANCELLED, trip.isCancelled());
+        entity.setProperty(IS_NO_SPECIFIC_DATES, trip.isNoSpecificDates());
         entity.setProperty(RATING, new Rating(trip.getRating()));
         if (trip.getCategory() != null) {
             entity.setProperty(CATEGORY, new Category(trip.getCategory()));

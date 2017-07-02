@@ -98,11 +98,11 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
             final List<Entity> entitiesToUpdate = new ArrayList();
             final Entity tripEntity = datastore.get(KeyFactory.stringToKey(tripUpdated.getId()));
             final Query stepQuery = new Query(KIND_STEP).setAncestor(tripEntity.getKey());
-            stepQuery.addProjection(new PropertyProjection(PLACE_RESULT_ID_FOR_STEP, String.class));
+            stepQuery.addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
             stepQuery.setDistinct(true);
             final List<Entity> stepsEntitiesProjection = datastore.prepare(stepQuery).asList(FetchOptions.Builder.withDefaults());
             for (Entity stepEntityProjection : stepsEntitiesProjection) {
-                final String placeResultId = (String) stepEntityProjection.getProperty(PLACE_RESULT_ID_FOR_STEP);
+                final String placeResultId = (String) stepEntityProjection.getProperty(PLACE_RESULT_ID);
                 final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(placeResultId));
                 final MyUser user = tripUpdated.getUser();
                 final String userId = user.getUserId();
@@ -187,9 +187,11 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
             final String placeId = String.valueOf(entity.getProperty(propertyName));
             LOGGER.info("--> placeId : " + placeId);
             final Query.Filter byPlace = new Query.FilterPredicate(propertyName, EQUAL, placeId);
-            final Query queryEntityAssociated = new Query(kind).setFilter(byPlace);
-            final Entity entityAssociated = datastore.prepare(queryEntityAssociated).asSingleEntity();
-            if (entityAssociated == null) {
+            final Query queryEntitiesAssociated = new Query(kind).setFilter(byPlace);
+            final List<Entity> entitiesAssociated = datastore.prepare(queryEntitiesAssociated.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+            if (entitiesAssociated.size() > 0) {
+                LOGGER.info("--> place is used");
+            } else {
                 delete(placeId);
             }
         }

@@ -132,4 +132,10 @@ public class TripEndpoint {
     public void ping() {
         _logger.info("ping");
     }
+
+    @SuppressWarnings("unchecked")
+    @ApiMethod(name = "testQuery", path = "testQuery", httpMethod = ApiMethod.HttpMethod.GET)
+    public void testQuery() {
+        tripRepository.testQuery();
+    }
 }

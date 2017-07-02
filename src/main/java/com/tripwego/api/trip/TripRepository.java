@@ -65,7 +65,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(TAGS, trip.getTags());
         updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
-        entity.setProperty(PLACE_RESULT_ID_FOR_TRIP, KeyFactory.keyToString(placeResultEntity.getKey()));
+        entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
         datastore.put(entity);
         // no step
         // no user
@@ -96,7 +96,7 @@ public class TripRepository extends AbstractRepository<Trip> {
                 railRepository.createAll(trip.getRails(), entity);
                 rentalRepository.createAll(trip.getRentals(), entity);
                 final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
-                entity.setProperty(PLACE_RESULT_ID_FOR_TRIP, KeyFactory.keyToString(placeResultEntity.getKey()));
+                entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
             }
             // update trip
             else {
@@ -121,7 +121,7 @@ public class TripRepository extends AbstractRepository<Trip> {
 
     public Trip copy(Trip trip) {
         Trip result = null;
-        LOGGER.info("--> copy- START");
+        LOGGER.info("--> copy - START : " + trip.getParentTripId());
         Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
         try {
             final Entity copyFrom = datastore.get(KeyFactory.stringToKey(trip.getParentTripId()));
@@ -339,7 +339,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         if (keysToKill.size() > 0) {
             datastore.delete(keysToKill);
             // after trip deletion
-            placeResultRepository.deletePlaceAssociated(tripsToDelete, KIND_TRIP, PLACE_RESULT_ID_FOR_TRIP);
+            placeResultRepository.deletePlaceAssociated(tripsToDelete, KIND_TRIP, PLACE_RESULT_ID);
         }
     }
 
@@ -368,5 +368,27 @@ public class TripRepository extends AbstractRepository<Trip> {
     @Override
     public Entity entityToCreate(Entity parent, Trip trip) {
         return null;
+    }
+
+    // TODO remove
+    public void testQuery() {
+        LOGGER.info("--> testQuery - START");
+        LOGGER.info("=====================> query 1");
+        final Query query = new Query(KIND_TRIP).addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
+        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        LOGGER.info("--> " + entities.size());
+        for (Entity entity : entities) {
+            LOGGER.info("key : " + entity.getKind() + " / " + entity.getKey());
+            LOGGER.info("place id : " + String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+        }
+
+        LOGGER.info("=====================> query 2");
+        final Query query2 = new Query(KIND_TRIP);
+        final List<Entity> entities2 = datastore.prepare(query2).asList(FetchOptions.Builder.withDefaults());
+        LOGGER.info("--> " + entities.size());
+        for (Entity entity : entities2) {
+            LOGGER.info("key : " + entity.getKind() + " / " + entity.getKey());
+            LOGGER.info("place id : " + String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+        }
     }
 }

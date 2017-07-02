@@ -105,6 +105,9 @@ public class TripDtoMapper {
         if (entity.getProperty(IS_CANCELLED) != null) {
             trip.setCancelled((Boolean) entity.getProperty(IS_CANCELLED));
         }
+        if (entity.getProperty(IS_NO_SPECIFIC_DATES) != null) {
+            trip.setNoSpecificDates((Boolean) entity.getProperty(IS_NO_SPECIFIC_DATES));
+        }
         if (entity.getProperty(URL_SITE) != null) {
             trip.setUrlSite(linkDtoMapper.map(entity.getProperty(URL_SITE)));
         }
@@ -115,7 +118,7 @@ public class TripDtoMapper {
             trip.setUrlPhoto(linkDtoMapper.map(entity.getProperty(URL_PHOTO)));
         }
         //
-        trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID_FOR_TRIP)));
+        trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
         // TODO
         //trip.setAutoTags(entity.getProperty(NAME));
         //trip.setManualTags(entity.getProperty(NAME));

@@ -75,8 +75,6 @@ public class Constants {
     public static final String PARENT_TRIP_ITEM_ID = "parentTripItemId";
     public static final String PARENT_TRIP_ID = "parentTripId";
     public static final String PLACE_RESULT_ID = "place_result_id";
-    public static final String PLACE_RESULT_ID_FOR_STEP = "place_result_id_for_step";
-    public static final String PLACE_RESULT_ID_FOR_TRIP = "place_result_id_for_trip";
     public static final String CODE = "code";
     public static final String COUNTER = "counter";
     public static final String PHOTOS = "photos";
@@ -100,6 +98,7 @@ public class Constants {
     public static final String COMMENT = "comment";
     public static final String TAGS = "tags";
     public static final String ORDER = "order";
+    public static final String IS_NO_SPECIFIC_DATES = "isNoSpecificDates";
     // TODO remomve workaround
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
