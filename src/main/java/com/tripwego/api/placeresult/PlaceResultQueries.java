@@ -8,6 +8,7 @@ import com.tripwego.dto.placeresult.PlaceResultDtoSearchCriteria;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
 import static com.google.appengine.api.datastore.Query.SortDirection.ASCENDING;
@@ -18,6 +19,8 @@ import static com.tripwego.api.Constants.*;
  */
 public class PlaceResultQueries {
 
+    private static final Logger LOGGER = Logger.getLogger(PlaceResultQueries.class.getName());
+
     private static final int LIMIT_DESTINATION_SUGGESTION = 5;
     private static final int LIMIT_PLACES = 25;
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -27,11 +30,12 @@ public class PlaceResultQueries {
     private GeoPtEntityMapper geoPtEntityMapper = new GeoPtEntityMapper();
 
     // TODO enrich criteria
-    public List<PlaceResultDto> findDestinationSuggestions(PlaceResultDtoSearchCriteria criteria) {
+    public List<PlaceResultDto> findDestinationSuggestions() {
         final List<PlaceResultDto> result = new ArrayList<>();
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, FilterOperator.EQUAL, "DESTINATION");
-        final Filter byType = new FilterPredicate(TYPES, FilterOperator.EQUAL, "country");
-        final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
+        //final Filter byType = new FilterPredicate(TYPES, FilterOperator.EQUAL, "country");
+        //final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
+        final Query query = new Query(KIND_PLACE_RESULT).setFilter(byStepCategory);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         Collections.shuffle(entities);
         for (Entity entity : entities.size() > LIMIT_DESTINATION_SUGGESTION ? entities.subList(0, LIMIT_DESTINATION_SUGGESTION) : entities) {
