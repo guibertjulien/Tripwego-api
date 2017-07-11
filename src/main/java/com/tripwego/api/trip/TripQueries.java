@@ -115,15 +115,16 @@ public class TripQueries {
 
     public List<Entity> findTripEntitiesWithUserUnknown() {
         final Filter isUserUnknown = new FilterPredicate(USER_ID, FilterOperator.EQUAL, null);
-        final Query query = new Query(KIND_TRIP).setFilter(isUserUnknown)
-                .addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class))
-                .addProjection(new PropertyProjection(CREATED_AT, String.class));
+        final Query query = new Query(KIND_TRIP).setFilter(isUserUnknown);
+        //.addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class))
+        //.addProjection(new PropertyProjection(CREATED_AT, String.class));
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 
     public List<Entity> findTripEntitiesCancelled() {
         final Filter isCancelled = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
-        final Query query = new Query(KIND_TRIP).setFilter(isCancelled).addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
+        final Query query = new Query(KIND_TRIP).setFilter(isCancelled);
+        //.addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 

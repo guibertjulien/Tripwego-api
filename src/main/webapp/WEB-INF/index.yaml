@@ -34,6 +34,11 @@ indexes:
   - name: place_result_id
 - kind: TRIP
   properties:
+  - name: userId
+  - name: createdAt
+  - name: place_result_id
+- kind: TRIP
+  properties:
   - name: isCancelled
   - name: place_result_id
 - kind: TRIP

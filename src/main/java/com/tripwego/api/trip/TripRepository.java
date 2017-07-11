@@ -53,7 +53,7 @@ public class TripRepository extends AbstractRepository<Trip> {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     public Trip create(Trip trip) {
-        Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
+        final Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
         final Entity entity = new Entity(KIND_TRIP);
         tripEntityMapper.map(entity, trip, user);
         entity.setProperty(IS_DEFAULT, true);
@@ -120,32 +120,26 @@ public class TripRepository extends AbstractRepository<Trip> {
 
 
     public Trip copy(Trip trip) {
-        Trip result = null;
         LOGGER.info("--> copy - START : " + trip.getParentTripId());
-        Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
-        try {
-            final Entity copyFrom = datastore.get(KeyFactory.stringToKey(trip.getParentTripId()));
-            //final Entity entity = new Entity(KIND_TRIP, copyFrom.getKey());
-            final Entity entity = new Entity(KIND_TRIP);
-            tripEntityMapper.map(entity, trip, user);
-            entity.setProperty(IS_DEFAULT, true);
-            entity.setProperty(STATUS, TripStatus.SAVED.name());
-            entity.setProperty(IS_CANCELLED, false);
-            entity.setProperty(CREATED_AT, new Date());
-            entity.setProperty(UPDATED_AT, new Date());
-            entity.setProperty(IS_PUBLISHED, trip.isPublished());
-            updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
-            entity.setProperty(IS_COPY, true);
-            datastore.put(entity);
-            updateChild(trip, entity);
-
-            result = tripDtoMapper.map(entity, user);
-            // TODO copy steps
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
+        final Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
+        final Entity entity = new Entity(KIND_TRIP);
+        tripEntityMapper.map(entity, trip, user);
+        entity.setProperty(IS_DEFAULT, true);
+        entity.setProperty(STATUS, TripStatus.SAVED.name());
+        entity.setProperty(IS_CANCELLED, false);
+        entity.setProperty(CREATED_AT, new Date());
+        entity.setProperty(UPDATED_AT, new Date());
+        entity.setProperty(IS_PUBLISHED, trip.isPublished());
+        updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
+        //
+        entity.setProperty(IS_COPY, true);
+        final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
+        entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
+        //
+        datastore.put(entity);
+        updateChild(trip, entity);
         LOGGER.info("--> copy - END");
-        return result;
+        return tripDtoMapper.map(entity, user);
     }
 
     /**
@@ -290,7 +284,7 @@ public class TripRepository extends AbstractRepository<Trip> {
     }
 
     public void deleteTripsWithUserUnknown(int delay) {
-        LOGGER.info("--> deleteTripsCancelled - START");
+        LOGGER.info("--> deleteTripsWithUserUnknown - START");
         final Date today = Calendar.getInstance().getTime();
         final List<Entity> tripWithUserUnknown = tripQueries.findTripEntitiesWithUserUnknown();
         final List<Entity> tripsToDelete = new ArrayList<>();
@@ -304,12 +298,11 @@ public class TripRepository extends AbstractRepository<Trip> {
         if (tripsToDelete.size() > 0) {
             deleteTripEntities(tripsToDelete);
         }
-        LOGGER.info("--> deleteTripsCancelled - END");
+        LOGGER.info("--> deleteTripsWithUserUnknown - END");
     }
 
     public void deleteTripsCancelled(int delay) {
-        LOGGER.info("--> deleteTripsCancelled- START");
-        // BEGIN TRANSACTION
+        LOGGER.info("--> deleteTripsCancelled - START");
         final Date today = Calendar.getInstance().getTime();
         final List<Entity> tripsCancelled = tripQueries.findTripEntitiesCancelled();
         final List<Entity> tripsToDelete = new ArrayList<>();
