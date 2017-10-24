@@ -19,7 +19,7 @@ public class PlaceResultEndpoint {
 
     @ApiMethod(name = "find_destination_suggestions", path = "find_destination_suggestions", httpMethod = ApiMethod.HttpMethod.POST)
     public CollectionResponse<PlaceResultDto> find_destination_suggestions(PlaceResultDtoSearchCriteria criteria) {
-        final List<PlaceResultDto> places = queries.findDestinationSuggestions();
+        final List<PlaceResultDto> places = queries.findDestinationSuggestions(criteria);
         return CollectionResponse.<PlaceResultDto>builder().setItems(places).build();
     }
 

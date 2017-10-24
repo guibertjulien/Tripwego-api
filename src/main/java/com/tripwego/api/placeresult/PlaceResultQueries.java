@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
-import static com.google.appengine.api.datastore.Query.SortDirection.ASCENDING;
+import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
 import static com.tripwego.api.Constants.*;
 
 /**
@@ -30,16 +30,16 @@ public class PlaceResultQueries {
     private GeoPtEntityMapper geoPtEntityMapper = new GeoPtEntityMapper();
 
     // TODO enrich criteria
-    public List<PlaceResultDto> findDestinationSuggestions() {
+    public List<PlaceResultDto> findDestinationSuggestions(PlaceResultDtoSearchCriteria criteria) {
         final List<PlaceResultDto> result = new ArrayList<>();
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, FilterOperator.EQUAL, "DESTINATION");
-        //final Filter byType = new FilterPredicate(TYPES, FilterOperator.EQUAL, "country");
-        //final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
-        final Query query = new Query(KIND_PLACE_RESULT).setFilter(byStepCategory);
+        final Filter byType = new FilterPredicate(TYPES, FilterOperator.EQUAL, "country");
+        final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
+        //final Query query = new Query(KIND_PLACE_RESULT).setFilter(byStepCategory);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         Collections.shuffle(entities);
         for (Entity entity : entities.size() > LIMIT_DESTINATION_SUGGESTION ? entities.subList(0, LIMIT_DESTINATION_SUGGESTION) : entities) {
-            final PlaceResultDto placeResultDto = placeResultDtoMapper.map(entity);
+            final PlaceResultDto placeResultDto = placeResultDtoMapper.map(entity, criteria.getLanguage());
             result.add(placeResultDto);
         }
         return result;
@@ -49,7 +49,7 @@ public class PlaceResultQueries {
         final List<PlaceResultDto> result = new ArrayList<>();
         final List<Entity> entities = findPlaceEntities(criteria);
         for (Entity entity : entities) {
-            final PlaceResultDto placeResultDto = placeResultDtoMapper.map(entity);
+            final PlaceResultDto placeResultDto = placeResultDtoMapper.map(entity, criteria.getLanguage());
             result.add(placeResultDto);
         }
         return result;
@@ -69,8 +69,8 @@ public class PlaceResultQueries {
         if (criteria.getCountry() != null) {
             final Filter byCountry = new FilterPredicate(COUNTRY_CODE, FilterOperator.EQUAL, criteria.getCountry().getCode());
             final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byCountry))
-                    //.addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
-                    .addSort(ORDER, ASCENDING);
+                    .addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
+            //.addSort(ORDER, ASCENDING);
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
             result.addAll(entities);
         }

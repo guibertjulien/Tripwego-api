@@ -20,10 +20,6 @@ public class UserRepository {
 
     public MyUser create(MyUser myUser) {
         final String userId = myUser.getUserId();
-        LOGGER.info("--> userId" + userId + ".");
-        if (userId == null || userId.isEmpty()) {
-            return null;
-        }
         final Entity entity = new Entity(Constants.KIND_USER, userId);
         userEntityMapper.map(entity, myUser);
         datastore.put(entity);

@@ -4,6 +4,7 @@ import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.tripwego.dto.trip.Trip;
+import com.tripwego.dto.trip.TripSearchCriteria;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,7 +37,7 @@ public class TripEndpoint {
     private static final Logger _logger = Logger.getLogger(TripEndpoint.class.getName());
 
     private TripRepository tripRepository = new TripRepository();
-    private TripQueries tripQueries = new TripQueries();
+    private TripQueries queries = new TripQueries();
 
     /**
      * This inserts a new entity into App Engine datastore. If the entity
@@ -84,7 +85,7 @@ public class TripEndpoint {
     @SuppressWarnings("unchecked")
     @ApiMethod(name = "findTripsByUser", path = "findTripsByUser", httpMethod = ApiMethod.HttpMethod.GET)
     public CollectionResponse<Trip> findTripsByUser(@Named("userId") String userId, @Nullable @Named("cursor") String cursorString, @Nullable @Named("limit") Integer limit) {
-        final List<Trip> trips = tripQueries.findTripsByUser(userId);
+        final List<Trip> trips = queries.findTripsByUser(userId);
         return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
     }
 
@@ -92,7 +93,7 @@ public class TripEndpoint {
     @ApiMethod(name = "findAllTrips", path = "findAllTrips", httpMethod = ApiMethod.HttpMethod.GET)
     public CollectionResponse<Trip> findAllTrips(@Nullable @Named("cursor") String cursorString, @Nullable @Named("limit") Integer limit) {
         // TODO cursor
-        final List<Trip> trips = tripQueries.findAllTrips();
+        final List<Trip> trips = queries.findAllTrips();
         return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
     }
 
@@ -137,5 +138,11 @@ public class TripEndpoint {
     @ApiMethod(name = "testQuery", path = "testQuery", httpMethod = ApiMethod.HttpMethod.GET)
     public void testQuery() {
         tripRepository.testQuery();
+    }
+
+    @ApiMethod(name = "find", path = "find", httpMethod = ApiMethod.HttpMethod.POST)
+    public CollectionResponse<Trip> find(TripSearchCriteria criteria) {
+        final List<Trip> trips = queries.find(criteria);
+        return CollectionResponse.<Trip>builder().setItems(trips).build();
     }
 }

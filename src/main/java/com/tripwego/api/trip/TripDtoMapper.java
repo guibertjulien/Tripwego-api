@@ -46,8 +46,10 @@ public class TripDtoMapper {
             trip.setDescription(((Text) entity.getProperty(DESCRIPTION)).getValue());
         }
         trip.setCategory(categoryDtoMapper.map(entity.getProperty(CATEGORY)));
+        // TODO use ?
         trip.setCountryCode(String.valueOf(entity.getProperty(COUNTRY_CODE)));
         trip.setCountryName(String.valueOf(entity.getProperty(COUNTRY_NAME)));
+        //
         if (entity.getProperty(CREATED_AT) != null) {
             trip.setCreatedAt(String.valueOf(entity.getProperty(CREATED_AT)));
         }

@@ -1,0 +1,907 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "tripendpoint-api.endpoints.tripwego-api.cloud.goog"
+  },
+  "host": "tripendpoint-api.endpoints.tripwego-api.cloud.goog",
+  "basePath": "/_ah/api",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/tripendpoint/v1/copyTrip": {
+      "post": {
+        "operationId": "TripendpointCopyTrip",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/deleteOrRestoreTrip": {
+      "put": {
+        "operationId": "TripendpointDeleteOrRestoreTrip",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response"
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/deleteTripsCancelled": {
+      "get": {
+        "operationId": "TripendpointDeleteTripsCancelled",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response"
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/find": {
+      "post": {
+        "operationId": "TripendpointFind",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/TripSearchCriteria"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/CollectionResponse_Trip"
+            }
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/findAllTrips": {
+      "get": {
+        "operationId": "TripendpointFindAllTrips",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/CollectionResponse_Trip"
+            }
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/findTripsByUser": {
+      "get": {
+        "operationId": "TripendpointFindTripsByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/CollectionResponse_Trip"
+            }
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/get_trip": {
+      "get": {
+        "operationId": "TripendpointRetrieveTrip",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/tripendpoint/v1/ping": {
+      "get": {
+        "operationId": "TripendpointPing",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "A successful response"
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/publishOrPrivateTrip": {
+      "put": {
+        "operationId": "TripendpointPublishOrPrivateTrip",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response"
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/testQuery": {
+      "get": {
+        "operationId": "TripendpointTestQuery",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "A successful response"
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/trip": {
+      "post": {
+        "operationId": "TripendpointInsertTrip",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "TripendpointUpdateTrip",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/trip/{id}": {
+      "get": {
+        "operationId": "TripendpointGetTrip",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/Trip"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "key",
+      "in": "query"
+    },
+    "firebase": {
+      "type": "oauth2",
+      "authorizationUrl": "",
+      "flow": "implicit",
+      "x-google-issuer": "https://securetoken.google.com/tripwego-api",
+      "x-google-jwks_uri": "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    }
+  },
+  "definitions": {
+    "MyUser": {
+      "properties": {
+        "authDomain": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "federatedIdentity": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "picture": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "LatLngBoundsDto": {
+      "properties": {
+        "center": {
+          "$ref": "#/definitions/LatLngDto"
+        },
+        "northEast": {
+          "$ref": "#/definitions/LatLngDto"
+        },
+        "southWest": {
+          "$ref": "#/definitions/LatLngDto"
+        }
+      }
+    },
+    "Trip": {
+      "properties": {
+        "accommodations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Accommodation"
+          }
+        },
+        "activities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Activity"
+          }
+        },
+        "anonymous": {
+          "type": "boolean"
+        },
+        "cancelled": {
+          "type": "boolean"
+        },
+        "category": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "countryName": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "flights": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Flight"
+          }
+        },
+        "geometry": {
+          "$ref": "#/definitions/PlaceGeometryDto"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "noSpecificDates": {
+          "type": "boolean"
+        },
+        "parentTripId": {
+          "type": "string"
+        },
+        "placeResultDto": {
+          "$ref": "#/definitions/PlaceResultDto"
+        },
+        "placeResultId": {
+          "type": "string"
+        },
+        "privateTrip": {
+          "type": "boolean"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "rails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rail"
+          }
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rentals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rental"
+          }
+        },
+        "startDate": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "travelers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Traveler"
+          }
+        },
+        "tripProvider": {
+          "$ref": "#/definitions/TripProvider"
+        },
+        "tripVersion": {
+          "$ref": "#/definitions/TripVersion"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "urlPhoto": {
+          "type": "string"
+        },
+        "urlPhotoAlbum": {
+          "type": "string"
+        },
+        "urlSite": {
+          "type": "string"
+        },
+        "urlStaticMap": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/MyUser"
+        }
+      }
+    },
+    "CollectionResponse_Trip": {
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Trip"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        }
+      }
+    },
+    "CountryDto": {
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Flight": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        }
+      }
+    },
+    "TripProvider": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "Activity": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        }
+      }
+    },
+    "Step": {
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "avoidHighways": {
+          "type": "boolean"
+        },
+        "avoidTolls": {
+          "type": "boolean"
+        },
+        "category": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "dayIn": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "indexOnRoadMap": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "infoLink": {
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/LatLngDto"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        },
+        "parentTripItemId": {
+          "type": "string"
+        },
+        "placeResultDto": {
+          "$ref": "#/definitions/PlaceResultDto"
+        },
+        "placeResultId": {
+          "type": "string"
+        },
+        "placeType": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "urlPhoto": {
+          "type": "string"
+        },
+        "wayType": {
+          "type": "string"
+        }
+      }
+    },
+    "PlaceGeometryDto": {
+      "properties": {
+        "location": {
+          "$ref": "#/definitions/LatLngDto"
+        },
+        "viewport": {
+          "$ref": "#/definitions/LatLngBoundsDto"
+        }
+      }
+    },
+    "Provider": {
+      "enum": [
+        "GOOGLE",
+        "TRIPWEGO",
+        "OTHERS"
+      ]
+    },
+    "AddressComponentDto": {
+      "properties": {
+        "long_name": {
+          "type": "string"
+        },
+        "short_name": {
+          "type": "string"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TripSearchCriteria": {
+      "properties": {
+        "certified": {
+          "type": "boolean"
+        },
+        "continents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "favorite": {
+          "type": "boolean"
+        },
+        "maxDuration": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minDuration": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "season": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "tripTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TripVersion": {
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "default": {
+          "type": "boolean"
+        },
+        "number": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentTripId": {
+          "type": "string"
+        },
+        "userUpdater": {
+          "$ref": "#/definitions/MyUser"
+        }
+      }
+    },
+    "Rail": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        }
+      }
+    },
+    "Rental": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        }
+      }
+    },
+    "PlaceResultDto": {
+      "properties": {
+        "address_components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AddressComponentDto"
+          }
+        },
+        "certifiedByTripwego": {
+          "type": "boolean"
+        },
+        "counter": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "country": {
+          "$ref": "#/definitions/CountryDto"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "evaluated": {
+          "type": "boolean"
+        },
+        "formatted_address": {
+          "type": "string"
+        },
+        "formatted_phone_number": {
+          "type": "string"
+        },
+        "geometry": {
+          "$ref": "#/definitions/PlaceGeometryDto"
+        },
+        "html_attributions": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "international_phone_number": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "permanently_closed": {
+          "type": "boolean"
+        },
+        "photos": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "placeKey": {
+          "type": "string"
+        },
+        "placeType": {
+          "type": "string"
+        },
+        "place_id": {
+          "type": "string"
+        },
+        "price_level": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "provider": {
+          "$ref": "#/definitions/Provider"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "stepCategories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stepTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "vicinity": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        }
+      }
+    },
+    "Traveler": {
+      "properties": {
+        "authDomain": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "federatedIdentity": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "permission": {
+          "type": "string"
+        },
+        "picture": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "Accommodation": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        }
+      }
+    },
+    "LatLngDto": {
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    }
+  }
+}

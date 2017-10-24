@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.tripwego.api.Constants;
 import com.tripwego.dto.user.MyUser;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 
@@ -19,6 +20,7 @@ public class UserEntityMapper {
         entity.setProperty(Constants.FEDERATED_IDENTITY, myUser.getFederatedIdentity());
         entity.setProperty(Constants.NICKNAME, myUser.getNickname());
         entity.setProperty(Constants.PICTURE, myUser.getPicture());
+        entity.setProperty(Constants.CREATED_AT, new Date());
         LOGGER.info("--> UserEntityMapper.map - END");
     }
 }

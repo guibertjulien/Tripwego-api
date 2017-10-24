@@ -8,7 +8,8 @@
             <param-name>services</param-name>
             <param-value>com.tripwego.api.placeresult.PlaceResultEndpoint,
                 com.tripwego.api.tag.TagEndpoint,
-                com.tripwego.api.trip.TripEndpoint
+                com.tripwego.api.trip.TripEndpoint,
+                com.tripwego.api.region.RegionCounterEndpoint
             </param-value>
         </init-param>
         <init-param>
@@ -89,6 +90,15 @@
     <servlet-mapping>
         <servlet-name>RefreshServlet</servlet-name>
         <url-pattern>/cron/refreshServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>StoreTripsInDocumentServlet</servlet-name>
+        <servlet-class>com.tripwego.api.batch.StoreTripsInDocumentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StoreTripsInDocumentServlet</servlet-name>
+        <url-pattern>/cron/storeTripsInDocumentServlet</url-pattern>
     </servlet-mapping>
 
     <!-- Securing URLs for CRON -->

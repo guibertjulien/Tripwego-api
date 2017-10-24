@@ -23,7 +23,7 @@ public class StepEntityMapper {
     public Entity map(Step step, Entity parent) {
         LOGGER.info("--> StepEntityMapper.map - START");
         Entity entity = new Entity(KIND_STEP, parent.getKey());
-        entity.setProperty(PARENT_TRIP_ITEM_ID, step.getParentTripItemId());
+        entity.setProperty(PARENT_TRIP_ITEM_ID, parent.getKey().getId());
         entity.setProperty(NAME, step.getName());
         entity.setProperty(DESCRIPTION, new Text(Strings.nullToEmpty(step.getDescription())));
         if (step.getAddress() != null) {

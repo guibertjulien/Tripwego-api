@@ -1,6 +1,7 @@
 package com.tripwego.api.placeresult;
 
 import com.google.appengine.api.datastore.*;
+import com.tripwego.api.I18nUtils;
 import com.tripwego.api.common.mapper.*;
 import com.tripwego.dto.common.LatLngBoundsDto;
 import com.tripwego.dto.placeresult.PlaceGeometryDto;
@@ -32,7 +33,7 @@ class PlaceResultDtoMapper {
         this.latLngDtoMapper = latLngDtoMapper;
     }
 
-    public PlaceResultDto map(Entity entity) {
+    public PlaceResultDto map(Entity entity, String language) {
         LOGGER.info("--> PlaceResultDto.map - START");
         final PlaceResultDto result = new PlaceResultDto();
         // ids
@@ -40,7 +41,7 @@ class PlaceResultDtoMapper {
         result.setPlaceKey(KeyFactory.keyToString(entity.getKey()));
         // strings
         result.setName(String.valueOf(entity.getProperty(NAME)));
-        result.setCountry(extractCountry(entity));
+        result.setCountry(extractCountry(entity, language));
         result.setFormatted_phone_number(String.valueOf(entity.getProperty(PHONE_NUMBER)));
         result.setHtml_attributions(String.valueOf(entity.getProperty(HTML_ATTRIBUTIONS)));
         result.setIcon(String.valueOf(entity.getProperty(ICON)));
@@ -91,8 +92,10 @@ class PlaceResultDtoMapper {
         return result;
     }
 
-    private CountryDto extractCountry(Entity entity) {
-        return new CountryDto(String.valueOf(entity.getProperty(COUNTRY_CODE)), String.valueOf(entity.getProperty(COUNTRY_NAME)));
+    private CountryDto extractCountry(Entity entity, String language) {
+        final String code = String.valueOf(entity.getProperty(COUNTRY_CODE));
+        final String name = (language == null || language.isEmpty()) ? String.valueOf(entity.getProperty(COUNTRY_NAME)) : I18nUtils.findCountryName(language, code);
+        return new CountryDto(code, name);
     }
 
     private void updateGeometry(Entity entity, PlaceResultDto result) {

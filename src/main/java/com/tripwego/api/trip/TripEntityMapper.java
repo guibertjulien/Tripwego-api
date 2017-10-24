@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.search.DateUtil;
 import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.appengine.repackaged.com.google.common.base.Strings;
+import com.tripwego.api.I18nUtils;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.user.MyUser;
 
@@ -20,7 +21,7 @@ public class TripEntityMapper {
         entity.setProperty(PARENT_TRIP_ID, trip.getParentTripId());
         entity.setProperty(NAME, trip.getName());
         entity.setProperty(COUNTRY_CODE, trip.getCountryCode());
-        entity.setProperty(COUNTRY_NAME, trip.getCountryName());
+        entity.setProperty(COUNTRY_NAME, I18nUtils.findEnglishCountryName(trip.getCountryCode()));
         entity.setProperty(DESCRIPTION, new Text(Strings.nullToEmpty(trip.getDescription())));
         entity.setProperty(DURATION, trip.getDuration());
         entity.setProperty(START_DATE, DateUtil.deserializeDate(trip.getStartDate()));
@@ -51,6 +52,7 @@ public class TripEntityMapper {
         } else {
             entity.setProperty(USER_ID, null);
         }
+        entity.setProperty(TAGS, trip.getTags());
         //entity.setProperty(CREATED_AT, trip.getCreatedAt());
         //entity.setProperty(UPDATED_AT, trip.getUpdatedAt());
         //entity.setProperty(IS_DEFAULT, trip.getTripVersion().isDefault());

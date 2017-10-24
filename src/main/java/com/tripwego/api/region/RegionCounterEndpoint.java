@@ -6,7 +6,7 @@ import com.tripwego.dto.region.RegionCounter;
 
 import java.util.List;
 
-@Api(name = "regioncounterendpoint", namespace = @ApiNamespace(ownerDomain = "bergui.com", ownerName = "bergui.com", packagePath = "tripwego.api"))
+@Api(name = "regioncounterendpoint", namespace = @ApiNamespace(ownerDomain = "tripwego.com", ownerName = "tripwego.com", packagePath = "endpoints"))
 public class RegionCounterEndpoint {
 
     private RegionCounterQueries regionCounterQueries = new RegionCounterQueries();
@@ -19,8 +19,8 @@ public class RegionCounterEndpoint {
      * persisted and a cursor to the next page.
      */
     @SuppressWarnings({"unchecked", "unused"})
-    @ApiMethod(name = "listRegionCounter")
-    public CollectionResponse<RegionCounter> listRegionCounter(@Nullable @Named("cursor") String cursorString, @Nullable @Named("limit") Integer limit) {
+    @ApiMethod(name = "findAllRegions", path = "findAllRegions", httpMethod = ApiMethod.HttpMethod.GET)
+    public CollectionResponse<RegionCounter> findAllRegions(@Nullable @Named("cursor") String cursorString, @Nullable @Named("limit") Integer limit) {
         final List<RegionCounter> regionCounters = regionCounterQueries.findAll();
         return CollectionResponse.<RegionCounter>builder().setItems(regionCounters).setNextPageToken(cursorString).build();
     }

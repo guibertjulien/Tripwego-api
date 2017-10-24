@@ -1,5 +1,6 @@
 package com.tripwego.api.trip;
 
+import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
@@ -53,7 +54,11 @@ public class TripRepository extends AbstractRepository<Trip> {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     public Trip create(Trip trip) {
-        final Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
+        Optional<MyUser> user = Optional.absent();
+        LOGGER.info("--> user : " + trip.getUser().getUserId());
+        if (trip.getUser() != null && !Strings.isNullOrEmpty(trip.getUser().getUserId())) {
+            user = Optional.fromNullable(userRepository.create(trip.getUser()));
+        }
         final Entity entity = new Entity(KIND_TRIP);
         tripEntityMapper.map(entity, trip, user);
         entity.setProperty(IS_DEFAULT, true);
@@ -63,6 +68,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(UPDATED_AT, new Date());
         entity.setProperty(IS_PUBLISHED, true); // TODO false ?
         entity.setProperty(TAGS, trip.getTags());
+        entity.setProperty(IS_STORE_IN_DOCUMENT, false);
         updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
         entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
@@ -157,7 +163,7 @@ public class TripRepository extends AbstractRepository<Trip> {
     }
 
     /**
-     * lazy
+     * eager
      */
     public Trip retrieveEager(String id) {
         LOGGER.info("--> retrieveEager - START");

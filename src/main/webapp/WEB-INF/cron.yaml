@@ -11,3 +11,7 @@ cron:
   url: /cron/deleteTripsCancelledOneMonthAgoServlet
   target: beta
   schedule: every day 00:00
+- description: Store trip in document for searching
+  url: /cron/storeTripsInDocumentServlet
+  target: beta
+  schedule: every day 00:00

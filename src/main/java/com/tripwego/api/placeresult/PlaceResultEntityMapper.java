@@ -1,6 +1,7 @@
 package com.tripwego.api.placeresult;
 
 import com.google.appengine.api.datastore.*;
+import com.tripwego.api.I18nUtils;
 import com.tripwego.api.common.mapper.GeoPtEntityMapper;
 import com.tripwego.dto.placeresult.PlaceResultDto;
 
@@ -31,7 +32,7 @@ class PlaceResultEntityMapper {
         entity.setProperty(NAME, placeResult.getName());
         if (placeResult.getCountry() != null) {
             entity.setProperty(COUNTRY_CODE, placeResult.getCountry().getCode());
-            entity.setProperty(COUNTRY_NAME, placeResult.getCountry().getName());
+            entity.setProperty(COUNTRY_NAME, I18nUtils.findEnglishCountryName(placeResult.getCountry().getCode()));
         }
         //
         entity.setProperty(CERTIFIED, false);

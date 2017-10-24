@@ -18,7 +18,7 @@ public class RegionCounterMapper {
         regionCounter.setId(KeyFactory.keyToString(entity.getKey()));
         regionCounter.setName(String.valueOf(entity.getProperty(Constants.NAME)));
         regionCounter.setCode(String.valueOf(entity.getProperty(Constants.CODE)));
-        regionCounter.setCounter((Integer) entity.getProperty(Constants.COUNTER));
+        regionCounter.setCounter((Long) entity.getProperty(Constants.COUNTER));
         LOGGER.info("--> RegionCounterMapper.map - END");
         return regionCounter;
     }

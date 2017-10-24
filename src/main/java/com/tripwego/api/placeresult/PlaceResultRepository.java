@@ -17,7 +17,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
-import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static com.tripwego.api.Constants.*;
 
 public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
@@ -55,7 +54,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         PlaceResultDto placeResult = null;
         try {
             final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(placeKeyString));
-            placeResult = placeResultDtoMapper.map(placeResultEntity);
+            placeResult = placeResultDtoMapper.map(placeResultEntity, "");
             for (Entity entity : addressComponentQueries.find(placeResultEntity, KIND_ADDRESS_COMPONENT)) {
                 final AddressComponentDto addressComponent = addressComponentDtoMapper.map(entity);
                 placeResult.getAddress_components().add(addressComponent);
@@ -177,12 +176,13 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
 
     /**
      * remove place if this is not associated with STEP or TRIP
-     *
+     * TODO à revoir
      * @param entities
      * @param kind
      */
     public void deletePlaceAssociated(List<Entity> entities, String kind, String propertyName) {
         LOGGER.info("--> deletePlaceAssociated - START : " + kind + " / size : " + entities.size());
+        /*
         for (Entity entity : entities) {
             final String placeId = String.valueOf(entity.getProperty(propertyName));
             LOGGER.info("--> placeId : " + placeId);
@@ -195,10 +195,11 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
                 delete(placeId);
             }
         }
+        */
         LOGGER.info("--> deletePlaceAssociated - END");
     }
 
-    public void delete(String placeId) {
+    private void delete(String placeId) {
         LOGGER.info("--> delete - START : " + placeId);
         try {
             final Entity entity = datastore.get(KeyFactory.stringToKey(placeId));
