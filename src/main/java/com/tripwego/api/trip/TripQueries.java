@@ -4,10 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.search.Results;
 import com.google.appengine.api.search.ScoredDocument;
 import com.google.appengine.repackaged.com.google.common.base.Optional;
-import com.google.appengine.repackaged.com.google.common.base.Predicate;
 import com.google.appengine.repackaged.com.google.common.base.Strings;
-import com.google.appengine.repackaged.com.google.common.collect.FluentIterable;
-import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.tripwego.api.document.DocumentService;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.step.StepDtoMapper;
@@ -21,8 +18,10 @@ import com.tripwego.dto.user.Traveler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
+import static com.tripwego.api.ConfigurationConstants.LIMIT_QUERY_TRIP;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_TRIP_DOCUMENT_TO_STORE_BY_DAY;
 import static com.tripwego.api.Constants.*;
 
@@ -31,6 +30,8 @@ import static com.tripwego.api.Constants.*;
  * Created by JG on 04/06/16.
  */
 public class TripQueries {
+
+    private static final Logger LOGGER = Logger.getLogger(TripQueries.class.getName());
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private TripDtoMapper tripDtoMapper = new TripDtoMapperFactory().create();
@@ -72,88 +73,83 @@ public class TripQueries {
                 .addSort(IS_CANCELLED, SortDirection.ASCENDING)
                 .addSort(CREATED_AT, SortDirection.DESCENDING);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-        // because "Cannot have inequality filters on multiple properties"
-        final ImmutableList<Entity> entitiesFiltered = FluentIterable.from(entities).filter(new Predicate<Entity>() {
-            @Override
-            public boolean apply(Entity entity) {
-                return entity.getProperty(USER_ID) != null;
-            }
-        }).toList();
-        for (Entity entity : entitiesFiltered) {
-            Optional<MyUser> user = Optional.absent();
-            if (entity.getProperty(USER_ID) != null) {
-                final String userId = String.valueOf(entity.getProperty(USER_ID));
-                user = userQueries.findByUserId(userId);
-            }
-            final Trip trip = tripDtoMapper.map(entity, user);
+        for (Entity entity : entities) {
+            final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
             result.add(trip);
         }
         return result;
     }
 
     public List<Trip> find(TripSearchCriteria criteria) {
-        final List<Trip> result = new ArrayList<>();
+        final List<Trip> results = new ArrayList<>();
+        final List<Trip> tripsFoundByText = new ArrayList<>();
+        final List<Trip> tripsFoundByTags = new ArrayList<>();
+        // text criteria
         if (!Strings.isNullOrEmpty(criteria.getText())) {
             Results<ScoredDocument> scoredDocuments = documentService.searchTripByText(criteria.getText());
             for (ScoredDocument scoredDocument : scoredDocuments) {
                 final String scoredDocumentId = scoredDocument.getId();
-                Optional<Trip> trip = retrieveLazy(scoredDocumentId);
+                final Optional<Trip> trip = retrieveLazyTripAndUser(scoredDocumentId);
                 if (trip.isPresent()) {
-                    result.add(trip.get());
+                    tripsFoundByText.add(trip.get());
                 }
             }
         }
-        if (criteria.getCountries().size() > 0 || criteria.getTripTags().size() > 0) {
-            final List<Filter> tags = new ArrayList<>();
-            if (!criteria.getTripTags().isEmpty()) {
-                for (String tag : criteria.getTripTags()) {
-                    final Filter filter = new FilterPredicate(TAGS, FilterOperator.EQUAL, tag);
-                    tags.add(filter);
-                }
-            }
-            final List<Filter> countries = new ArrayList<>();
-            if (!criteria.getCountries().isEmpty()) {
-                for (String country : criteria.getCountries()) {
-                    final Filter filter = new FilterPredicate(COUNTRY_CODE, FilterOperator.EQUAL, country);
-                    countries.add(filter);
-                }
-            }
-            Filter filterTags = (tags.size() > 1) ? CompositeFilterOperator.and(tags) : (tags.size() == 1) ? tags.get(0) : null;
-            Filter filterCountries = (countries.size() > 1) ? CompositeFilterOperator.or(countries) : (countries.size() == 1) ? countries.get(0) : null;
-            Filter filterResult = null;
-            if (!tags.isEmpty() && !countries.isEmpty()) {
-                filterResult = CompositeFilterOperator.and(filterTags, filterCountries);
-            } else if (!tags.isEmpty()) {
-                filterResult = filterTags;
+        // tags criteria
+        if (criteria.getTripTags().size() > 0 || criteria.getCountries().size() > 0) {
+            final List<Filter> tripTags = extractFilterList(criteria.getTripTags(), TAGS);
+            final List<Filter> countryTags = extractFilterList(criteria.getCountries(), COUNTRY_CODE);
+            // CAUTION "AND"
+            final Filter filterTripTags = (tripTags.size() > 1) ? CompositeFilterOperator.and(tripTags) : (tripTags.size() == 1) ? tripTags.get(0) : null;
+            // CAUTION "OR"
+            final Filter filterCountryTags = (countryTags.size() > 1) ? CompositeFilterOperator.or(countryTags) : (countryTags.size() == 1) ? countryTags.get(0) : null;
+            Filter filterResult;
+            if (!tripTags.isEmpty() && !countryTags.isEmpty()) {
+                filterResult = CompositeFilterOperator.and(filterTripTags, filterCountryTags);
+            } else if (!tripTags.isEmpty()) {
+                filterResult = filterTripTags;
             } else {
-                filterResult = filterCountries;
+                filterResult = filterCountryTags;
             }
             final Query query = new Query(KIND_TRIP).setFilter(filterResult);
-            final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-            final ImmutableList<Entity> entitiesFiltered = FluentIterable.from(entities).filter(new Predicate<Entity>() {
-                @Override
-                public boolean apply(Entity entity) {
-                    return entity.getProperty(USER_ID) != null;
-                }
-            }).toList();
-            for (Entity entity : entitiesFiltered) {
-                Optional<MyUser> user = Optional.absent();
-                if (entity.getProperty(USER_ID) != null) {
-                    final String userId = String.valueOf(entity.getProperty(USER_ID));
-                    user = userQueries.findByUserId(userId);
-                }
-                final Trip trip = tripDtoMapper.map(entity, user);
-                result.add(trip);
+            final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_QUERY_TRIP));
+            for (Entity entity : entities) {
+                final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
+                tripsFoundByTags.add(trip);
             }
         }
+        if (!tripsFoundByText.isEmpty()) {
+            if (!tripsFoundByTags.isEmpty()) {
+                // intersection
+                results.addAll(tripsFoundByText);
+                results.retainAll(tripsFoundByTags);
+            } else if (criteria.getTripTags().isEmpty() && criteria.getCountries().isEmpty()) {
+                // just text
+                results.addAll(tripsFoundByText);
+            }
+        } else if (Strings.isNullOrEmpty(criteria.getText())) {
+            // just tags
+            results.addAll(tripsFoundByTags);
+        }
+        // duration filter
         final List<Trip> resultWithDuration = new ArrayList<>();
-        for (Trip trip : result) {
+        for (Trip trip : results) {
             if (trip.getDuration() >= criteria.getMinDuration() && trip.getDuration() <= criteria.getMaxDuration()) {
                 resultWithDuration.add(trip);
             }
         }
-        // TODO add limit ?
         return resultWithDuration;
+    }
+
+    // TODO optimize with IN (limit 30) for OR operator ?
+    private List<Filter> extractFilterList(List<String> tags, String propertyName) {
+        final List<Filter> result = new ArrayList<>();
+        if (!tags.isEmpty()) {
+            for (String tag : tags) {
+                result.add(new FilterPredicate(propertyName, FilterOperator.EQUAL, tag));
+            }
+        }
+        return result;
     }
 
     public List<Step> findStepsByTripItem(Entity parent) {
@@ -215,14 +211,23 @@ public class TripQueries {
         return datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_TRIP_DOCUMENT_TO_STORE_BY_DAY));
     }
 
-    public Optional<Trip> retrieveLazy(String id) {
+    public Optional<Trip> retrieveLazyTripAndUser(String id) {
         Optional<Trip> result = Optional.absent();
         try {
-            Entity entity = datastore.get(KeyFactory.stringToKey(id));
-            result = Optional.of(tripDtoMapper.map(entity, Optional.<MyUser>absent()));
+            final Entity entity = datastore.get(KeyFactory.stringToKey(id));
+            result = Optional.of(tripDtoMapper.map(entity, retrieveUser(entity)));
         } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.warning(e.getMessage());
         }
         return result;
+    }
+
+    private Optional<MyUser> retrieveUser(Entity entity) {
+        Optional<MyUser> user = Optional.absent();
+        if (entity.getProperty(USER_ID) != null) {
+            final String userId = String.valueOf(entity.getProperty(USER_ID));
+            user = userQueries.findByUserId(userId);
+        }
+        return user;
     }
 }
