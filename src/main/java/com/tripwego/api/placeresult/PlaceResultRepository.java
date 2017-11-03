@@ -87,6 +87,9 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         entity.setProperty(STEP_TYPES, stepTypes);
         types.addAll(placeResult.getTypes());
         entity.setProperty(TYPES, types);
+        if (placeResult.getPopulation() > 0) {
+            entity.setProperty(POPULATION, placeResult.getPopulation());
+        }
         datastore.put(entity);
         LOGGER.info("--> update - END");
     }
@@ -177,6 +180,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
     /**
      * remove place if this is not associated with STEP or TRIP
      * TODO à revoir
+     *
      * @param entities
      * @param kind
      */

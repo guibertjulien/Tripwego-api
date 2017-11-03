@@ -2,7 +2,7 @@ cron:
 - description: Calculation of number of trips by region
   url: /cron/countTripByRegion
   target: beta
-  schedule: every day 00:00
+  schedule: every 2 hours
 - description: Deletion of trip with user unknown
   url: /cron/deleteTripsWithUserUnknownServlet
   target: beta
@@ -10,8 +10,8 @@ cron:
 - description: Deletion of trip cancelled one month ago
   url: /cron/deleteTripsCancelledOneMonthAgoServlet
   target: beta
-  schedule: every day 00:00
+  schedule: every day 01:00
 - description: Store trip in document for searching
   url: /cron/storeTripsInDocumentServlet
   target: beta
-  schedule: every day 00:00
+  schedule: every day 02:00

@@ -100,6 +100,7 @@ public class Constants {
     public static final String ORDER = "order";
     public static final String IS_NO_SPECIFIC_DATES = "isNoSpecificDates";
     public static final String IS_STORE_IN_DOCUMENT = "isStoreInDocument";
+    public static final String POPULATION = "population";
     // TODO remomve workaround
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";

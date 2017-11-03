@@ -83,6 +83,7 @@ class PlaceResultDtoMapper {
         result.setEvaluated((Boolean) entity.getProperty(IS_EVALUATED));
         result.setCertifiedByTripwego((Boolean) entity.getProperty(CERTIFIED));
         result.setPermanently_closed((Boolean) entity.getProperty(PERMANENTLY_CLOSED));
+        result.setPopulation((long) entity.getProperty(POPULATION));
         // others
         if (entity.getProperty(PROVIDER) != null) {
             result.setProvider(Provider.valueOf((String) entity.getProperty(PROVIDER)));

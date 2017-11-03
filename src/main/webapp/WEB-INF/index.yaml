@@ -87,3 +87,11 @@ indexes:
   - name: step_categories
   - name: order
     direction: asc
+- kind: PLACE_RESULT
+  ancestor: false
+  properties:
+  - name: countryCode
+  - name: step_categories
+  - name: population
+    direction: desc
+

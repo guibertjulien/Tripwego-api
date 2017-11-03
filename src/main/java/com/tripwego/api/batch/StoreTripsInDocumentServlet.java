@@ -33,6 +33,7 @@ public class StoreTripsInDocumentServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
+            //documentService.deleteAll();
             final List<Entity> tripEntitiesToStoreInDocument = tripQueries.findTripEntitiesToStoreInDocument();
             LOGGER.info("--> nb trip to store (max 200) : " + tripEntitiesToStoreInDocument.size());
             final List<Document> documents = new ArrayList<>();

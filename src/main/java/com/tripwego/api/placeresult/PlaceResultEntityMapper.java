@@ -77,6 +77,7 @@ class PlaceResultEntityMapper {
             entity.setProperty(NORTH_EAST_PT, geoPtEntityMapper.map(placeResult.getGeometry().getViewport().getNorthEast()));
             entity.setProperty(SOUTH_WEST_PT, geoPtEntityMapper.map(placeResult.getGeometry().getViewport().getSouthWest()));
         }
+        entity.setProperty(POPULATION, placeResult.getPopulation());
         LOGGER.info("--> PlaceResultEntityMapper.map - END");
         return entity;
     }

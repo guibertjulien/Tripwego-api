@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
 import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
+import static com.tripwego.api.ConfigurationConstants.LIMIT_DESTINATION_SUGGESTION;
+import static com.tripwego.api.ConfigurationConstants.LIMIT_PLACES;
 import static com.tripwego.api.Constants.*;
 
 /**
@@ -21,8 +23,6 @@ public class PlaceResultQueries {
 
     private static final Logger LOGGER = Logger.getLogger(PlaceResultQueries.class.getName());
 
-    private static final int LIMIT_DESTINATION_SUGGESTION = 5;
-    private static final int LIMIT_PLACES = 25;
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     private PlaceResultDtoMapper placeResultDtoMapper = new PlaceResultDtoMapperFactory().create();
@@ -69,8 +69,8 @@ public class PlaceResultQueries {
         if (criteria.getCountry() != null) {
             final Filter byCountry = new FilterPredicate(COUNTRY_CODE, FilterOperator.EQUAL, criteria.getCountry().getCode());
             final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byCountry))
-                    .addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
-            //.addSort(ORDER, ASCENDING);
+                    //.addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
+                    .addSort(POPULATION, DESCENDING);
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
             result.addAll(entities);
         }
