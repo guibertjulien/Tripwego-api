@@ -9,6 +9,7 @@ import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.tripwego.api.common.mapper.CategoryDtoMapper;
 import com.tripwego.api.common.mapper.LinkDtoMapper;
 import com.tripwego.api.common.mapper.RatingDtoMapper;
+import com.tripwego.dto.common.Seo;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.trip.TripProvider;
 import com.tripwego.dto.trip.TripVersion;
@@ -46,9 +47,8 @@ public class TripDtoMapper {
             trip.setDescription(((Text) entity.getProperty(DESCRIPTION)).getValue());
         }
         trip.setCategory(categoryDtoMapper.map(entity.getProperty(CATEGORY)));
-        // TODO use ?
         trip.setCountryCode(String.valueOf(entity.getProperty(COUNTRY_CODE)));
-        trip.setCountryName(String.valueOf(entity.getProperty(COUNTRY_NAME)));
+        trip.setCountryName(String.valueOf(entity.getProperty(COUNTRY_NAME_EN)));
         //
         if (entity.getProperty(CREATED_AT) != null) {
             trip.setCreatedAt(DateUtil.serializeDate((Date) entity.getProperty(CREATED_AT)));
@@ -74,27 +74,6 @@ public class TripDtoMapper {
         if (user.isPresent()) {
             trip.setUser(user.get());
         }
-        // TRIP VERSION
-        final EmbeddedEntity entityVersion = (EmbeddedEntity) entity.getProperty(EMBEDDED_VERSION);
-        final TripVersion tripVersion = new TripVersion();
-        if (entityVersion != null) {
-            tripVersion.setDefault((Boolean) entity.getProperty(IS_DEFAULT));
-            tripVersion.setCreatedAt(DateUtil.serializeDate((Date) entityVersion.getProperty(VERSION_CREATED_AT)));
-            tripVersion.setNumber((Long) entityVersion.getProperty(VERSION_NUMBER));
-            tripVersion.setParentTripId(KeyFactory.keyToString(entity.getKey()));
-            //tripVersion.setUserUpdater((User) entity.getProperty(VERSION_USER));
-            trip.setTripVersion(tripVersion);
-        }
-        // TRIP PROVIDER
-        final EmbeddedEntity entityProvider = (EmbeddedEntity) entity.getProperty(EMBEDDED_PROVIDER);
-        final TripProvider tripProvider = new TripProvider();
-        if (entityProvider != null) {
-            tripProvider.setEmail(String.valueOf(entityProvider.getProperty(EMAIL)));
-            tripProvider.setName(String.valueOf(entityProvider.getProperty(NAME)));
-            tripProvider.setType(String.valueOf(entityProvider.getProperty(TYPE)));
-            tripProvider.setUrl(linkDtoMapper.map(entityProvider.getProperty(URL_SITE)));
-            trip.setTripProvider(tripProvider);
-        }
         if (entity.getProperty(IS_CANCELLED) != null) {
             trip.setCancelled((Boolean) entity.getProperty(IS_CANCELLED));
         }
@@ -119,18 +98,53 @@ public class TripDtoMapper {
         trip.setMapStyle(String.valueOf(entity.getProperty(MAP_STYLE)));
         //
         trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
-        // TODO
-        //trip.setAutoTags(entity.getProperty(NAME));
-        //trip.setManualTags(entity.getProperty(NAME));
-        //trip.setTravelers(entity.getProperty(NAME));
-        //trip.setUrlStaticMap(entity.getProperty(NAME));
-
+        trip.setLanguage(String.valueOf(entity.getProperty(LANGUAGE)));
         if (entity.getProperty(TAGS) != null) {
             Object property = entity.getProperty(TAGS);
             trip.getTags().addAll((ArrayList<String>) property);
         }
-
+        // embedded
+        updateVersion(entity, trip);
+        updateProvider(entity, trip);
+        updateSeo(entity, trip);
         LOGGER.info("--> TripMapper.map - END");
         return trip;
+    }
+
+    private void updateVersion(Entity entity, Trip trip) {
+        final EmbeddedEntity entityVersion = (EmbeddedEntity) entity.getProperty(EMBEDDED_VERSION);
+        final TripVersion tripVersion = new TripVersion();
+        if (entityVersion != null) {
+            tripVersion.setDefault((Boolean) entity.getProperty(IS_DEFAULT));
+            tripVersion.setCreatedAt(DateUtil.serializeDate((Date) entityVersion.getProperty(VERSION_CREATED_AT)));
+            tripVersion.setNumber((Long) entityVersion.getProperty(VERSION_NUMBER));
+            tripVersion.setParentTripId(KeyFactory.keyToString(entity.getKey()));
+            //tripVersion.setUserUpdater((User) entity.getProperty(VERSION_USER));
+            trip.setTripVersion(tripVersion);
+        }
+    }
+
+    private void updateProvider(Entity entity, Trip trip) {
+        final EmbeddedEntity entityProvider = (EmbeddedEntity) entity.getProperty(EMBEDDED_PROVIDER);
+        final TripProvider tripProvider = new TripProvider();
+        if (entityProvider != null) {
+            tripProvider.setEmail(String.valueOf(entityProvider.getProperty(EMAIL)));
+            tripProvider.setName(String.valueOf(entityProvider.getProperty(NAME)));
+            tripProvider.setType(String.valueOf(entityProvider.getProperty(TYPE)));
+            tripProvider.setUrl(linkDtoMapper.map(entityProvider.getProperty(URL_SITE)));
+            trip.setTripProvider(tripProvider);
+        }
+    }
+
+    private void updateSeo(Entity entity, Trip trip) {
+        final EmbeddedEntity entitySeo = (EmbeddedEntity) entity.getProperty(EMBEDDED_SEO);
+        final Seo seo = new Seo();
+        if (entitySeo != null) {
+            seo.setTitle(String.valueOf(entity.getProperty(TITLE)));
+            seo.setDescription(String.valueOf(entity.getProperty(DESCRIPTION)));
+            seo.setKeywords(String.valueOf(entity.getProperty(KEYWORDS)));
+            seo.setUrl(String.valueOf(entity.getProperty(URL_SITE)));
+            trip.setSeo(seo);
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.google.appengine.api.search.DateUtil;
 import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.tripwego.api.I18nUtils;
+import com.tripwego.dto.common.Seo;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.user.MyUser;
 
@@ -21,7 +22,7 @@ public class TripEntityMapper {
         entity.setProperty(PARENT_TRIP_ID, trip.getParentTripId());
         entity.setProperty(NAME, trip.getName());
         entity.setProperty(COUNTRY_CODE, trip.getCountryCode());
-        entity.setProperty(COUNTRY_NAME, I18nUtils.findDefaultCountryName(trip.getCountryCode()));
+        entity.setProperty(COUNTRY_NAME_EN, I18nUtils.findDefaultCountryName(trip.getCountryCode()));
         entity.setProperty(DESCRIPTION, new Text(Strings.nullToEmpty(trip.getDescription())));
         entity.setProperty(DURATION, trip.getDuration());
         entity.setProperty(START_DATE, DateUtil.deserializeDate(trip.getStartDate()));
@@ -58,15 +59,22 @@ public class TripEntityMapper {
             entity.setProperty(USER_ID, null);
         }
         entity.setProperty(TAGS, trip.getTags());
-        //entity.setProperty(CREATED_AT, trip.getCreatedAt());
-        //entity.setProperty(UPDATED_AT, trip.getUpdatedAt());
-        //entity.setProperty(IS_DEFAULT, trip.getTripVersion().isDefault());
-        // TODO check
-        //entity.setProperty(NAME, trip.getAutoTags());
-        //entity.setProperty(NAME, trip.getManualTags());
-        //entity.setProperty(NAME, trip.getSteps());
-        //entity.setProperty(NAME, trip.getTravelers());
-        //entity.setProperty(NAME, trip.getTripVersion());
+        entity.setProperty(LANGUAGE, trip.getLanguage());
+        // embedded
+        updateSeo(trip, entity);
         LOGGER.info("--> TripEntityMapper.map - END");
     }
+
+    private void updateSeo(Trip trip, Entity entity) {
+        LOGGER.info("--> updateSeo - START");
+        final EmbeddedEntity embeddedEntity = new EmbeddedEntity();
+        final Seo seo = trip.getSeo();
+        embeddedEntity.setProperty(TITLE, seo.getTitle());
+        embeddedEntity.setProperty(DESCRIPTION, seo.getDescription());
+        embeddedEntity.setProperty(KEYWORDS, seo.getKeywords());
+        embeddedEntity.setProperty(URL_SITE, seo.getUrl());
+        entity.setProperty(EMBEDDED_SEO, embeddedEntity);
+        LOGGER.info("--> updateSeo - END");
+    }
+
 }

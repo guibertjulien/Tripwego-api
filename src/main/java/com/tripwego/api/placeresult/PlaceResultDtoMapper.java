@@ -118,7 +118,7 @@ class PlaceResultDtoMapper {
 
     private CountryDto extractCountryTranslated(Entity entity, String language) {
         final String code = String.valueOf(entity.getProperty(COUNTRY_CODE));
-        String name = String.valueOf(entity.getProperty(COUNTRY_NAME));
+        String name = String.valueOf(entity.getProperty(COUNTRY_NAME_EN));
         if (language != null && !language.isEmpty()) {
             try {
                 name = I18nUtils.findCountryName(language, code);

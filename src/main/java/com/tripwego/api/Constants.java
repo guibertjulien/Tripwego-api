@@ -21,6 +21,7 @@ public class Constants {
     public static final String EMBEDDED_VERSION = "version";
     public static final String EMBEDDED_PROVIDER = "provider";
     public static final String EMBEDDED_TRANSLATION = "translation";
+    public static final String EMBEDDED_SEO = "seo";
 
     // columns name
     public static final String NAME = "name";
@@ -37,7 +38,7 @@ public class Constants {
     public static final String PLACE_TYPE = "place_type";
     public static final String WAY_TYPE = "way_type";
     public static final String COUNTRY_CODE = "country_code";
-    public static final String COUNTRY_NAME = "country_name";
+    public static final String COUNTRY_NAME_EN = "country_name_en";
     public static final String DURATION = "duration";
     public static final String END_DATE = "end_date";
     public static final String RATING = "rating";
@@ -71,6 +72,7 @@ public class Constants {
     public static final String PARENT_TRIP_ITEM_ID = "parent_trip_item_id";
     public static final String PARENT_TRIP_ID = "parent_trip_id";
     public static final String PLACE_RESULT_ID = "place_result_id";
+    public static final String LANGUAGE = "language";
     public static final String CODE = "code";
     public static final String COUNTER = "counter";
     public static final String PHOTOS = "photos";
@@ -87,7 +89,6 @@ public class Constants {
     public static final String PROVIDER = "provider";
     public static final String STEP_CATEGORIES = "step_categories";
     public static final String STEP_TYPES = "step_types";
-    public static final String URL = "url";
     public static final String VICINITY = "vicinity";
     public static final String WEBSITE = "website";
     public static final String CENTER_PT = "center_pt";
@@ -97,6 +98,8 @@ public class Constants {
     public static final String IS_NO_SPECIFIC_DATES = "is_no_specific_dates";
     public static final String IS_STORE_IN_DOCUMENT = "is_store_in_document";
     public static final String POPULATION = "population";
+    public static final String TITLE = "title";
+    public static final String KEYWORDS = "keywords";
     //
     public static final String TRIP_ADMIN_STATUS = "trip_admin_status";
     public static final String TRIP_USER_STATUS = "trip_user_status";

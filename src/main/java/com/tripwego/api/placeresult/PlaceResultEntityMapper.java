@@ -32,7 +32,7 @@ class PlaceResultEntityMapper {
         entity.setProperty(NAME, placeResult.getName());
         if (placeResult.getCountry() != null) {
             entity.setProperty(COUNTRY_CODE, placeResult.getCountry().getCode());
-            entity.setProperty(COUNTRY_NAME, I18nUtils.findDefaultCountryName(placeResult.getCountry().getCode()));
+            entity.setProperty(COUNTRY_NAME_EN, I18nUtils.findDefaultCountryName(placeResult.getCountry().getCode()));
         }
         //
         entity.setProperty(CERTIFIED, false);
@@ -60,7 +60,7 @@ class PlaceResultEntityMapper {
         entity.setProperty(STEP_TYPES, placeResult.getStepTypes());
         entity.setProperty(UPDATED_AT, new Date());
         if (placeResult.getUrl() != null) {
-            entity.setProperty(URL, new Link(placeResult.getUrl()));
+            entity.setProperty(URL_SITE, new Link(placeResult.getUrl()));
         }
         entity.setProperty(VICINITY, placeResult.getVicinity());
         if (placeResult.getWebsite() != null) {

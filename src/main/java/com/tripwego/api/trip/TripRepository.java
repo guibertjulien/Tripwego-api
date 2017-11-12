@@ -77,7 +77,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(TRIP_PLAN_STATUS, TO_PLAN.name());
         entity.setProperty(TRIP_VISIBILITY, PUBLIC.name());
         entity.setProperty(TRIP_CERTIFICATE, NONE.name());
-        updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
+        updateVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
         entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
         datastore.put(entity);
@@ -101,7 +101,7 @@ public class TripRepository extends AbstractRepository<Trip> {
                 tripEntityMapper.map(entity, trip, Optional.of(user));
                 entity.setProperty(IS_DEFAULT, true);
                 entity.setProperty(CREATED_AT, new Date());
-                updateTripVersion(trip, entity, number);
+                updateVersion(trip, entity, number);
                 // TODO make other trip default
                 // create steps
                 activityRepository.createAll(trip.getActivities(), entity);
@@ -123,7 +123,7 @@ public class TripRepository extends AbstractRepository<Trip> {
             entity.setProperty(TRIP_ADMIN_STATUS, SAVED.name());
             entity.setProperty(UPDATED_AT, new Date());
             if (trip.getTripProvider() != null) {
-                updateTripProvider(trip, entity);
+                updateProvider(trip, entity);
             }
             datastore.put(entity);
         } catch (EntityNotFoundException e) {
@@ -143,7 +143,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(IS_CANCELLED, false);
         entity.setProperty(CREATED_AT, new Date());
         entity.setProperty(UPDATED_AT, new Date());
-        updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
+        updateVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         //
         entity.setProperty(IS_COPY, true);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
@@ -277,8 +277,8 @@ public class TripRepository extends AbstractRepository<Trip> {
         }
     }
 
-    private void updateTripVersion(Trip trip, Entity entity, long number) {
-        LOGGER.info("--> updateTripVersion- START : " + number);
+    private void updateVersion(Trip trip, Entity entity, long number) {
+        LOGGER.info("--> updateVersion - START : " + number);
         // no parent id
         // version = 1
         final EmbeddedEntity embeddedVersion = new EmbeddedEntity();
@@ -287,11 +287,11 @@ public class TripRepository extends AbstractRepository<Trip> {
         embeddedVersion.setProperty(VERSION_CREATED_AT, new Date());
         embeddedVersion.setProperty(VERSION_UPDATED_AT, new Date());
         entity.setProperty(EMBEDDED_VERSION, embeddedVersion);
-        LOGGER.info("--> updateTripVersion - END");
+        LOGGER.info("--> updateVersion - END");
     }
 
-    private void updateTripProvider(Trip trip, Entity entity) {
-        LOGGER.info("--> updateTripProvider- START");
+    private void updateProvider(Trip trip, Entity entity) {
+        LOGGER.info("--> updateProvider - START");
         final EmbeddedEntity embeddedProvider = new EmbeddedEntity();
         TripProvider tripProvider = trip.getTripProvider();
         embeddedProvider.setProperty(NAME, tripProvider.getName());
@@ -299,7 +299,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         embeddedProvider.setProperty(URL_SITE, tripProvider.getUrl());
         embeddedProvider.setProperty(EMAIL, tripProvider.getEmail());
         entity.setProperty(EMBEDDED_PROVIDER, embeddedProvider);
-        LOGGER.info("--> updateTripProvider - END");
+        LOGGER.info("--> updateProvider - END");
     }
 
     public void deleteTripsWithUserUnknown(int delay) {
