@@ -29,7 +29,6 @@ public class PlaceResultQueries {
 
     private GeoPtEntityMapper geoPtEntityMapper = new GeoPtEntityMapper();
 
-    // TODO enrich criteria
     public List<PlaceResultDto> findDestinationSuggestions(PlaceResultDtoSearchCriteria criteria) {
         final List<PlaceResultDto> result = new ArrayList<>();
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, FilterOperator.EQUAL, "DESTINATION");

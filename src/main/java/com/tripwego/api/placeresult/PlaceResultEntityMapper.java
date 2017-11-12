@@ -32,7 +32,7 @@ class PlaceResultEntityMapper {
         entity.setProperty(NAME, placeResult.getName());
         if (placeResult.getCountry() != null) {
             entity.setProperty(COUNTRY_CODE, placeResult.getCountry().getCode());
-            entity.setProperty(COUNTRY_NAME, I18nUtils.findEnglishCountryName(placeResult.getCountry().getCode()));
+            entity.setProperty(COUNTRY_NAME, I18nUtils.findDefaultCountryName(placeResult.getCountry().getCode()));
         }
         //
         entity.setProperty(CERTIFIED, false);
@@ -77,8 +77,22 @@ class PlaceResultEntityMapper {
             entity.setProperty(NORTH_EAST_PT, geoPtEntityMapper.map(placeResult.getGeometry().getViewport().getNorthEast()));
             entity.setProperty(SOUTH_WEST_PT, geoPtEntityMapper.map(placeResult.getGeometry().getViewport().getSouthWest()));
         }
+        updateTranslation(entity, placeResult);
         entity.setProperty(POPULATION, placeResult.getPopulation());
         LOGGER.info("--> PlaceResultEntityMapper.map - END");
         return entity;
+    }
+
+    public void updateTranslation(Entity entity, PlaceResultDto placeResult) {
+        if (placeResult.getLanguage() != null) {
+            LOGGER.info("--> updateTranslation - START : " + placeResult.getLanguage());
+            final Object property = entity.getProperty(EMBEDDED_TRANSLATION);
+            final EmbeddedEntity embeddedEntity = property != null ? (EmbeddedEntity) property : new EmbeddedEntity();
+            if (embeddedEntity.getProperty(placeResult.getLanguage()) == null) {
+                embeddedEntity.setProperty(placeResult.getLanguage(), placeResult.getName());
+            }
+            entity.setProperty(EMBEDDED_TRANSLATION, embeddedEntity);
+            LOGGER.info("--> updateTranslation - END");
+        }
     }
 }

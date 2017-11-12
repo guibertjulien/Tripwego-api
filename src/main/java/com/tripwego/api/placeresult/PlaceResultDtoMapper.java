@@ -40,8 +40,8 @@ class PlaceResultDtoMapper {
         result.setPlace_id(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
         result.setPlaceKey(KeyFactory.keyToString(entity.getKey()));
         // strings
-        result.setName(String.valueOf(entity.getProperty(NAME)));
-        result.setCountry(extractCountry(entity, language));
+        result.setName(extractNameTranslated(entity, language));
+        result.setCountry(extractCountryTranslated(entity, language));
         result.setFormatted_phone_number(String.valueOf(entity.getProperty(PHONE_NUMBER)));
         result.setHtml_attributions(String.valueOf(entity.getProperty(HTML_ATTRIBUTIONS)));
         result.setIcon(String.valueOf(entity.getProperty(ICON)));
@@ -89,13 +89,43 @@ class PlaceResultDtoMapper {
             result.setProvider(Provider.valueOf((String) entity.getProperty(PROVIDER)));
         }
         updateGeometry(entity, result);
+        result.setLanguage(language);
         LOGGER.info("--> PlaceResultDto.map - END");
         return result;
     }
 
-    private CountryDto extractCountry(Entity entity, String language) {
+    // TODO optimize in Java8
+    private String extractNameTranslated(Entity entity, String language) {
+        LOGGER.info("--> extractNameTranslated - START : " + language);
+        String nameTranslated = String.valueOf(entity.getProperty(NAME));
+        final EmbeddedEntity embeddedEntity = (EmbeddedEntity) entity.getProperty(EMBEDDED_TRANSLATION);
+        if (embeddedEntity != null) {
+            Object propertyLanguage = embeddedEntity.getProperty(language);
+            LOGGER.info("--> propertyLanguage : " + propertyLanguage);
+            if (propertyLanguage != null) {
+                nameTranslated = (String) propertyLanguage;
+            } else {
+                Object propertyDefaultLanguage = embeddedEntity.getProperty(I18nUtils.DEFAULT_LANGUAGE_CODE);
+                LOGGER.info("--> propertyDefaultLanguage : " + propertyDefaultLanguage);
+                if (propertyDefaultLanguage != null) {
+                    nameTranslated = (String) propertyDefaultLanguage;
+                }
+            }
+        }
+        LOGGER.info("--> extractNameTranslated - END : " + nameTranslated);
+        return nameTranslated;
+    }
+
+    private CountryDto extractCountryTranslated(Entity entity, String language) {
         final String code = String.valueOf(entity.getProperty(COUNTRY_CODE));
-        final String name = (language == null || language.isEmpty()) ? String.valueOf(entity.getProperty(COUNTRY_NAME)) : I18nUtils.findCountryName(language, code);
+        String name = String.valueOf(entity.getProperty(COUNTRY_NAME));
+        if (language != null && !language.isEmpty()) {
+            try {
+                name = I18nUtils.findCountryName(language, code);
+            } catch (Exception e) {
+                LOGGER.warning("extractCountryTranslated : " + e.getMessage());
+            }
+        }
         return new CountryDto(code, name);
     }
 

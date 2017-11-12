@@ -3,6 +3,7 @@ package com.tripwego.api.trip;
 import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.tripwego.dto.statistics.Statistics;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.trip.TripSearchCriteria;
 
@@ -91,9 +92,8 @@ public class TripEndpoint {
 
     @SuppressWarnings({"unchecked", "unused"})
     @ApiMethod(name = "findAllTrips", path = "findAllTrips", httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<Trip> findAllTrips(@Nullable @Named("cursor") String cursorString, @Nullable @Named("limit") Integer limit) {
-        // TODO cursor
-        final List<Trip> trips = queries.findAllTrips();
+    public CollectionResponse<Trip> findAllTrips(@Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit, @Nullable @Named("categoryNames") List<String> categoryNames) {
+        final List<Trip> trips = queries.findAllTripsForAdmin(offset, limit, categoryNames);
         return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
     }
 
@@ -113,10 +113,20 @@ public class TripEndpoint {
     }
 
     @SuppressWarnings("unchecked")
-    @ApiMethod(name = "publishOrPrivateTrip", path = "publishOrPrivateTrip", httpMethod = ApiMethod.HttpMethod.PUT)
-    public void publishOrPrivateTrip(Trip trip) {
+    @ApiMethod(name = "updateVisibility", path = "updateVisibility", httpMethod = ApiMethod.HttpMethod.PUT)
+    public void updateVisibility(Trip trip) {
         try {
-            tripRepository.publishOrPrivate(trip);
+            tripRepository.updateVisibility(trip);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @ApiMethod(name = "updateAdminStatus", path = "updateAdminStatus", httpMethod = ApiMethod.HttpMethod.PUT)
+    public void updateAdminStatus(Trip trip) {
+        try {
+            tripRepository.updateAdminStatus(trip);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
@@ -138,6 +148,12 @@ public class TripEndpoint {
     @ApiMethod(name = "testQuery", path = "testQuery", httpMethod = ApiMethod.HttpMethod.GET)
     public void testQuery() {
         tripRepository.testQuery();
+    }
+
+    @SuppressWarnings("unchecked")
+    @ApiMethod(name = "statistics", path = "statistics", httpMethod = ApiMethod.HttpMethod.GET)
+    public Statistics statistics() {
+        return queries.statistics();
     }
 
     @ApiMethod(name = "find", path = "find", httpMethod = ApiMethod.HttpMethod.POST)

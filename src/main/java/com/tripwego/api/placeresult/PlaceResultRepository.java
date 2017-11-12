@@ -90,6 +90,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         if (placeResult.getPopulation() > 0) {
             entity.setProperty(POPULATION, placeResult.getPopulation());
         }
+        placeResultEntityMapper.updateTranslation(entity, placeResult);
         datastore.put(entity);
         LOGGER.info("--> update - END");
     }

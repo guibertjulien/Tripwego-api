@@ -51,10 +51,10 @@ public class TripDtoMapper {
         trip.setCountryName(String.valueOf(entity.getProperty(COUNTRY_NAME)));
         //
         if (entity.getProperty(CREATED_AT) != null) {
-            trip.setCreatedAt(String.valueOf(entity.getProperty(CREATED_AT)));
+            trip.setCreatedAt(DateUtil.serializeDate((Date) entity.getProperty(CREATED_AT)));
         }
         if (entity.getProperty(UPDATED_AT) != null) {
-            trip.setUpdatedAt(String.valueOf(entity.getProperty(UPDATED_AT)));
+            trip.setUpdatedAt(DateUtil.serializeDate((Date) entity.getProperty(UPDATED_AT)));
         }
         if (entity.getProperty(DURATION) != null) {
             trip.setDuration((Long) entity.getProperty(DURATION));
@@ -95,15 +95,6 @@ public class TripDtoMapper {
             tripProvider.setUrl(linkDtoMapper.map(entityProvider.getProperty(URL_SITE)));
             trip.setTripProvider(tripProvider);
         }
-        if (entity.getProperty(IS_PRIVATE) != null) {
-            trip.setPrivateTrip((Boolean) entity.getProperty(IS_PRIVATE));
-        }
-        if (entity.getProperty(IS_PUBLISHED) != null) {
-            trip.setPublished((Boolean) entity.getProperty(IS_PUBLISHED));
-        }
-        if (entity.getProperty(IS_ANONYMOUS) != null) {
-            trip.setAnonymous((Boolean) entity.getProperty(IS_ANONYMOUS));
-        }
         if (entity.getProperty(IS_CANCELLED) != null) {
             trip.setCancelled((Boolean) entity.getProperty(IS_CANCELLED));
         }
@@ -119,6 +110,13 @@ public class TripDtoMapper {
         if (entity.getProperty(URL_PHOTO) != null) {
             trip.setUrlPhoto(linkDtoMapper.map(entity.getProperty(URL_PHOTO)));
         }
+        //
+        trip.setTripAdminStatus(String.valueOf(entity.getProperty(TRIP_ADMIN_STATUS)));
+        trip.setTripUserStatus(String.valueOf(entity.getProperty(TRIP_USER_STATUS)));
+        trip.setTripPlanStatus(String.valueOf(entity.getProperty(TRIP_PLAN_STATUS)));
+        trip.setTripVisibility(String.valueOf(entity.getProperty(TRIP_VISIBILITY)));
+        trip.setTripCertificate(String.valueOf(entity.getProperty(TRIP_CERTIFICATE)));
+        trip.setMapStyle(String.valueOf(entity.getProperty(MAP_STYLE)));
         //
         trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
         // TODO

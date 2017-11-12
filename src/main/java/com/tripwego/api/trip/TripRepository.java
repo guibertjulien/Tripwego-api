@@ -8,6 +8,7 @@ import com.google.appengine.repackaged.org.joda.time.Days;
 import com.tripwego.api.common.AbstractRepository;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.placeresult.addresscomponent.AddressComponentDtoMapper;
+import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.tripitem.TripItemQueries;
 import com.tripwego.api.tripitem.dto.*;
 import com.tripwego.api.tripitem.repository.*;
@@ -26,6 +27,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static com.tripwego.api.Constants.*;
+import static com.tripwego.api.trip.status.TripAdminStatus.*;
+import static com.tripwego.api.trip.status.TripCertificate.NONE;
+import static com.tripwego.api.trip.status.TripPlanStatus.TO_PLAN;
+import static com.tripwego.api.trip.status.TripUserStatus.PUBLISHED;
+import static com.tripwego.api.trip.status.TripVisibility.PUBLIC;
 
 public class TripRepository extends AbstractRepository<Trip> {
 
@@ -62,13 +68,17 @@ public class TripRepository extends AbstractRepository<Trip> {
         final Entity entity = new Entity(KIND_TRIP);
         tripEntityMapper.map(entity, trip, user);
         entity.setProperty(IS_DEFAULT, true);
-        entity.setProperty(STATUS, TripStatus.NOT_SAVED.name());
-        entity.setProperty(IS_CANCELLED, false);
         entity.setProperty(CREATED_AT, new Date());
         entity.setProperty(UPDATED_AT, new Date());
-        entity.setProperty(IS_PUBLISHED, true); // TODO false ?
         entity.setProperty(TAGS, trip.getTags());
         entity.setProperty(IS_STORE_IN_DOCUMENT, false);
+        entity.setProperty(IS_CANCELLED, false);
+        entity.setProperty(IS_TRIP_AUTOMATIC, trip.isTripAutomatic());
+        entity.setProperty(TRIP_ADMIN_STATUS, CREATED.name());
+        entity.setProperty(TRIP_USER_STATUS, PUBLISHED.name());
+        entity.setProperty(TRIP_PLAN_STATUS, TO_PLAN.name());
+        entity.setProperty(TRIP_VISIBILITY, PUBLIC.name());
+        entity.setProperty(TRIP_CERTIFICATE, NONE.name());
         updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
         entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
@@ -112,7 +122,7 @@ public class TripRepository extends AbstractRepository<Trip> {
                 // !!! first order for addressComponentRepository.updateCollection !!!
                 updateChild(trip, entity);
             }
-            entity.setProperty(STATUS, TripStatus.SAVED.name());
+            entity.setProperty(TRIP_ADMIN_STATUS, SAVED.name());
             entity.setProperty(UPDATED_AT, new Date());
             if (trip.getTripProvider() != null) {
                 updateTripProvider(trip, entity);
@@ -131,11 +141,10 @@ public class TripRepository extends AbstractRepository<Trip> {
         final Entity entity = new Entity(KIND_TRIP);
         tripEntityMapper.map(entity, trip, user);
         entity.setProperty(IS_DEFAULT, true);
-        entity.setProperty(STATUS, TripStatus.SAVED.name());
+        entity.setProperty(TRIP_ADMIN_STATUS, FORKED.name());
         entity.setProperty(IS_CANCELLED, false);
         entity.setProperty(CREATED_AT, new Date());
         entity.setProperty(UPDATED_AT, new Date());
-        entity.setProperty(IS_PUBLISHED, trip.isPublished());
         updateTripVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         //
         entity.setProperty(IS_COPY, true);
@@ -228,9 +237,15 @@ public class TripRepository extends AbstractRepository<Trip> {
         datastore.put(entity);
     }
 
-    public void publishOrPrivate(Trip trip) throws EntityNotFoundException {
+    public void updateAdminStatus(Trip trip) throws EntityNotFoundException {
         final Entity entity = datastore.get(KeyFactory.stringToKey(trip.getId()));
-        entity.setProperty(IS_PUBLISHED, trip.isPublished());
+        entity.setProperty(TRIP_ADMIN_STATUS, trip.getTripAdminStatus());
+        datastore.put(entity);
+    }
+
+    public void updateVisibility(Trip trip) throws EntityNotFoundException {
+        final Entity entity = datastore.get(KeyFactory.stringToKey(trip.getId()));
+        entity.setProperty(TRIP_VISIBILITY, trip.getTripVisibility());
         datastore.put(entity);
     }
 
@@ -314,8 +329,9 @@ public class TripRepository extends AbstractRepository<Trip> {
         final List<Entity> tripsToDelete = new ArrayList<>();
         for (Entity entity : tripsCancelled) {
             final Date cancellationDate = (Date) entity.getProperty(CANCELLATION_DATE);
+            final String tripAdminStatus = String.valueOf(entity.getProperty(TRIP_ADMIN_STATUS));
             final int days = Days.daysBetween(new DateTime(cancellationDate), new DateTime(today)).getDays();
-            if (days >= delay) {
+            if (TripAdminStatus.valueOf(tripAdminStatus) == CANCELLED || days >= delay) {
                 tripsToDelete.add(entity);
             }
         }

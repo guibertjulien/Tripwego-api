@@ -9,7 +9,9 @@ import com.tripwego.api.document.DocumentService;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.step.StepDtoMapper;
 import com.tripwego.api.step.StepDtoMapperFactory;
+import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.user.UserQueries;
+import com.tripwego.dto.statistics.Statistics;
 import com.tripwego.dto.step.Step;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.trip.TripSearchCriteria;
@@ -17,6 +19,7 @@ import com.tripwego.dto.user.MyUser;
 import com.tripwego.dto.user.Traveler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,6 +27,10 @@ import static com.google.appengine.api.datastore.Query.*;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_QUERY_TRIP;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_TRIP_DOCUMENT_TO_STORE_BY_DAY;
 import static com.tripwego.api.Constants.*;
+import static com.tripwego.api.trip.status.TripAdminStatus.*;
+import static com.tripwego.api.trip.status.TripUserStatus.PUBLISHED;
+import static com.tripwego.api.trip.status.TripVisibility.PUBLIC;
+import static java.util.Arrays.asList;
 
 
 /**
@@ -32,6 +39,7 @@ import static com.tripwego.api.Constants.*;
 public class TripQueries {
 
     private static final Logger LOGGER = Logger.getLogger(TripQueries.class.getName());
+    public static final List<String> ADMIN_STATUS_VISIBLE = Arrays.asList(SAVED.name(), FORKED.name(), CHECKED.name());
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private TripDtoMapper tripDtoMapper = new TripDtoMapperFactory().create();
@@ -44,12 +52,8 @@ public class TripQueries {
         final List<Trip> result = new ArrayList<>();
         // filters
         final Filter byUser = new FilterPredicate(USER_ID, FilterOperator.EQUAL, userId);
-        //final Query.Filter notCancelled = new Query.FilterPredicate(IS_CANCELLED, Query.FilterOperator.NOT_EQUAL, true);
-        final Filter isDefaultVersion = new FilterPredicate(IS_DEFAULT, FilterOperator.EQUAL, true);
-        final Filter filters = CompositeFilterOperator.and(byUser, isDefaultVersion);
         // query
-        final Query query = new Query(KIND_TRIP).setFilter(filters)
-                .addSort(IS_CANCELLED, SortDirection.ASCENDING)
+        final Query query = new Query(KIND_TRIP).setFilter(byUser)
                 .addSort(CREATED_AT, SortDirection.DESCENDING);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         for (Entity entity : entities) {
@@ -62,17 +66,33 @@ public class TripQueries {
     public List<Trip> findAllTrips() {
         final List<Trip> result = new ArrayList<>();
         // filters
-        final Filter notCancelled = new FilterPredicate(IS_CANCELLED, FilterOperator.NOT_EQUAL, true);
-        final Filter isDefaultVersion = new FilterPredicate(IS_DEFAULT, FilterOperator.EQUAL, true);
-        final Filter isPublic = new FilterPredicate(IS_PRIVATE, FilterOperator.EQUAL, false);
-        final Filter isPublished = new FilterPredicate(IS_PUBLISHED, FilterOperator.EQUAL, true);
-        //final Query.Filter isUserKnown = new Query.FilterPredicate(USER_ID, Query.FilterOperator.NOT_EQUAL, null);
-        final Filter filters = CompositeFilterOperator.and(notCancelled, isDefaultVersion, isPublic, isPublished);
+        final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, false);
+        final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
+        final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
+        final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
+        final Filter filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible);
         // query
         final Query query = new Query(KIND_TRIP).setFilter(filters)
-                .addSort(IS_CANCELLED, SortDirection.ASCENDING)
                 .addSort(CREATED_AT, SortDirection.DESCENDING);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        for (Entity entity : entities) {
+            final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
+            result.add(trip);
+        }
+        return result;
+    }
+
+    public List<Trip> findAllTripsForAdmin(Integer offset, Integer limit, List<String> categoryNames) {
+        final List<Trip> result = new ArrayList<>();
+        final Query query;
+        if (asList("TRIP_AUTOMATIC", "TRIP_MANUAL").containsAll(categoryNames)) {
+            final Filter isTripAutomatic = new FilterPredicate(IS_TRIP_AUTOMATIC, FilterOperator.EQUAL, asList("TRIP_AUTOMATIC").containsAll(categoryNames));
+            query = new Query(KIND_TRIP).setFilter(isTripAutomatic).addSort(CREATED_AT, SortDirection.DESCENDING);
+        } else {
+            query = new Query(KIND_TRIP).addSort(CREATED_AT, SortDirection.DESCENDING);
+        }
+        // query
+        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withOffset(offset).limit(limit));
         for (Entity entity : entities) {
             final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
             result.add(trip);
@@ -91,27 +111,36 @@ public class TripQueries {
                 final String scoredDocumentId = scoredDocument.getId();
                 final Optional<Trip> trip = retrieveLazyTripAndUser(scoredDocumentId);
                 if (trip.isPresent()) {
-                    tripsFoundByText.add(trip.get());
+                    if (!trip.get().isCancelled()
+                            && PUBLISHED.name().equals(trip.get().getTripUserStatus())
+                            && PUBLIC.name().equals(trip.get().getTripVisibility())
+                            && ADMIN_STATUS_VISIBLE.contains(trip.get().getTripAdminStatus())) {
+                        tripsFoundByText.add(trip.get());
+                    }
                 }
             }
         }
         // tags criteria
         if (criteria.getTripTags().size() > 0 || criteria.getCountries().size() > 0) {
+            final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
+            final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
+            final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
             final List<Filter> tripTags = extractFilterList(criteria.getTripTags(), TAGS);
             final List<Filter> countryTags = extractFilterList(criteria.getCountries(), COUNTRY_CODE);
             // CAUTION "AND"
             final Filter filterTripTags = (tripTags.size() > 1) ? CompositeFilterOperator.and(tripTags) : (tripTags.size() == 1) ? tripTags.get(0) : null;
             // CAUTION "OR"
             final Filter filterCountryTags = (countryTags.size() > 1) ? CompositeFilterOperator.or(countryTags) : (countryTags.size() == 1) ? countryTags.get(0) : null;
-            Filter filterResult;
+            Filter filterTags;
             if (!tripTags.isEmpty() && !countryTags.isEmpty()) {
-                filterResult = CompositeFilterOperator.and(filterTripTags, filterCountryTags);
+                filterTags = CompositeFilterOperator.and(filterTripTags, filterCountryTags);
             } else if (!tripTags.isEmpty()) {
-                filterResult = filterTripTags;
+                filterTags = filterTripTags;
             } else {
-                filterResult = filterCountryTags;
+                filterTags = filterCountryTags;
             }
-            final Query query = new Query(KIND_TRIP).setFilter(filterResult);
+            final Filter filters = CompositeFilterOperator.and(isPublished, isPublic, isAdminStatusVisible, filterTags);
+            final Query query = new Query(KIND_TRIP).setFilter(filters);
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_QUERY_TRIP));
             for (Entity entity : entities) {
                 final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
@@ -190,16 +219,16 @@ public class TripQueries {
     }
 
     public List<Entity> findTripEntitiesCancelled() {
-        final Filter isCancelled = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
-        final Query query = new Query(KIND_TRIP).setFilter(isCancelled);
-        //.addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
+        final Filter isCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
+        final Filter isCancelledByAdmin = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.EQUAL, TripAdminStatus.CANCELLED.name());
+        final Query query = new Query(KIND_TRIP).setFilter(CompositeFilterOperator.or(isCancelledByUser, isCancelledByAdmin));
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 
     public List<Entity> findTripEntitiesCancelledByUser(String userId) {
         final Filter byUser = new FilterPredicate(USER_ID, FilterOperator.EQUAL, userId);
-        final Filter isCancelled = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
-        final Filter filters = CompositeFilterOperator.and(byUser, isCancelled);
+        final Filter isCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
+        final Filter filters = CompositeFilterOperator.and(byUser, isCancelledByUser);
         final Query query = new Query(KIND_TRIP).setFilter(filters).addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
@@ -229,5 +258,20 @@ public class TripQueries {
             user = userQueries.findByUserId(userId);
         }
         return user;
+    }
+
+    public Statistics statistics() {
+        final Statistics statistics = new Statistics();
+        statistics.setTripCounter(countKind(KIND_TRIP));
+        statistics.setUserCounter(countKind(KIND_USER));
+        return statistics;
+    }
+
+    private Long countKind(String kind) {
+        final Query query = new Query("__Stat_Kind__");
+        final Filter filter = new FilterPredicate("kind_name", FilterOperator.EQUAL, kind);
+        query.setFilter(filter);
+        final Entity entityStat = datastore.prepare(query).asSingleEntity();
+        return (Long) entityStat.getProperty("count");
     }
 }

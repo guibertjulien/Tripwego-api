@@ -21,17 +21,22 @@ public class TripEntityMapper {
         entity.setProperty(PARENT_TRIP_ID, trip.getParentTripId());
         entity.setProperty(NAME, trip.getName());
         entity.setProperty(COUNTRY_CODE, trip.getCountryCode());
-        entity.setProperty(COUNTRY_NAME, I18nUtils.findEnglishCountryName(trip.getCountryCode()));
+        entity.setProperty(COUNTRY_NAME, I18nUtils.findDefaultCountryName(trip.getCountryCode()));
         entity.setProperty(DESCRIPTION, new Text(Strings.nullToEmpty(trip.getDescription())));
         entity.setProperty(DURATION, trip.getDuration());
         entity.setProperty(START_DATE, DateUtil.deserializeDate(trip.getStartDate()));
         entity.setProperty(END_DATE, DateUtil.deserializeDate(trip.getEndDate()));
-        entity.setProperty(IS_PRIVATE, trip.isPrivateTrip());
-        entity.setProperty(IS_PUBLISHED, trip.isPublished());
-        entity.setProperty(IS_ANONYMOUS, trip.isAnonymous());
         entity.setProperty(IS_CANCELLED, trip.isCancelled());
         entity.setProperty(IS_NO_SPECIFIC_DATES, trip.isNoSpecificDates());
         entity.setProperty(RATING, new Rating(trip.getRating()));
+        //
+        entity.setProperty(TRIP_ADMIN_STATUS, trip.getTripAdminStatus());
+        entity.setProperty(TRIP_USER_STATUS, trip.getTripUserStatus());
+        entity.setProperty(TRIP_PLAN_STATUS, trip.getTripPlanStatus());
+        entity.setProperty(TRIP_VISIBILITY, trip.getTripVisibility());
+        entity.setProperty(TRIP_CERTIFICATE, trip.getTripCertificate());
+        entity.setProperty(MAP_STYLE, trip.getMapStyle());
+        //
         if (trip.getCategory() != null) {
             entity.setProperty(CATEGORY, new Category(trip.getCategory()));
         }
