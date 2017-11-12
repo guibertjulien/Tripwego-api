@@ -31,7 +31,7 @@ public class PlaceResultEndpoint {
 
     @ApiMethod(name = "get_place_details", path = "get_place_details", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
     public PlaceResultDto get_place_details(@Named("id") String id) {
-        return placeResultRepository.retrieveEager(id);
+        return placeResultRepository.retrieve(id);
     }
 
     @SuppressWarnings("unchecked")

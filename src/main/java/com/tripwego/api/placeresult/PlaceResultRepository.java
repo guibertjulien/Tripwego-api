@@ -3,11 +3,7 @@ package com.tripwego.api.placeresult;
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.common.AbstractRepository;
 import com.tripwego.api.common.mapper.*;
-import com.tripwego.api.placeresult.addresscomponent.AddressComponentDtoMapper;
-import com.tripwego.api.placeresult.addresscomponent.AddressComponentQueries;
-import com.tripwego.api.placeresult.addresscomponent.AddressComponentRepository;
 import com.tripwego.api.placeresult.placerating.PlaceRatingRepository;
-import com.tripwego.dto.placeresult.AddressComponentDto;
 import com.tripwego.dto.placeresult.PlaceRatingDto;
 import com.tripwego.dto.placeresult.PlaceResultDto;
 import com.tripwego.dto.trip.Trip;
@@ -25,9 +21,6 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
 
     private PlaceResultEntityMapper placeResultEntityMapper = new PlaceResultEntityMapper(new GeoPtEntityMapper());
     private PlaceResultDtoMapper placeResultDtoMapper = new PlaceResultDtoMapper(new PostalAddressDtoMapper(), new CategoryDtoMapper(), new LinkDtoMapper(), new RatingDtoMapper(), new LatLngDtoMapper());
-    private AddressComponentRepository addressComponentRepository = new AddressComponentRepository();
-    private AddressComponentQueries addressComponentQueries = new AddressComponentQueries();
-    private AddressComponentDtoMapper addressComponentDtoMapper = new AddressComponentDtoMapper();
     private PlaceRatingRepository placeRatingRepository = new PlaceRatingRepository();
 
     public Entity create(PlaceResultDto placeResult) {
@@ -43,26 +36,21 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
             LOGGER.info("-->  exception : " + e.getMessage());
             entity = placeResultEntityMapper.map(placeResult);
             datastore.put(entity);
-            addressComponentRepository.updateCollection(KIND_ADDRESS_COMPONENT, entity, placeResult.getAddress_components());
         }
         LOGGER.info("--> create - END");
         return entity;
     }
 
-    public PlaceResultDto retrieveEager(String placeKeyString) {
-        LOGGER.info("--> retrieveEager - START : " + placeKeyString);
+    public PlaceResultDto retrieve(String placeKeyString) {
+        LOGGER.info("--> retrieve - START : " + placeKeyString);
         PlaceResultDto placeResult = null;
         try {
             final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(placeKeyString));
             placeResult = placeResultDtoMapper.map(placeResultEntity, "");
-            for (Entity entity : addressComponentQueries.find(placeResultEntity, KIND_ADDRESS_COMPONENT)) {
-                final AddressComponentDto addressComponent = addressComponentDtoMapper.map(entity);
-                placeResult.getAddress_components().add(addressComponent);
-            }
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-        LOGGER.info("--> retrieveEager - END");
+        LOGGER.info("--> retrieve - END");
         return placeResult;
     }
 
@@ -209,7 +197,6 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         try {
             final Entity entity = datastore.get(KeyFactory.stringToKey(placeId));
             placeRatingRepository.deleteCollection(KIND_PLACE_RATING, entity);
-            addressComponentRepository.deleteCollection(KIND_ADDRESS_COMPONENT, entity);
             datastore.delete(entity.getKey());
         } catch (EntityNotFoundException e) {
             LOGGER.warning("--> place not found : " + placeId);

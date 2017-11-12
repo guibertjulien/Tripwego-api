@@ -16,7 +16,6 @@ public class Constants {
     public static final String KIND_FLIGHT = "FLIGHT";
     public static final String KIND_RAIL = "RAIL";
     public static final String KIND_RENTAL = "RENTAL";
-    public static final String KIND_ADDRESS_COMPONENT = "ADDRESS_COMPONENT";
     public static final String KIND_PLACE_RATING = "PLACE_RATING";
     // embedded
     public static final String EMBEDDED_VERSION = "version";

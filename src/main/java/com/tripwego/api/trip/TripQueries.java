@@ -186,7 +186,7 @@ public class TripQueries {
         final List<Entity> entities = findStepEntitiesKeyByTripItem(parent);
         for (Entity stepEntity : entities) {
             final Step step = stepDtoMapper.map(stepEntity);
-            step.setPlaceResultDto(placeResultRepository.retrieveEager(step.getPlaceResultId()));
+            step.setPlaceResultDto(placeResultRepository.retrieve(step.getPlaceResultId()));
             result.add(step);
         }
         return result;

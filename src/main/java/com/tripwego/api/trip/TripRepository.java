@@ -7,7 +7,6 @@ import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.repackaged.org.joda.time.Days;
 import com.tripwego.api.common.AbstractRepository;
 import com.tripwego.api.placeresult.PlaceResultRepository;
-import com.tripwego.api.placeresult.addresscomponent.AddressComponentDtoMapper;
 import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.tripitem.TripItemQueries;
 import com.tripwego.api.tripitem.dto.*;
@@ -44,7 +43,6 @@ public class TripRepository extends AbstractRepository<Trip> {
     private FlightDtoMapper flightDtoMapper = new FlightDtoMapper();
     private RailDtoMapper railDtoMapper = new RailDtoMapper();
     private RentalDtoMapper rentalDtoMapper = new RentalDtoMapper();
-    private AddressComponentDtoMapper addressComponentMapper = new AddressComponentDtoMapper();
     private TripDtoMapper tripDtoMapper = new TripDtoMapperFactory().create();
     private ActivityRepository activityRepository = new ActivityRepository();
     private AccommodationRepository accommodationRepository = new AccommodationRepository();
@@ -175,7 +173,7 @@ public class TripRepository extends AbstractRepository<Trip> {
      * eager
      */
     public Trip retrieveEager(String id) {
-        LOGGER.info("--> retrieveEager - START");
+        LOGGER.info("--> retrieve - START");
         Trip trip = null;
         try {
             final Entity tripEntity = datastore.get(KeyFactory.stringToKey(id));
@@ -217,12 +215,12 @@ public class TripRepository extends AbstractRepository<Trip> {
                 trip.getRentals().add(rental);
             }
             LOGGER.info("--> rentals - OK");
-            trip.setPlaceResultDto(placeResultRepository.retrieveEager(trip.getPlaceResultId()));
+            trip.setPlaceResultDto(placeResultRepository.retrieve(trip.getPlaceResultId()));
             LOGGER.info("--> placeResult - OK");
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-        LOGGER.info("--> retrieveEager - END");
+        LOGGER.info("--> retrieve - END");
         return trip;
     }
 
