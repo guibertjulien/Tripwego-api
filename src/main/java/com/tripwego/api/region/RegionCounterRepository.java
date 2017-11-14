@@ -39,7 +39,7 @@ public class RegionCounterRepository {
         LOGGER.info("--> RegionCounterRepository.init - START");
         final List<Entity> result = new ArrayList<>();
         final List<String> codes = new ArrayList<>();
-        final List<Trip> allTrips = tripQueries.findAllTrips();
+        final List<Trip> allTrips = tripQueries.findAllTripsAlive(0, 0);
         for (Trip trip : allTrips) {
             codes.add(trip.getCountryCode());
         }

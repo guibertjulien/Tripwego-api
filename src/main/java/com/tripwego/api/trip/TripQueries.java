@@ -63,7 +63,7 @@ public class TripQueries {
         return result;
     }
 
-    public List<Trip> findAllTrips() {
+    public List<Trip> findAllTripsAlive(Integer offset, Integer limit) {
         final List<Trip> result = new ArrayList<>();
         // filters
         final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, false);
@@ -74,6 +74,30 @@ public class TripQueries {
         // query
         final Query query = new Query(KIND_TRIP).setFilter(filters)
                 .addSort(CREATED_AT, SortDirection.DESCENDING);
+        List<Entity> entities;
+        if (limit > 0) {
+            entities = datastore.prepare(query).asList(FetchOptions.Builder.withOffset(offset).limit(limit));
+        } else {
+            entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        }
+        for (Entity entity : entities) {
+            final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
+            result.add(trip);
+        }
+        return result;
+    }
+
+    // TODO add projections to optimize ?
+    public List<Trip> findAllTripsForSeo() {
+        final List<Trip> result = new ArrayList<>();
+        // filters
+        final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, false);
+        final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
+        final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
+        final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
+        final Filter filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible);
+        // query
+        final Query query = new Query(KIND_TRIP).setFilter(filters).addSort(CREATED_AT, SortDirection.DESCENDING);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         for (Entity entity : entities) {
             final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));

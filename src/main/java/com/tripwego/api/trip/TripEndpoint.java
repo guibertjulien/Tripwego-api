@@ -91,8 +91,22 @@ public class TripEndpoint {
     }
 
     @SuppressWarnings({"unchecked", "unused"})
-    @ApiMethod(name = "findAllTrips", path = "findAllTrips", httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<Trip> findAllTrips(@Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit, @Nullable @Named("categoryNames") List<String> categoryNames) {
+    @ApiMethod(name = "findAllTripsAlive", path = "findAllTripsAlive", httpMethod = ApiMethod.HttpMethod.GET)
+    public CollectionResponse<Trip> findAllTripsAlive(@Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit) {
+        final List<Trip> trips = queries.findAllTripsAlive(offset, limit);
+        return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
+    }
+
+    @SuppressWarnings({"unchecked", "unused"})
+    @ApiMethod(name = "findAllTripsForSeo", path = "findAllTripsForSeo", httpMethod = ApiMethod.HttpMethod.GET)
+    public CollectionResponse<Trip> findAllTripsForSeo(@Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit) {
+        final List<Trip> trips = queries.findAllTripsForSeo();
+        return CollectionResponse.<Trip>builder().setItems(trips).build();
+    }
+
+    @SuppressWarnings({"unchecked", "unused"})
+    @ApiMethod(name = "findAllTripsForAdmin", path = "findAllTripsForAdmin", httpMethod = ApiMethod.HttpMethod.GET)
+    public CollectionResponse<Trip> findAllTripsForAdmin(@Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit, @Nullable @Named("categoryNames") List<String> categoryNames) {
         final List<Trip> trips = queries.findAllTripsForAdmin(offset, limit, categoryNames);
         return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
     }

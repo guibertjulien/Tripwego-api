@@ -112,12 +112,12 @@ public class TripDtoMapper {
     }
 
     private void updateVersion(Entity entity, Trip trip) {
-        final EmbeddedEntity entityVersion = (EmbeddedEntity) entity.getProperty(EMBEDDED_VERSION);
+        final EmbeddedEntity embeddedEntity = (EmbeddedEntity) entity.getProperty(EMBEDDED_VERSION);
         final TripVersion tripVersion = new TripVersion();
-        if (entityVersion != null) {
+        if (embeddedEntity != null) {
             tripVersion.setDefault((Boolean) entity.getProperty(IS_DEFAULT));
-            tripVersion.setCreatedAt(DateUtil.serializeDate((Date) entityVersion.getProperty(VERSION_CREATED_AT)));
-            tripVersion.setNumber((Long) entityVersion.getProperty(VERSION_NUMBER));
+            tripVersion.setCreatedAt(DateUtil.serializeDate((Date) embeddedEntity.getProperty(VERSION_CREATED_AT)));
+            tripVersion.setNumber((Long) embeddedEntity.getProperty(VERSION_NUMBER));
             tripVersion.setParentTripId(KeyFactory.keyToString(entity.getKey()));
             //tripVersion.setUserUpdater((User) entity.getProperty(VERSION_USER));
             trip.setTripVersion(tripVersion);
@@ -125,25 +125,25 @@ public class TripDtoMapper {
     }
 
     private void updateProvider(Entity entity, Trip trip) {
-        final EmbeddedEntity entityProvider = (EmbeddedEntity) entity.getProperty(EMBEDDED_PROVIDER);
+        final EmbeddedEntity embeddedEntity = (EmbeddedEntity) entity.getProperty(EMBEDDED_PROVIDER);
         final TripProvider tripProvider = new TripProvider();
-        if (entityProvider != null) {
-            tripProvider.setEmail(String.valueOf(entityProvider.getProperty(EMAIL)));
-            tripProvider.setName(String.valueOf(entityProvider.getProperty(NAME)));
-            tripProvider.setType(String.valueOf(entityProvider.getProperty(TYPE)));
-            tripProvider.setUrl(linkDtoMapper.map(entityProvider.getProperty(URL_SITE)));
+        if (embeddedEntity != null) {
+            tripProvider.setEmail(String.valueOf(embeddedEntity.getProperty(EMAIL)));
+            tripProvider.setName(String.valueOf(embeddedEntity.getProperty(NAME)));
+            tripProvider.setType(String.valueOf(embeddedEntity.getProperty(TYPE)));
+            tripProvider.setUrl(linkDtoMapper.map(embeddedEntity.getProperty(URL_SITE)));
             trip.setTripProvider(tripProvider);
         }
     }
 
     private void updateSeo(Entity entity, Trip trip) {
-        final EmbeddedEntity entitySeo = (EmbeddedEntity) entity.getProperty(EMBEDDED_SEO);
+        final EmbeddedEntity embeddedEntity = (EmbeddedEntity) entity.getProperty(EMBEDDED_SEO);
         final Seo seo = new Seo();
-        if (entitySeo != null) {
-            seo.setTitle(String.valueOf(entity.getProperty(TITLE)));
-            seo.setDescription(String.valueOf(entity.getProperty(DESCRIPTION)));
-            seo.setKeywords(String.valueOf(entity.getProperty(KEYWORDS)));
-            seo.setUrl(String.valueOf(entity.getProperty(URL_SITE)));
+        if (embeddedEntity != null) {
+            seo.setTitle(String.valueOf(embeddedEntity.getProperty(TITLE)));
+            seo.setDescription(String.valueOf(embeddedEntity.getProperty(DESCRIPTION)));
+            seo.setKeywords(String.valueOf(embeddedEntity.getProperty(KEYWORDS)));
+            seo.setUrl(String.valueOf(embeddedEntity.getProperty(URL_SITE)));
             trip.setSeo(seo);
         }
     }
