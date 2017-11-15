@@ -12,6 +12,7 @@ import com.tripwego.dto.user.MyUser;
 import java.util.logging.Logger;
 
 import static com.tripwego.api.Constants.*;
+import static com.tripwego.api.trip.status.TripAdminStatus.CREATED;
 
 public class TripEntityMapper {
 
@@ -31,12 +32,12 @@ public class TripEntityMapper {
         entity.setProperty(IS_NO_SPECIFIC_DATES, trip.isNoSpecificDates());
         entity.setProperty(RATING, new Rating(trip.getRating()));
         //
-        entity.setProperty(TRIP_ADMIN_STATUS, trip.getTripAdminStatus());
         entity.setProperty(TRIP_USER_STATUS, trip.getTripUserStatus());
         entity.setProperty(TRIP_PLAN_STATUS, trip.getTripPlanStatus());
         entity.setProperty(TRIP_VISIBILITY, trip.getTripVisibility());
         entity.setProperty(TRIP_CERTIFICATE, trip.getTripCertificate());
         entity.setProperty(MAP_STYLE, trip.getMapStyle());
+        entity.setProperty(WAY_TYPE_DEFAULT, trip.getWayTypeDefault());
         //
         if (trip.getCategory() != null) {
             entity.setProperty(CATEGORY, new Category(trip.getCategory()));
@@ -60,20 +61,26 @@ public class TripEntityMapper {
         }
         entity.setProperty(TAGS, trip.getTags());
         entity.setProperty(LANGUAGE, trip.getLanguage());
-        // embedded
         updateSeo(trip, entity);
         LOGGER.info("--> TripEntityMapper.map - END");
     }
 
     private void updateSeo(Trip trip, Entity entity) {
         LOGGER.info("--> updateSeo - START");
-        final EmbeddedEntity embeddedEntity = new EmbeddedEntity();
         final Seo seo = trip.getSeo();
+        EmbeddedEntity embeddedEntity = (EmbeddedEntity) entity.getProperty(EMBEDDED_SEO);
+        if (embeddedEntity == null) {
+            embeddedEntity = new EmbeddedEntity();
+        }
         embeddedEntity.setProperty(TITLE, seo.getTitle());
         embeddedEntity.setProperty(DESCRIPTION, seo.getDescription());
         embeddedEntity.setProperty(KEYWORDS, seo.getKeywords());
         embeddedEntity.setProperty(URL_SITE, seo.getUrl());
         entity.setProperty(EMBEDDED_SEO, embeddedEntity);
+        // ONLY IF CREATED, NOT ALTERABLE
+        if (CREATED.name().equals(trip.getTripAdminStatus())) {
+            embeddedEntity.setProperty(URL_PARAMETER_NAME, seo.getUrlParameterName());
+        }
         LOGGER.info("--> updateSeo - END");
     }
 

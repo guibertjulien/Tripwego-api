@@ -120,7 +120,9 @@ public class TripRepository extends AbstractRepository<Trip> {
                 // !!! first order for addressComponentRepository.updateCollection !!!
                 updateChild(trip, entity);
             }
-            entity.setProperty(TRIP_ADMIN_STATUS, SAVED.name());
+            if (CREATED.name().equals(trip.getTripAdminStatus())) {
+                entity.setProperty(TRIP_ADMIN_STATUS, UPDATED.name());
+            }
             entity.setProperty(UPDATED_AT, new Date());
             if (trip.getTripProvider() != null) {
                 updateProvider(trip, entity);

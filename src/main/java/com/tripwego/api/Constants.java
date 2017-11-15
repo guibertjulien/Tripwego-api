@@ -99,6 +99,7 @@ public class Constants {
     public static final String IS_STORE_IN_DOCUMENT = "is_store_in_document";
     public static final String POPULATION = "population";
     public static final String TITLE = "title";
+    public static final String URL_PARAMETER_NAME = "url_parameter_name";
     public static final String KEYWORDS = "keywords";
     //
     public static final String TRIP_ADMIN_STATUS = "trip_admin_status";
@@ -107,6 +108,7 @@ public class Constants {
     public static final String TRIP_VISIBILITY = "trip_visibility";
     public static final String TRIP_CERTIFICATE = "trip_certificate";
     public static final String MAP_STYLE = "map_style";
+    public static final String WAY_TYPE_DEFAULT = "way_type_default";
     // TODO remomve workaround
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";

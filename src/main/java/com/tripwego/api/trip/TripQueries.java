@@ -39,7 +39,8 @@ import static java.util.Arrays.asList;
 public class TripQueries {
 
     private static final Logger LOGGER = Logger.getLogger(TripQueries.class.getName());
-    public static final List<String> ADMIN_STATUS_VISIBLE = Arrays.asList(SAVED.name(), FORKED.name(), CHECKED.name());
+    public static final List<String> ADMIN_STATUS_VISIBLE = Arrays.asList(UPDATED.name(), FORKED.name(), CHECKED.name());
+    public static final List<String> ADMIN_STATUS_SEO_VISIBLE = Arrays.asList(CHECKED.name());
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private TripDtoMapper tripDtoMapper = new TripDtoMapperFactory().create();
@@ -94,7 +95,7 @@ public class TripQueries {
         final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, false);
         final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
         final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
-        final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
+        final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_SEO_VISIBLE);
         final Filter filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible);
         // query
         final Query query = new Query(KIND_TRIP).setFilter(filters).addSort(CREATED_AT, SortDirection.DESCENDING);

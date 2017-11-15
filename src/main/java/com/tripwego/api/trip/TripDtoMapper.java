@@ -96,6 +96,7 @@ public class TripDtoMapper {
         trip.setTripVisibility(String.valueOf(entity.getProperty(TRIP_VISIBILITY)));
         trip.setTripCertificate(String.valueOf(entity.getProperty(TRIP_CERTIFICATE)));
         trip.setMapStyle(String.valueOf(entity.getProperty(MAP_STYLE)));
+        trip.setWayTypeDefault(String.valueOf(entity.getProperty(WAY_TYPE_DEFAULT)));
         //
         trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
         trip.setLanguage(String.valueOf(entity.getProperty(LANGUAGE)));
@@ -144,6 +145,7 @@ public class TripDtoMapper {
             seo.setDescription(String.valueOf(embeddedEntity.getProperty(DESCRIPTION)));
             seo.setKeywords(String.valueOf(embeddedEntity.getProperty(KEYWORDS)));
             seo.setUrl(String.valueOf(embeddedEntity.getProperty(URL_SITE)));
+            seo.setUrlParameterName(String.valueOf(embeddedEntity.getProperty(URL_PARAMETER_NAME)));
             trip.setSeo(seo);
         }
     }
