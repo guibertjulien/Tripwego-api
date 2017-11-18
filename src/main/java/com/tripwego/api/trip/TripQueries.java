@@ -11,6 +11,7 @@ import com.tripwego.api.step.StepDtoMapper;
 import com.tripwego.api.step.StepDtoMapperFactory;
 import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.user.UserQueries;
+import com.tripwego.dto.common.Counter;
 import com.tripwego.dto.statistics.Statistics;
 import com.tripwego.dto.step.Step;
 import com.tripwego.dto.trip.Trip;
@@ -30,7 +31,6 @@ import static com.tripwego.api.Constants.*;
 import static com.tripwego.api.trip.status.TripAdminStatus.*;
 import static com.tripwego.api.trip.status.TripUserStatus.PUBLISHED;
 import static com.tripwego.api.trip.status.TripVisibility.PUBLIC;
-import static java.util.Arrays.asList;
 
 
 /**
@@ -110,12 +110,13 @@ public class TripQueries {
     public List<Trip> findAllTripsForAdmin(Integer offset, Integer limit, List<String> categoryNames) {
         final List<Trip> result = new ArrayList<>();
         final Query query;
+        /*
         if (asList("TRIP_AUTOMATIC", "TRIP_MANUAL").containsAll(categoryNames)) {
             final Filter isTripAutomatic = new FilterPredicate(IS_TRIP_AUTOMATIC, FilterOperator.EQUAL, asList("TRIP_AUTOMATIC").containsAll(categoryNames));
             query = new Query(KIND_TRIP).setFilter(isTripAutomatic).addSort(CREATED_AT, SortDirection.DESCENDING);
-        } else {
-            query = new Query(KIND_TRIP).addSort(CREATED_AT, SortDirection.DESCENDING);
         }
+        */
+        query = new Query(KIND_TRIP).addSort(CREATED_AT, SortDirection.DESCENDING);
         // query
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withOffset(offset).limit(limit));
         for (Entity entity : entities) {
@@ -298,5 +299,12 @@ public class TripQueries {
         query.setFilter(filter);
         final Entity entityStat = datastore.prepare(query).asSingleEntity();
         return (Long) entityStat.getProperty("count");
+    }
+
+    public Counter count() {
+        final Counter counter = new Counter();
+        final Query query = new Query(KIND_TRIP).addSort(CREATED_AT, SortDirection.DESCENDING).setKeysOnly();
+        counter.setCount(Long.valueOf(datastore.prepare(query).asList(FetchOptions.Builder.withDefaults()).size()));
+        return counter;
     }
 }

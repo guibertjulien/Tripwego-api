@@ -243,6 +243,12 @@ public class TripRepository extends AbstractRepository<Trip> {
         datastore.put(entity);
     }
 
+    public void updateAdminCertificate(Trip trip) throws EntityNotFoundException {
+        final Entity entity = datastore.get(KeyFactory.stringToKey(trip.getId()));
+        entity.setProperty(TRIP_CERTIFICATE, trip.getTripCertificate());
+        datastore.put(entity);
+    }
+
     public void updateVisibility(Trip trip) throws EntityNotFoundException {
         final Entity entity = datastore.get(KeyFactory.stringToKey(trip.getId()));
         entity.setProperty(TRIP_VISIBILITY, trip.getTripVisibility());

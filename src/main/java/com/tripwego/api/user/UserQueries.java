@@ -1,12 +1,13 @@
 package com.tripwego.api.user;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.tripwego.api.Constants;
+import com.tripwego.dto.common.Counter;
 import com.tripwego.dto.user.MyUser;
+
+import static com.tripwego.api.Constants.CREATED_AT;
+import static com.tripwego.api.Constants.KIND_USER;
 
 
 /**
@@ -26,5 +27,12 @@ public class UserQueries {
             user = Optional.of(userMapper.map(entity));
         }
         return user;
+    }
+
+    public Counter count() {
+        final Counter counter = new Counter();
+        final Query query = new Query(KIND_USER).addSort(CREATED_AT, Query.SortDirection.DESCENDING).setKeysOnly();
+        counter.setCount(Long.valueOf(datastore.prepare(query).asList(FetchOptions.Builder.withDefaults()).size()));
+        return counter;
     }
 }

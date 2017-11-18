@@ -3,6 +3,7 @@ package com.tripwego.api.trip;
 import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.tripwego.dto.common.Counter;
 import com.tripwego.dto.statistics.Statistics;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.trip.TripSearchCriteria;
@@ -147,6 +148,16 @@ public class TripEndpoint {
     }
 
     @SuppressWarnings("unchecked")
+    @ApiMethod(name = "updateAdminCertificate", path = "updateAdminCertificate", httpMethod = ApiMethod.HttpMethod.PUT)
+    public void updateAdminCertificate(Trip trip) {
+        try {
+            tripRepository.updateAdminCertificate(trip);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     @ApiMethod(name = "deleteTripsCancelled", path = "deleteTripsCancelled", httpMethod = ApiMethod.HttpMethod.GET)
     public void deleteTripsCancelled(@Named("userId") String userId) {
         tripRepository.deleteTripsCancelledFromUser(userId);
@@ -175,4 +186,11 @@ public class TripEndpoint {
         final List<Trip> trips = queries.find(criteria);
         return CollectionResponse.<Trip>builder().setItems(trips).build();
     }
+
+    @ApiMethod(name = "count", path = "count", httpMethod = ApiMethod.HttpMethod.GET)
+    public Counter count() {
+        final Counter counter = queries.count();
+        return counter;
+    }
+
 }

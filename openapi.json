@@ -38,6 +38,20 @@
           }
         }
       }
+  },
+    "/tripendpoint/v1/count": {
+      "get": {
+        "operationId": "TripendpointCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/Counter"
+      }
+          }
+        }
+      }
     },
     "/tripendpoint/v1/deleteOrRestoreTrip": {
       "put": {
@@ -49,7 +63,7 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/Trip"
-            }
+      }
           }
         ],
         "responses": {
@@ -87,7 +101,7 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/TripSearchCriteria"
-            }
+      }
           }
         ],
         "responses": {
@@ -95,20 +109,27 @@
             "description": "A successful response",
             "schema": {
               "$ref": "#/definitions/CollectionResponse_Trip"
-            }
+      }
           }
         }
       }
     },
-    "/tripendpoint/v1/findAllTrips": {
+    "/tripendpoint/v1/findAllTripsAlive": {
       "get": {
-        "operationId": "TripendpointFindAllTrips",
+        "operationId": "TripendpointFindAllTripsAlive",
         "parameters": [
           {
             "name": "cursor",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "limit",
@@ -123,7 +144,87 @@
             "description": "A successful response",
             "schema": {
               "$ref": "#/definitions/CollectionResponse_Trip"
-            }
+      }
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/findAllTripsForAdmin": {
+      "get": {
+        "operationId": "TripendpointFindAllTripsForAdmin",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "categoryNames",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/CollectionResponse_Trip"
+      }
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/findAllTripsForSeo": {
+      "get": {
+        "operationId": "TripendpointFindAllTripsForSeo",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/CollectionResponse_Trip"
+      }
           }
         }
       }
@@ -157,7 +258,7 @@
             "description": "A successful response",
             "schema": {
               "$ref": "#/definitions/CollectionResponse_Trip"
-            }
+      }
           }
         }
       }
@@ -178,9 +279,9 @@
             "description": "A successful response",
             "schema": {
               "$ref": "#/definitions/Trip"
-            }
+      }
           }
-        },
+    },
         "security": [
           {
             "api_key": []
@@ -199,22 +300,16 @@
         }
       }
     },
-    "/tripendpoint/v1/publishOrPrivateTrip": {
-      "put": {
-        "operationId": "TripendpointPublishOrPrivateTrip",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/Trip"
-            }
-          }
-        ],
+    "/tripendpoint/v1/statistics": {
+      "get": {
+        "operationId": "TripendpointStatistics",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "A successful response"
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/Statistics"
+      }
           }
         }
       }
@@ -240,7 +335,7 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/Trip"
-            }
+      }
           }
         ],
         "responses": {
@@ -248,9 +343,9 @@
             "description": "A successful response",
             "schema": {
               "$ref": "#/definitions/Trip"
-            }
+      }
           }
-        }
+    }
       },
       "put": {
         "operationId": "TripendpointUpdateTrip",
@@ -273,7 +368,7 @@
           }
         }
       }
-    },
+  },
     "/tripendpoint/v1/trip/{id}": {
       "get": {
         "operationId": "TripendpointGetTrip",
@@ -291,6 +386,66 @@
             "schema": {
               "$ref": "#/definitions/Trip"
             }
+          }
+    }
+      }
+  },
+    "/tripendpoint/v1/updateAdminCertificate": {
+      "put": {
+        "operationId": "TripendpointUpdateAdminCertificate",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+      }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response"
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/updateAdminStatus": {
+      "put": {
+        "operationId": "TripendpointUpdateAdminStatus",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+      }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response"
+          }
+        }
+      }
+    },
+    "/tripendpoint/v1/updateVisibility": {
+      "put": {
+        "operationId": "TripendpointUpdateVisibility",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Trip"
+      }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response"
           }
         }
       }
@@ -315,19 +470,19 @@
       "properties": {
         "authDomain": {
           "type": "string"
-        },
+    },
         "email": {
           "type": "string"
-        },
+    },
         "federatedIdentity": {
           "type": "string"
-        },
+    },
         "nickname": {
           "type": "string"
-        },
+    },
         "picture": {
           "type": "string"
-        },
+    },
         "userId": {
           "type": "string"
         }
@@ -337,10 +492,10 @@
       "properties": {
         "center": {
           "$ref": "#/definitions/LatLngDto"
-        },
+    },
         "northEast": {
           "$ref": "#/definitions/LatLngDto"
-        },
+    },
         "southWest": {
           "$ref": "#/definitions/LatLngDto"
         }
@@ -353,41 +508,38 @@
           "items": {
             "$ref": "#/definitions/Accommodation"
           }
-        },
+    },
         "activities": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Activity"
           }
-        },
-        "anonymous": {
-          "type": "boolean"
-        },
+    },
         "cancelled": {
           "type": "boolean"
-        },
+    },
         "category": {
           "type": "string"
-        },
+    },
         "countryCode": {
           "type": "string"
-        },
+    },
         "countryName": {
           "type": "string"
-        },
+    },
         "createdAt": {
           "type": "string"
-        },
+    },
         "description": {
           "type": "string"
-        },
+    },
         "duration": {
           "type": "integer",
           "format": "int64"
-        },
+    },
         "endDate": {
           "type": "string"
-        },
+    },
         "flights": {
           "type": "array",
           "items": {
@@ -398,6 +550,12 @@
           "$ref": "#/definitions/PlaceGeometryDto"
         },
         "id": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "mapStyle": {
           "type": "string"
         },
         "name": {
@@ -415,12 +573,6 @@
         "placeResultId": {
           "type": "string"
         },
-        "privateTrip": {
-          "type": "boolean"
-        },
-        "published": {
-          "type": "boolean"
-        },
         "rails": {
           "type": "array",
           "items": {
@@ -437,10 +589,10 @@
             "$ref": "#/definitions/Rental"
           }
         },
-        "startDate": {
-          "type": "string"
+        "seo": {
+          "$ref": "#/definitions/Seo"
         },
-        "state": {
+        "startDate": {
           "type": "string"
         },
         "status": {
@@ -458,11 +610,29 @@
             "$ref": "#/definitions/Traveler"
           }
         },
+        "tripAdminStatus": {
+          "type": "string"
+        },
+        "tripAutomatic": {
+          "type": "boolean"
+        },
+        "tripCertificate": {
+          "type": "string"
+        },
+        "tripPlanStatus": {
+          "type": "string"
+        },
         "tripProvider": {
           "$ref": "#/definitions/TripProvider"
         },
+        "tripUserStatus": {
+          "type": "string"
+        },
         "tripVersion": {
           "$ref": "#/definitions/TripVersion"
+        },
+        "tripVisibility": {
+          "type": "string"
         },
         "updatedAt": {
           "type": "string"
@@ -481,7 +651,10 @@
         },
         "user": {
           "$ref": "#/definitions/MyUser"
-        }
+        },
+        "wayTypeDefault": {
+          "type": "string"
+    }
       }
     },
     "CollectionResponse_Trip": {
@@ -632,6 +805,18 @@
         }
       }
     },
+    "Statistics": {
+      "properties": {
+        "tripCounter": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userCounter": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
     "Provider": {
       "enum": [
         "GOOGLE",
@@ -639,24 +824,14 @@
         "OTHERS"
       ]
     },
-    "AddressComponentDto": {
+    "TripSearchCriteria": {
       "properties": {
-        "long_name": {
-          "type": "string"
-        },
-        "short_name": {
-          "type": "string"
-        },
-        "types": {
+        "categories": {
           "type": "array",
           "items": {
             "type": "string"
           }
-        }
-      }
-    },
-    "TripSearchCriteria": {
-      "properties": {
+        },
         "certified": {
           "type": "boolean"
         },
@@ -686,6 +861,10 @@
         "season": {
           "type": "string"
         },
+        "startIndex": {
+          "type": "integer",
+          "format": "int32"
+        },
         "text": {
           "type": "string"
         },
@@ -694,6 +873,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "viewSize": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -714,6 +897,14 @@
         },
         "userUpdater": {
           "$ref": "#/definitions/MyUser"
+        }
+      }
+    },
+    "Counter": {
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
@@ -745,12 +936,6 @@
     },
     "PlaceResultDto": {
       "properties": {
-        "address_components": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AddressComponentDto"
-          }
-        },
         "certifiedByTripwego": {
           "type": "boolean"
         },
@@ -785,6 +970,9 @@
         "international_phone_number": {
           "type": "string"
         },
+        "language": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -809,6 +997,10 @@
         },
         "place_id": {
           "type": "string"
+        },
+        "population": {
+          "type": "integer",
+          "format": "int64"
         },
         "price_level": {
           "type": "integer",
@@ -891,6 +1083,25 @@
         }
       }
     },
+    "Seo": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "urlParameterName": {
+          "type": "string"
+        }
+      }
+    },
     "LatLngDto": {
       "properties": {
         "latitude": {
@@ -902,6 +1113,6 @@
           "format": "double"
         }
       }
-    }
+  }
   }
 }

@@ -9,7 +9,8 @@
             <param-value>com.tripwego.api.placeresult.PlaceResultEndpoint,
                 com.tripwego.api.tag.TagEndpoint,
                 com.tripwego.api.trip.TripEndpoint,
-                com.tripwego.api.region.RegionCounterEndpoint
+                com.tripwego.api.region.RegionCounterEndpoint,
+                com.tripwego.api.user.UserEndpoint
             </param-value>
         </init-param>
         <init-param>
