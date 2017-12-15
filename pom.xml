@@ -40,8 +40,8 @@
         <endpoints.management.version>1.0.3</endpoints.management.version>
 
         <endpoints.project.id>tripwego-api</endpoints.project.id>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
         <appengine.maven.plugin.version>1.0.0</appengine.maven.plugin.version>
 
         <tripwego.dto.version>1.0-SNAPSHOT</tripwego.dto.version>
@@ -56,8 +56,8 @@
         <!-- Compile/runtime dependencies -->
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>3.0-alpha-1</version>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

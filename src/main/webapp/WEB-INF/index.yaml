@@ -11,6 +11,7 @@ indexes:
 - kind: TRIP
   properties:
   - name: user_id
+  - name: trip_admin_status
   - name: created_at
     direction: desc
 - kind: TRIP

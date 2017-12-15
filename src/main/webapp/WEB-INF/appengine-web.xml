@@ -4,6 +4,8 @@
     <version>1</version>
     <module>default</module>
 
+    <runtime>java8</runtime>
+
     <!--<instance-class>B4_1G</instance-class>-->
     <threadsafe>true</threadsafe>
     <instance-class>B1</instance-class>

@@ -53,9 +53,10 @@ public class TripQueries {
         final List<Trip> result = new ArrayList<>();
         // filters
         final Filter byUser = new FilterPredicate(USER_ID, FilterOperator.EQUAL, userId);
+        final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
+        final Filter filters = CompositeFilterOperator.and(byUser, isAdminStatusVisible);
         // query
-        final Query query = new Query(KIND_TRIP).setFilter(byUser)
-                .addSort(CREATED_AT, SortDirection.DESCENDING);
+        final Query query = new Query(KIND_TRIP).setFilter(filters).addSort(CREATED_AT, SortDirection.DESCENDING);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         for (Entity entity : entities) {
             final Trip trip = tripDtoMapper.map(entity, Optional.<MyUser>absent());
@@ -73,8 +74,7 @@ public class TripQueries {
         final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
         final Filter filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible);
         // query
-        final Query query = new Query(KIND_TRIP).setFilter(filters)
-                .addSort(CREATED_AT, SortDirection.DESCENDING);
+        final Query query = new Query(KIND_TRIP).setFilter(filters).addSort(CREATED_AT, SortDirection.DESCENDING);
         List<Entity> entities;
         if (limit > 0) {
             entities = datastore.prepare(query).asList(FetchOptions.Builder.withOffset(offset).limit(limit));
