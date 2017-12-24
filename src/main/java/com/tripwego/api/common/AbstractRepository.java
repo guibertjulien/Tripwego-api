@@ -1,11 +1,11 @@
 package com.tripwego.api.common;
 
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.repackaged.com.google.common.base.Function;
-import com.google.appengine.repackaged.com.google.common.collect.FluentIterable;
-import com.google.appengine.repackaged.com.google.common.collect.ImmutableCollection;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class AbstractRepository<DTO> {
 
@@ -24,19 +24,18 @@ public abstract class AbstractRepository<DTO> {
         datastore.delete(keysToDelete(kind, parent));
     }
 
-    protected ImmutableCollection<Key> keysToDelete(String kind, Entity parent) {
+    protected Collection<Key> keysToDelete(String kind, Entity parent) {
         final Query query = new Query(kind).setAncestor(parent.getKey());
         final List<Entity> entitiesKeysOnly = datastore.prepare(query.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
         return extractKeys(entitiesKeysOnly);
     }
 
-    protected ImmutableCollection<Key> extractKeys(final List<Entity> entities) {
-        final ImmutableCollection<Key> keys = FluentIterable.from(entities).toMap(new Function<Entity, Key>() {
+    protected Collection<Key> extractKeys(final List<Entity> entities) {
+        return entities.stream().map(new Function<Entity, Key>() {
             @Override
             public Key apply(Entity entity) {
                 return entity.getKey();
             }
-        }).values();
-        return keys;
+        }).collect(Collectors.toList());
     }
 }

@@ -5,7 +5,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.search.DateUtil;
-import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.tripwego.api.common.mapper.CategoryDtoMapper;
 import com.tripwego.api.common.mapper.LinkDtoMapper;
 import com.tripwego.api.common.mapper.RatingDtoMapper;
@@ -17,6 +16,7 @@ import com.tripwego.dto.user.MyUser;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static com.tripwego.api.Constants.*;

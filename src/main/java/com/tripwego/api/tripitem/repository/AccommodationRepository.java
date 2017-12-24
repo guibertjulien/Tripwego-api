@@ -1,13 +1,13 @@
 package com.tripwego.api.tripitem.repository;
 
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.repackaged.com.google.common.base.Function;
-import com.google.appengine.repackaged.com.google.common.collect.FluentIterable;
-import com.google.appengine.repackaged.com.google.common.collect.ImmutableCollection;
 import com.tripwego.api.step.StepRepository;
 import com.tripwego.dto.tripitem.Accommodation;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.tripwego.api.Constants.KIND_ACCOMMODATION;
 
@@ -35,12 +35,12 @@ public class AccommodationRepository {
     public void removeAll(Entity parent) {
         final Query query = new Query(KIND_ACCOMMODATION).setAncestor(parent.getKey());
         final List<Entity> entitiesWithJustKey = datastore.prepare(query.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-        final ImmutableCollection<Key> keysToKill = FluentIterable.from(entitiesWithJustKey).toMap(new Function<Entity, Key>() {
+        final Collection<Key> keysToKill = entitiesWithJustKey.stream().map(new Function<Entity, Key>() {
             @Override
             public Key apply(Entity entity) {
                 return entity.getKey();
             }
-        }).values();
+        }).collect(Collectors.toList());
         for (Entity entity : entitiesWithJustKey) {
             stepRepository.deleteCollection(entity);
         }

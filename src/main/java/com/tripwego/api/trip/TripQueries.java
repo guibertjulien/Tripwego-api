@@ -3,8 +3,7 @@ package com.tripwego.api.trip;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.search.Results;
 import com.google.appengine.api.search.ScoredDocument;
-import com.google.appengine.repackaged.com.google.common.base.Optional;
-import com.google.appengine.repackaged.com.google.common.base.Strings;
+import com.tripwego.api.common.Strings;
 import com.tripwego.api.document.DocumentService;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.step.StepDtoMapper;
@@ -22,6 +21,7 @@ import com.tripwego.dto.user.Traveler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
@@ -59,7 +59,7 @@ public class TripQueries {
         final Query query = new Query(KIND_TRIP).setFilter(filters).addSort(CREATED_AT, SortDirection.DESCENDING);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         for (Entity entity : entities) {
-            final Trip trip = tripDtoMapper.map(entity, Optional.<MyUser>absent());
+            final Trip trip = tripDtoMapper.map(entity, Optional.<MyUser>empty());
             result.add(trip);
         }
         return result;
@@ -267,7 +267,7 @@ public class TripQueries {
     }
 
     public Optional<Trip> retrieveLazyTripAndUser(String id) {
-        Optional<Trip> result = Optional.absent();
+        Optional<Trip> result = Optional.empty();
         try {
             final Entity entity = datastore.get(KeyFactory.stringToKey(id));
             result = Optional.of(tripDtoMapper.map(entity, retrieveUser(entity)));
@@ -278,7 +278,7 @@ public class TripQueries {
     }
 
     private Optional<MyUser> retrieveUser(Entity entity) {
-        Optional<MyUser> user = Optional.absent();
+        Optional<MyUser> user = Optional.empty();
         if (entity.getProperty(USER_ID) != null) {
             final String userId = String.valueOf(entity.getProperty(USER_ID));
             user = userQueries.findByUserId(userId);

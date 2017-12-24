@@ -2,13 +2,13 @@ package com.tripwego.api.trip;
 
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.search.DateUtil;
-import com.google.appengine.repackaged.com.google.common.base.Optional;
-import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.tripwego.api.I18nUtils;
+import com.tripwego.api.common.Strings;
 import com.tripwego.dto.common.Seo;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.user.MyUser;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static com.tripwego.api.Constants.*;

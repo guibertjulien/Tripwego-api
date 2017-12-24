@@ -1,11 +1,8 @@
 package com.tripwego.api.trip;
 
-import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.repackaged.com.google.common.base.Optional;
-import com.google.appengine.repackaged.org.joda.time.DateTime;
-import com.google.appengine.repackaged.org.joda.time.Days;
 import com.tripwego.api.common.AbstractRepository;
+import com.tripwego.api.common.Strings;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.tripitem.TripItemQueries;
@@ -19,10 +16,8 @@ import com.tripwego.dto.trip.TripProvider;
 import com.tripwego.dto.tripitem.*;
 import com.tripwego.dto.user.MyUser;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static com.tripwego.api.Constants.*;
@@ -58,10 +53,10 @@ public class TripRepository extends AbstractRepository<Trip> {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     public Trip create(Trip trip) {
-        Optional<MyUser> user = Optional.absent();
+        Optional<MyUser> user = Optional.empty();
         LOGGER.info("--> user : " + trip.getUser().getUserId());
         if (trip.getUser() != null && !Strings.isNullOrEmpty(trip.getUser().getUserId())) {
-            user = Optional.fromNullable(userRepository.create(trip.getUser()));
+            user = Optional.ofNullable(userRepository.create(trip.getUser()));
         }
         final Entity entity = new Entity(KIND_TRIP);
         tripEntityMapper.map(entity, trip, user);
@@ -137,7 +132,7 @@ public class TripRepository extends AbstractRepository<Trip> {
 
     public Trip copy(Trip trip) {
         LOGGER.info("--> copy - START : " + trip.getParentTripId());
-        final Optional<MyUser> user = Optional.fromNullable(userRepository.create(trip.getUser()));
+        final Optional<MyUser> user = Optional.ofNullable(userRepository.create(trip.getUser()));
         final Entity entity = new Entity(KIND_TRIP);
         tripEntityMapper.map(entity, trip, user);
         entity.setProperty(IS_DEFAULT, true);
@@ -164,7 +159,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         Trip trip = null;
         try {
             Entity entity = datastore.get(KeyFactory.stringToKey(id));
-            trip = tripDtoMapper.map(entity, Optional.<MyUser>absent());
+            trip = tripDtoMapper.map(entity, Optional.<MyUser>empty());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
@@ -317,7 +312,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         final List<Entity> tripsToDelete = new ArrayList<>();
         for (Entity entity : tripWithUserUnknown) {
             final Date createdDate = (Date) entity.getProperty(CREATED_AT);
-            final int days = Days.daysBetween(new DateTime(createdDate), new DateTime(today)).getDays();
+            final long days = ChronoUnit.DAYS.between(createdDate.toInstant(), today.toInstant());
             if (days >= delay) {
                 tripsToDelete.add(entity);
             }
@@ -336,7 +331,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         for (Entity entity : tripsCancelled) {
             final Date cancellationDate = (Date) entity.getProperty(CANCELLATION_DATE);
             final String tripAdminStatus = String.valueOf(entity.getProperty(TRIP_ADMIN_STATUS));
-            final int days = Days.daysBetween(new DateTime(cancellationDate), new DateTime(today)).getDays();
+            final long days = ChronoUnit.DAYS.between(cancellationDate.toInstant(), today.toInstant());
             if (TripAdminStatus.valueOf(tripAdminStatus) == CANCELLED || days >= delay) {
                 tripsToDelete.add(entity);
             }
