@@ -1,8 +1,8 @@
 package com.tripwego.api.placeresult;
 
 import com.google.appengine.api.datastore.*;
-import com.tripwego.api.I18nUtils;
 import com.tripwego.api.common.mapper.GeoPtEntityMapper;
+import com.tripwego.api.utils.I18nUtils;
 import com.tripwego.dto.placeresult.PlaceResultDto;
 
 import java.util.Date;

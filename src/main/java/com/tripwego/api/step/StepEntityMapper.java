@@ -1,8 +1,8 @@
 package com.tripwego.api.step;
 
 import com.google.appengine.api.datastore.*;
-import com.tripwego.api.common.Strings;
 import com.tripwego.api.common.mapper.GeoPtEntityMapper;
+import com.tripwego.api.utils.Strings;
 import com.tripwego.dto.step.Step;
 
 import java.util.Date;

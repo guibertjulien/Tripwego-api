@@ -1,4 +1,4 @@
-package com.tripwego.api;
+package com.tripwego.api.utils;
 
 import java.util.Locale;
 

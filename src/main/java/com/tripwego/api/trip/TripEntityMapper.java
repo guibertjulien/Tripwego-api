@@ -2,8 +2,8 @@ package com.tripwego.api.trip;
 
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.search.DateUtil;
-import com.tripwego.api.I18nUtils;
-import com.tripwego.api.common.Strings;
+import com.tripwego.api.utils.I18nUtils;
+import com.tripwego.api.utils.Strings;
 import com.tripwego.dto.common.Seo;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.user.MyUser;

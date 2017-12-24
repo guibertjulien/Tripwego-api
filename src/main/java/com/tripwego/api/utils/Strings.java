@@ -1,4 +1,4 @@
-package com.tripwego.api.common;
+package com.tripwego.api.utils;
 
 import javax.annotation.Nullable;
 

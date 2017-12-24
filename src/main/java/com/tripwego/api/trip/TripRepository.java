@@ -2,7 +2,6 @@ package com.tripwego.api.trip;
 
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.common.AbstractRepository;
-import com.tripwego.api.common.Strings;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.tripitem.TripItemQueries;
@@ -10,6 +9,7 @@ import com.tripwego.api.tripitem.dto.*;
 import com.tripwego.api.tripitem.repository.*;
 import com.tripwego.api.user.UserQueries;
 import com.tripwego.api.user.UserRepository;
+import com.tripwego.api.utils.Strings;
 import com.tripwego.dto.step.Step;
 import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.trip.TripProvider;
