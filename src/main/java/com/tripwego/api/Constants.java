@@ -34,6 +34,8 @@ public class Constants {
     public static final String NORTH_EAST_PT = "north_east_pt";
     public static final String SOUTH_WEST_PT = "south_west_pt";
     public static final String INDEX_ON_ROAD_MAP = "index_on_road_map";
+    public static final String BUDGET = "budget";
+    public static final String PRICE = "price";
     public static final String INFO_LINK = "info_link";
     public static final String PLACE_TYPE = "place_type";
     public static final String WAY_TYPE = "way_type";

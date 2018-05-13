@@ -53,6 +53,8 @@ public class StepEntityMapper {
         entity.setProperty(CREATED_AT, new Date());
         entity.setProperty(UPDATED_AT, new Date());
         entity.setProperty(INDEX_ON_ROAD_MAP, step.getIndexOnRoadMap());
+        entity.setProperty(BUDGET, step.getBudget());
+        entity.setProperty(PRICE, step.getPrice());
         LOGGER.info("--> StepEntityMapper.map - END");
         return entity;
     }
