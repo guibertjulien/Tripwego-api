@@ -34,6 +34,8 @@ To deploy the API:
 
 0. Deploy the API implementation code by invoking:
 
+         gcloud config list
+         gcloud config set project tripwego-api
          mvn appengine:deploy
 
     The first time you upload a sample app, you may be prompted to authorize the
