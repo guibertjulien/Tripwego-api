@@ -48,6 +48,7 @@ public class StepEntityMapper {
         entity.setProperty(PLACE_TYPE, step.getPlaceType());
         entity.setProperty(RATING, new Rating(step.getRating()));
         entity.setProperty(WAY_TYPE, step.getWayType());
+        entity.setProperty(WAY_TYPE_OLD, step.getWayTypeOld());
         entity.setProperty(AVOID_HIGHWAYS, step.isAvoidHighways());
         entity.setProperty(AVOID_TOLLS, step.isAvoidTolls());
         entity.setProperty(CREATED_AT, new Date());

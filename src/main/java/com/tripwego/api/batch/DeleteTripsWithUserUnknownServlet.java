@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static com.tripwego.api.ConfigurationConstants.NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN;
-
 @SuppressWarnings("serial")
 public class DeleteTripsWithUserUnknownServlet extends HttpServlet {
 
@@ -20,7 +18,7 @@ public class DeleteTripsWithUserUnknownServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            tripRepository.deleteTripsWithUserUnknown(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
+            //tripRepository.deleteTripsWithUserUnknown(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
             LOGGER.info("Cron Job has been executed");
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());

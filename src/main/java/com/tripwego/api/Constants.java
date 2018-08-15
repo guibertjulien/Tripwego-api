@@ -40,6 +40,7 @@ public class Constants {
     public static final String INFO_LINK = "info_link";
     public static final String PLACE_TYPE = "place_type";
     public static final String WAY_TYPE = "way_type";
+    public static final String WAY_TYPE_OLD = "way_type_old";
     public static final String COUNTRY_CODE = "country_code";
     public static final String COUNTRY_NAME_EN = "country_name_en";
     public static final String DURATION = "duration";

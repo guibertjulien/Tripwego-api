@@ -84,6 +84,9 @@ public class StepDtoMapper {
         if (entity.getProperty(WAY_TYPE) != null) {
             step.setWayType(String.valueOf(entity.getProperty(WAY_TYPE)));
         }
+        if (entity.getProperty(WAY_TYPE_OLD) != null) {
+            step.setWayTypeOld(String.valueOf(entity.getProperty(WAY_TYPE_OLD)));
+        }
         if (entity.getProperty(BUDGET) != null) {
             step.setBudget(Double.parseDouble(String.valueOf(entity.getProperty(BUDGET))));
         }
