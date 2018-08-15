@@ -90,6 +90,9 @@ public class StepDtoMapper {
         if (entity.getProperty(PRICE) != null) {
             step.setPrice(Double.parseDouble(String.valueOf(entity.getProperty(PRICE))));
         }
+        if (entity.getProperty(LEVEL_HEADER) != null) {
+            step.setLevelHeader((Boolean) entity.getProperty(LEVEL_HEADER));
+        }
         //
         step.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
         LOGGER.info("--> StepDtoMapper.map - END");
