@@ -36,7 +36,7 @@ public class Constants {
     public static final String INDEX_ON_ROAD_MAP = "index_on_road_map";
     public static final String BUDGET = "budget";
     public static final String PRICE = "price";
-    public static final String LEVEL_HEADER = "level_header";
+    public static final String STEP_LEVEL = "step_level";
     public static final String INFO_LINK = "info_link";
     public static final String PLACE_TYPE = "place_type";
     public static final String WAY_TYPE = "way_type";

@@ -93,8 +93,8 @@ public class StepDtoMapper {
         if (entity.getProperty(PRICE) != null) {
             step.setPrice(Double.parseDouble(String.valueOf(entity.getProperty(PRICE))));
         }
-        if (entity.getProperty(LEVEL_HEADER) != null) {
-            step.setLevelHeader((Boolean) entity.getProperty(LEVEL_HEADER));
+        if (entity.getProperty(STEP_LEVEL) != null) {
+            step.setLevel(String.valueOf(entity.getProperty(STEP_LEVEL)));
         }
         //
         step.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
