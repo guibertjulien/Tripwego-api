@@ -52,7 +52,9 @@ public class TripEntityMapper {
             entity.setProperty(URL_STATIC_MAP, new Link(trip.getUrlStaticMap()));
         }
         if (trip.getUrlPhoto() != null) {
-            entity.setProperty(URL_PHOTO, new Link(trip.getUrlPhoto()));
+            if (!trip.getUrlPhoto().contains(PHOTO_SERVICE_ERROR_FRAGMENT)) {
+                entity.setProperty(URL_PHOTO, new Link(trip.getUrlPhoto()));
+            }
         }
         if (user.isPresent()) {
             entity.setProperty(USER_ID, user.get().getUserId());

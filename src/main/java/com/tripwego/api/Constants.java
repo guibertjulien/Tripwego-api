@@ -2,6 +2,9 @@ package com.tripwego.api;
 
 public class Constants {
 
+    // eg: https://maps.googleapis.com/maps/api/place/js/PhotoService.GetPhoto?...
+    public static final String PHOTO_SERVICE_ERROR_FRAGMENT = "PhotoService.GetPhoto";
+
     public static final String DEFAULT_COLOR = "black";
 
     // tables name
