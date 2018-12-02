@@ -324,12 +324,30 @@ public class TripRepository extends AbstractRepository<Trip> {
         LOGGER.info("--> deleteTripsWithUserUnknown - END");
     }
 
+    public void deleteTripsNotSaved(int delay) {
+        LOGGER.info("--> deleteTripsNotSaved - START");
+        final Date today = Calendar.getInstance().getTime();
+        final List<Entity> trips = tripQueries.findTripEntitiesInStatusCreated();
+        final List<Entity> tripsToDelete = new ArrayList<>();
+        for (Entity entity : trips) {
+            final Date createdDate = (Date) entity.getProperty(CREATED_AT);
+            final long days = ChronoUnit.DAYS.between(createdDate.toInstant(), today.toInstant());
+            if (days >= delay) {
+                tripsToDelete.add(entity);
+            }
+        }
+        if (tripsToDelete.size() > 0) {
+            deleteTripEntities(tripsToDelete);
+        }
+        LOGGER.info("--> deleteTripsNotSaved - END");
+    }
+
     public void deleteTripsCancelled(int delay) {
         LOGGER.info("--> deleteTripsCancelled - START");
         final Date today = Calendar.getInstance().getTime();
-        final List<Entity> tripsCancelled = tripQueries.findTripEntitiesCancelled();
+        final List<Entity> trips = tripQueries.findTripEntitiesCancelled();
         final List<Entity> tripsToDelete = new ArrayList<>();
-        for (Entity entity : tripsCancelled) {
+        for (Entity entity : trips) {
             final Date cancellationDate = (Date) entity.getProperty(CANCELLATION_DATE);
             final String tripAdminStatus = String.valueOf(entity.getProperty(TRIP_ADMIN_STATUS));
             boolean delayExpired = false;

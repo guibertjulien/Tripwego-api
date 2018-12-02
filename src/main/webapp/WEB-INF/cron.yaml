@@ -3,8 +3,8 @@ cron:
   url: /cron/countTripByRegion
   target: beta
   schedule: every 2 hours
-- description: Deletion of trip with user unknown
-  url: /cron/deleteTripsWithUserUnknownServlet
+- description: Deletion of trip with user unknown or in CREATED status
+  url: /cron/cleanTripsServlet
   target: beta
   schedule: every day 00:00
 - description: Deletion of trip cancelled one month ago

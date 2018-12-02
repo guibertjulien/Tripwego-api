@@ -244,6 +244,12 @@ public class TripQueries {
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 
+    public List<Entity> findTripEntitiesInStatusCreated() {
+        final Filter isCreatedStatus = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.EQUAL, TripAdminStatus.CREATED.name());
+        final Query query = new Query(KIND_TRIP).setFilter(isCreatedStatus);
+        return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    }
+
     public List<Entity> findTripEntitiesCancelled() {
         final Filter isCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
         final Filter isCancelledByAdmin = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.EQUAL, TripAdminStatus.CANCELLED.name());

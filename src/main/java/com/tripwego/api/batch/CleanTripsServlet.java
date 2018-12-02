@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import static com.tripwego.api.ConfigurationConstants.NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN;
 
 @SuppressWarnings("serial")
-public class DeleteTripsWithUserUnknownServlet extends HttpServlet {
+public class CleanTripsServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(CountTripByRegionServlet.class.getName());
 
@@ -21,6 +21,7 @@ public class DeleteTripsWithUserUnknownServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             tripRepository.deleteTripsWithUserUnknown(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
+            tripRepository.deleteTripsNotSaved(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
             LOGGER.info("Cron Job has been executed");
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());

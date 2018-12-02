@@ -75,12 +75,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>DeleteTripsWithUserUnknownServlet</servlet-name>
-        <servlet-class>com.tripwego.api.batch.DeleteTripsWithUserUnknownServlet</servlet-class>
+        <servlet-name>CleanTripsServlet</servlet-name>
+        <servlet-class>com.tripwego.api.batch.CleanTripsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>DeleteTripsWithUserUnknownServlet</servlet-name>
-        <url-pattern>/cron/deleteTripsWithUserUnknownServlet</url-pattern>
+        <servlet-name>CleanTripsServlet</servlet-name>
+        <url-pattern>/cron/cleanTripsServlet</url-pattern>
     </servlet-mapping>
 
     <servlet>

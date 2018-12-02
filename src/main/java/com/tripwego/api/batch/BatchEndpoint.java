@@ -6,6 +6,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.tripwego.api.trip.TripRepository;
 
+import static com.tripwego.api.ConfigurationConstants.NB_DAYS_BEFORE_REMOVE;
 import static com.tripwego.api.ConfigurationConstants.NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN;
 
 /**
@@ -18,11 +19,12 @@ public class BatchEndpoint {
 
     @ApiMethod(name = "delete_trips_cancelled", path = "delete_trips_cancelled", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
     public void delete_trips_cancelled() {
-        tripRepository.deleteTripsCancelled(0);
+        tripRepository.deleteTripsCancelled(NB_DAYS_BEFORE_REMOVE);
     }
 
-    @ApiMethod(name = "delete_trips_user_unknown", path = "delete_trips_user_unknown", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
-    public void delete_trips_user_unknown() {
+    @ApiMethod(name = "clean_trips", path = "clean_trips", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
+    public void clean_trips() {
+        tripRepository.deleteTripsNotSaved(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
         tripRepository.deleteTripsWithUserUnknown(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
     }
 }

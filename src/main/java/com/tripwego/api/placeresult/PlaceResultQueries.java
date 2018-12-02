@@ -15,6 +15,7 @@ import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_DESTINATION_SUGGESTION;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_PLACES;
 import static com.tripwego.api.Constants.*;
+import static java.lang.Boolean.TRUE;
 
 /**
  * Created by JG on 19/02/17.
@@ -66,13 +67,13 @@ public class PlaceResultQueries {
         final String firstStepCategory = criteria.getStepCategories().get(0);
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, FilterOperator.EQUAL, firstStepCategory);
         Filter isCertified = null;
-        if (criteria.getCertifiedByTripwego()) {
+        if (TRUE.equals(criteria.getCertifiedByTripwego())) {
             isCertified = new FilterPredicate(CERTIFIED, FilterOperator.EQUAL, true);
         }
         if (criteria.getCountry() != null) {
             final Filter byCountry = new FilterPredicate(COUNTRY_CODE, FilterOperator.EQUAL, criteria.getCountry().getCode());
             CompositeFilter compositeFilter;
-            if (criteria.getCertifiedByTripwego()) {
+            if (TRUE.equals(criteria.getCertifiedByTripwego())) {
                 compositeFilter = CompositeFilterOperator.and(byStepCategory, byCountry, isCertified);
             } else {
                 compositeFilter = CompositeFilterOperator.and(byStepCategory, byCountry);
@@ -86,7 +87,7 @@ public class PlaceResultQueries {
         if (criteria.getBounds() != null) {
             final CompositeFilter latFilter = extractLatFilterWorkaround(criteria);
             CompositeFilter compositeFilterLat;
-            if (criteria.getCertifiedByTripwego()) {
+            if (TRUE.equals(criteria.getCertifiedByTripwego())) {
                 compositeFilterLat = CompositeFilterOperator.and(byStepCategory, latFilter, isCertified);
             } else {
                 compositeFilterLat = CompositeFilterOperator.and(byStepCategory, latFilter);
@@ -94,7 +95,7 @@ public class PlaceResultQueries {
             final Query latQuery = new Query(KIND_PLACE_RESULT).setFilter(compositeFilterLat);
             final CompositeFilter lngFilter = extractLngFilterWorkaround(criteria);
             CompositeFilter compositeFilterLng;
-            if (criteria.getCertifiedByTripwego()) {
+            if (TRUE.equals(criteria.getCertifiedByTripwego())) {
                 compositeFilterLng = CompositeFilterOperator.and(byStepCategory, lngFilter, isCertified);
             } else {
                 compositeFilterLng = CompositeFilterOperator.and(byStepCategory, lngFilter);
