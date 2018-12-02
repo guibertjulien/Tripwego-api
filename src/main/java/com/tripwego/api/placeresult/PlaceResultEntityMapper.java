@@ -35,7 +35,7 @@ class PlaceResultEntityMapper {
             entity.setProperty(COUNTRY_NAME_EN, I18nUtils.findDefaultCountryName(placeResult.getCountry().getCode()));
         }
         //
-        entity.setProperty(CERTIFIED, false);
+        entity.setProperty(CERTIFIED, placeResult.isCertifiedByTripwego());
         entity.setProperty(COUNTER, INIT_COUNTER);
         entity.setProperty(CREATED_AT, new Date());
         if (placeResult.getFormatted_address() != null) {
@@ -47,7 +47,6 @@ class PlaceResultEntityMapper {
         entity.setProperty(INTERNATIONAL_PHONE_NUMBER, placeResult.getInternational_phone_number());
         entity.setProperty(PERMANENTLY_CLOSED, false);
         entity.setProperty(IS_EVALUATED, false);
-        entity.setProperty(PHOTOS, placeResult.getPhotos());
         if (placeResult.getPlaceType() != null) {
             entity.setProperty(PLACE_TYPE, new Category(placeResult.getPlaceType()));
         }

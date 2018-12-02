@@ -70,7 +70,10 @@ public class StepDtoMapper {
             step.setInfoLink(linkDtoMapper.map((Link) entity.getProperty(INFO_LINK)));
         }
         if (entity.getProperty(URL_PHOTO) != null) {
-            step.setUrlPhoto(linkDtoMapper.map((Link) entity.getProperty(URL_PHOTO)));
+            final Link link = (Link) entity.getProperty(URL_PHOTO);
+            //if (!link.getValue().contains(PHOTO_SERVICE_ERROR_FRAGMENT)) {
+            step.setUrlPhoto(linkDtoMapper.map(link));
+            //}
         }
         if (entity.getProperty(PLACE_TYPE) != null) {
             step.setPlaceType(String.valueOf(entity.getProperty(PLACE_TYPE)));

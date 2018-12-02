@@ -43,9 +43,9 @@ public class StepEntityMapper {
             entity.setProperty(INFO_LINK, new Link(step.getInfoLink()));
         }
         if (step.getUrlPhoto() != null) {
-            if (!step.getUrlPhoto().contains(PHOTO_SERVICE_ERROR_FRAGMENT)) {
+            //if (!step.getUrlPhoto().contains(PHOTO_SERVICE_ERROR_FRAGMENT)) {
                 entity.setProperty(URL_PHOTO, new Link(step.getUrlPhoto()));
-            }
+            //}
         }
         entity.setProperty(PLACE_TYPE, step.getPlaceType());
         entity.setProperty(RATING, new Rating(step.getRating()));

@@ -63,6 +63,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(IS_DEFAULT, true);
         entity.setProperty(CREATED_AT, new Date());
         entity.setProperty(UPDATED_AT, new Date());
+        entity.setProperty(CANCELLATION_DATE, null);
         entity.setProperty(TAGS, trip.getTags());
         entity.setProperty(IS_STORE_IN_DOCUMENT, false);
         entity.setProperty(IS_CANCELLED, false);
@@ -331,8 +332,12 @@ public class TripRepository extends AbstractRepository<Trip> {
         for (Entity entity : tripsCancelled) {
             final Date cancellationDate = (Date) entity.getProperty(CANCELLATION_DATE);
             final String tripAdminStatus = String.valueOf(entity.getProperty(TRIP_ADMIN_STATUS));
-            final long days = ChronoUnit.DAYS.between(cancellationDate.toInstant(), today.toInstant());
-            if (TripAdminStatus.valueOf(tripAdminStatus) == CANCELLED || days >= delay) {
+            boolean delayExpired = false;
+            if (cancellationDate != null) {
+                final long days = ChronoUnit.DAYS.between(cancellationDate.toInstant(), today.toInstant());
+                delayExpired = days >= delay;
+            }
+            if (TripAdminStatus.valueOf(tripAdminStatus) == CANCELLED || delayExpired) {
                 tripsToDelete.add(entity);
             }
         }

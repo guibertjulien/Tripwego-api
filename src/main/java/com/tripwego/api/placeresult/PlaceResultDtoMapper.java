@@ -55,10 +55,6 @@ class PlaceResultDtoMapper {
         if (entity.getProperty(PLACE_TYPE) != null) {
             result.setPlaceType(categoryDtoMapper.map(entity.getProperty(PLACE_TYPE)));
         }
-        // lists
-        if (entity.getProperty(PHOTOS) != null) {
-            result.getPhotos().addAll((ArrayList<String>) entity.getProperty(PHOTOS));
-        }
         if (entity.getProperty(TYPES) != null) {
             result.getTypes().addAll((ArrayList<String>) entity.getProperty(TYPES));
         }

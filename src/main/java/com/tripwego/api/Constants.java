@@ -82,7 +82,6 @@ public class Constants {
     public static final String LANGUAGE = "language";
     public static final String CODE = "code";
     public static final String COUNTER = "counter";
-    public static final String PHOTOS = "photos";
     public static final String SHORT_NAME = "short_name";
     public static final String LONG_NAME = "long_name";
     public static final String TYPES = "types";

@@ -14,6 +14,7 @@
                 com.tripwego.api.tag.TagEndpoint,
                 com.tripwego.api.trip.TripEndpoint,
                 com.tripwego.api.region.RegionCounterEndpoint,
+                com.tripwego.api.batch.BatchEndpoint,
                 com.tripwego.api.user.UserEndpoint
             </param-value>
         </init-param>
@@ -84,20 +85,11 @@
 
     <servlet>
         <servlet-name>DeleteTripsCancelledOneMonthAgoServlet</servlet-name>
-        <servlet-class>com.tripwego.api.batch.DeleteTripsCancelledOneMonthAgoServlet</servlet-class>
+        <servlet-class>com.tripwego.api.batch.DeleteTripsCancelledServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DeleteTripsCancelledOneMonthAgoServlet</servlet-name>
         <url-pattern>/cron/deleteTripsCancelledOneMonthAgoServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>RefreshServlet</servlet-name>
-        <servlet-class>com.tripwego.api.batch.RefreshServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>RefreshServlet</servlet-name>
-        <url-pattern>/cron/refreshServlet</url-pattern>
     </servlet-mapping>
 
     <servlet>
