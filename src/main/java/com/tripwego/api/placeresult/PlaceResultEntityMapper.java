@@ -57,6 +57,7 @@ class PlaceResultEntityMapper {
         entity.setProperty(TYPES, placeResult.getTypes());
         entity.setProperty(STEP_CATEGORIES, placeResult.getStepCategories());
         entity.setProperty(STEP_TYPES, placeResult.getStepTypes());
+        entity.setProperty(SUGGESTION_TYPES, placeResult.getSuggestionTypes());
         entity.setProperty(UPDATED_AT, new Date());
         if (placeResult.getUrl() != null) {
             entity.setProperty(URL_SITE, new Link(placeResult.getUrl()));

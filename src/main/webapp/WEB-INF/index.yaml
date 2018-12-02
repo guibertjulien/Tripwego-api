@@ -30,6 +30,12 @@ indexes:
   - name: step_categories
   - name: population
     direction: desc
+- kind: PLACE_RESULT
+  properties:
+  - name: country_code
+  - name: suggestion_types
+  - name: population
+    direction: desc
 #### STEP
 #### get_trip
 #### updateCounterAndInitRating
@@ -41,5 +47,3 @@ indexes:
   ancestor: yes
   properties:
   - name: place_result_id
-
-

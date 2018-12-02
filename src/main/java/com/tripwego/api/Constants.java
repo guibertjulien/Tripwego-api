@@ -85,7 +85,7 @@ public class Constants {
     public static final String SHORT_NAME = "short_name";
     public static final String LONG_NAME = "long_name";
     public static final String TYPES = "types";
-    public static final String CERTIFIED = "certified";
+    public static final String CERTIFIED = "certified";// TODO USED ?
     public static final String PHONE_NUMBER = "phone_number";
     public static final String HTML_ATTRIBUTIONS = "html_attributions";
     public static final String ICON = "icon";
@@ -93,8 +93,9 @@ public class Constants {
     public static final String PERMANENTLY_CLOSED = "permanently_closed";
     public static final String PRICE_LEVEL = "price_level";
     public static final String PROVIDER = "provider";
-    public static final String STEP_CATEGORIES = "step_categories";
-    public static final String STEP_TYPES = "step_types";
+    public static final String STEP_CATEGORIES = "step_categories";// TODO USED ?
+    public static final String STEP_TYPES = "step_types";// TODO USED ?
+    public static final String SUGGESTION_TYPES = "suggestion_types";
     public static final String VICINITY = "vicinity";
     public static final String WEBSITE = "website";
     public static final String CENTER_PT = "center_pt";

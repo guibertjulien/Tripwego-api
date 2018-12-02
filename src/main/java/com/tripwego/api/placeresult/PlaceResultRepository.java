@@ -58,6 +58,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         LOGGER.info("--> update - START");
         final Set<String> stepCategories = new HashSet<>();
         final Set<String> stepTypes = new HashSet<>();
+        final Set<String> suggestionTypes = new HashSet<>();
         final Set<String> types = new HashSet<>();
         if (entity.getProperty(STEP_CATEGORIES) != null) {
             Object property = entity.getProperty(STEP_CATEGORIES);
@@ -66,6 +67,9 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         if (entity.getProperty(STEP_TYPES) != null) {
             stepTypes.addAll((ArrayList<String>) entity.getProperty(STEP_TYPES));
         }
+        if (entity.getProperty(SUGGESTION_TYPES) != null) {
+            suggestionTypes.addAll((ArrayList<String>) entity.getProperty(SUGGESTION_TYPES));
+        }
         if (entity.getProperty(TYPES) != null) {
             types.addAll((ArrayList<String>) entity.getProperty(TYPES));
         }
@@ -73,6 +77,8 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         entity.setProperty(STEP_CATEGORIES, stepCategories);
         stepTypes.addAll(placeResult.getStepTypes());
         entity.setProperty(STEP_TYPES, stepTypes);
+        suggestionTypes.addAll(placeResult.getSuggestionTypes());
+        entity.setProperty(SUGGESTION_TYPES, suggestionTypes);
         types.addAll(placeResult.getTypes());
         entity.setProperty(TYPES, types);
         if (placeResult.getPopulation() > 0) {

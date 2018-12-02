@@ -58,6 +58,9 @@ class PlaceResultDtoMapper {
         if (entity.getProperty(TYPES) != null) {
             result.getTypes().addAll((ArrayList<String>) entity.getProperty(TYPES));
         }
+        if (entity.getProperty(SUGGESTION_TYPES) != null) {
+            result.getSuggestionTypes().addAll((ArrayList<String>) entity.getProperty(SUGGESTION_TYPES));
+        }
         // dates
         result.setCreatedAt(String.valueOf((Date) entity.getProperty(CREATED_AT)));
         result.setUpdatedAt(String.valueOf((Date) entity.getProperty(UPDATED_AT)));
