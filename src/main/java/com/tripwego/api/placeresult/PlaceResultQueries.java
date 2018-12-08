@@ -16,7 +16,6 @@ import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_DESTINATION_SUGGESTION;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_PLACES;
 import static com.tripwego.api.Constants.*;
-import static java.lang.Boolean.TRUE;
 
 /**
  * Created by JG on 19/02/17.
@@ -74,18 +73,9 @@ public class PlaceResultQueries {
             final String first = criteria.getSuggestionTypes().get(0);
             byStepCategoryOrSuggestionType = new FilterPredicate(SUGGESTION_TYPES, EQUAL, first);
         }
-        Filter isCertified = null;
-        if (TRUE.equals(criteria.getCertifiedByTripwego())) {
-            isCertified = new FilterPredicate(CERTIFIED, EQUAL, true);
-        }
         if (criteria.getCountry() != null) {
             final Filter byCountry = new FilterPredicate(COUNTRY_CODE, EQUAL, criteria.getCountry().getCode());
-            CompositeFilter compositeFilter;
-            if (TRUE.equals(criteria.getCertifiedByTripwego())) {
-                compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCountry, isCertified);
-            } else {
-                compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCountry);
-            }
+            final CompositeFilter compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCountry);
             final Query query = new Query(KIND_PLACE_RESULT).setFilter(compositeFilter)
                     //.addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
                     .addSort(POPULATION, DESCENDING);
@@ -94,20 +84,10 @@ public class PlaceResultQueries {
         }
         if (criteria.getBounds() != null) {
             final CompositeFilter latFilter = extractLatFilterWorkaround(criteria);
-            CompositeFilter compositeFilterLat;
-            if (TRUE.equals(criteria.getCertifiedByTripwego())) {
-                compositeFilterLat = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, latFilter, isCertified);
-            } else {
-                compositeFilterLat = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, latFilter);
-            }
+            final CompositeFilter compositeFilterLat = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, latFilter);
             final Query latQuery = new Query(KIND_PLACE_RESULT).setFilter(compositeFilterLat);
             final CompositeFilter lngFilter = extractLngFilterWorkaround(criteria);
-            CompositeFilter compositeFilterLng;
-            if (TRUE.equals(criteria.getCertifiedByTripwego())) {
-                compositeFilterLng = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, lngFilter, isCertified);
-            } else {
-                compositeFilterLng = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, lngFilter);
-            }
+            final CompositeFilter compositeFilterLng = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, lngFilter);
             final Query lngQuery = new Query(KIND_PLACE_RESULT).setFilter(compositeFilterLng);
             final List<Entity> entitiesWithLat = datastore.prepare(latQuery).asList(FetchOptions.Builder.withDefaults());
             final List<Entity> entitiesWithLng = datastore.prepare(lngQuery).asList(FetchOptions.Builder.withDefaults());

@@ -209,17 +209,4 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         }
         LOGGER.info("--> delete - END");
     }
-
-    public void updateCertified(String placeKeyString, boolean certified) {
-        LOGGER.info("--> updateCertified - START");
-        final Key placeKey = KeyFactory.stringToKey(placeKeyString);
-        try {
-            final Entity placeResultEntity = datastore.get(placeKey);
-            placeResultEntity.setProperty(CERTIFIED, certified);
-            placeResultEntity.setProperty(UPDATED_AT, new Date());
-            datastore.put(placeResultEntity);
-        } catch (EntityNotFoundException e) {
-        }
-        LOGGER.info("--> updateCertified - END");
-    }
 }

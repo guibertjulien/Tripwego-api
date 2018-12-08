@@ -35,7 +35,6 @@ class PlaceResultEntityMapper {
             entity.setProperty(COUNTRY_NAME_EN, I18nUtils.findDefaultCountryName(placeResult.getCountry().getCode()));
         }
         //
-        entity.setProperty(CERTIFIED, placeResult.isCertifiedByTripwego());
         entity.setProperty(COUNTER, INIT_COUNTER);
         entity.setProperty(CREATED_AT, new Date());
         if (placeResult.getFormatted_address() != null) {
