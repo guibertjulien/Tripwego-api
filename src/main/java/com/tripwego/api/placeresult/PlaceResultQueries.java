@@ -128,4 +128,11 @@ public class PlaceResultQueries {
         final GeoPt northeast = geoPtEntityMapper.map(criteria.getBounds().getNorthEast());
         return new StContainsFilter(CENTER_PT, new GeoRegion.Rectangle(southwest, northeast));
     }
+
+
+    public List<Entity> findPlaceEntitiesUnused() {
+        final Filter hasCounterAtZero = new FilterPredicate(COUNTER, FilterOperator.EQUAL, 0);
+        final Query query = new Query(KIND_PLACE_RESULT).setFilter(hasCounterAtZero);
+        return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    }
 }

@@ -22,6 +22,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
     private PlaceResultEntityMapper placeResultEntityMapper = new PlaceResultEntityMapper(new GeoPtEntityMapper());
     private PlaceResultDtoMapper placeResultDtoMapper = new PlaceResultDtoMapper(new PostalAddressDtoMapper(), new CategoryDtoMapper(), new LinkDtoMapper(), new RatingDtoMapper(), new LatLngDtoMapper());
     private PlaceRatingRepository placeRatingRepository = new PlaceRatingRepository();
+    private PlaceResultQueries placeResultQueries = new PlaceResultQueries();
 
     public Entity create(PlaceResultDto placeResult) {
         LOGGER.info("--> create - START");
@@ -198,15 +199,26 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         LOGGER.info("--> deletePlaceAssociated - END");
     }
 
-    private void delete(String placeId) {
-        LOGGER.info("--> delete - START : " + placeId);
-        try {
-            final Entity entity = datastore.get(KeyFactory.stringToKey(placeId));
-            placeRatingRepository.deleteCollection(KIND_PLACE_RATING, entity);
-            datastore.delete(entity.getKey());
-        } catch (EntityNotFoundException e) {
-            LOGGER.warning("--> place not found : " + placeId);
+    public void delete() {
+        final List<Entity> placesToDelete = placeResultQueries.findPlaceEntitiesUnused();
+        if (!placesToDelete.isEmpty()) {
+            deletePlaceEntities(placesToDelete);
         }
-        LOGGER.info("--> delete - END");
     }
+
+    private void deletePlaceEntities(List<Entity> placesToDelete) {
+        final List<Key> keysToKill = new ArrayList<>();
+        keysToKill.addAll(extractKeys(placesToDelete));
+        for (Entity entity : placesToDelete) {
+            deleteChild(entity);
+        }
+        if (!keysToKill.isEmpty()) {
+            datastore.delete(keysToKill);
+        }
+    }
+
+    private void deleteChild(Entity parent) {
+        placeRatingRepository.deleteCollection(KIND_PLACE_RATING, parent);
+    }
+
 }

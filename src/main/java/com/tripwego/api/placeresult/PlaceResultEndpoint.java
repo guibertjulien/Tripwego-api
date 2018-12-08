@@ -45,4 +45,10 @@ public class PlaceResultEndpoint {
     public void updateRating(@Named("placeKey") String placeKey, @Named("userId") String userId, @Named("rating") Integer rating) {
         placeResultRepository.updateRating(placeKey, userId, rating);
     }
+
+    @SuppressWarnings("unchecked")
+    @ApiMethod(name = "deletePlacesUnused", path = "deletePlacesUnused", httpMethod = ApiMethod.HttpMethod.GET)
+    public void deletePlacesUnused() {
+        placeResultRepository.delete();
+    }
 }
