@@ -10,9 +10,13 @@ import com.tripwego.dto.trip.Trip;
 import com.tripwego.dto.user.MyUser;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-import static com.google.appengine.api.datastore.Query.*;
+import static com.google.appengine.api.datastore.Query.Filter;
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
+import static com.google.appengine.api.datastore.Query.FilterPredicate;
 import static com.tripwego.api.Constants.*;
 
 public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
@@ -90,38 +94,32 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         LOGGER.info("--> update - END");
     }
 
-    public void updateCounterAndInitRating(final Trip tripUpdated) {
-        LOGGER.info("--> updateCounterAndInitRating - START");
+    public void incrementCounterAndInitializeRating(final Trip tripUpdated) {
         try {
             final List<Entity> entitiesToUpdate = new ArrayList();
             final Entity tripEntity = datastore.get(KeyFactory.stringToKey(tripUpdated.getId()));
             final Query stepQuery = new Query(KIND_STEP).setAncestor(tripEntity.getKey());
             stepQuery.addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
-            stepQuery.setDistinct(true);
-            final List<Entity> stepsEntitiesProjection = datastore.prepare(stepQuery).asList(FetchOptions.Builder.withDefaults());
-            for (Entity stepEntityProjection : stepsEntitiesProjection) {
-                final String placeResultId = (String) stepEntityProjection.getProperty(PLACE_RESULT_ID);
+            final List<Entity> entitiesProjection = datastore.prepare(stepQuery).asList(FetchOptions.Builder.withDefaults());
+            final Function<Entity, String> groupById = p -> (String) p.getProperty(PLACE_RESULT_ID);
+            final Map<String, Long> entitiesWithCount = entitiesProjection.stream().collect(Collectors.groupingBy(groupById, Collectors.counting()));
+            for (Map.Entry<String, Long> entry : entitiesWithCount.entrySet()) {
+                final String placeResultId = entry.getKey();
                 final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(placeResultId));
                 final MyUser user = tripUpdated.getUser();
                 final String userId = user.getUserId();
-                final Filter byUser = new FilterPredicate(USER_ID, FilterOperator.EQUAL, userId);
+                final Filter byUser = new FilterPredicate(USER_ID, EQUAL, userId);
                 final Query placeRatingQuery = new Query(KIND_PLACE_RATING).setKeysOnly().setAncestor(placeResultEntity.getKey()).setFilter(byUser);
                 final List<Entity> placeRatingEntities = datastore.prepare(placeRatingQuery).asList(FetchOptions.Builder.withDefaults());
                 if (placeRatingEntities.isEmpty()) {
                     entitiesToUpdate.add(placeRatingRepository.entityToCreate(placeResultEntity, new PlaceRatingDto(user)));
-                    long counter = (long) placeResultEntity.getProperty(COUNTER);
-                    placeResultEntity.setProperty(COUNTER, counter + 1);
-                    entitiesToUpdate.add(placeResultEntity);
-                    LOGGER.info("--> place (" + placeResultId + ") not exist for user : counter property UPDATED and PLACE_RATING kind created");
-                } else {
-                    LOGGER.info("--> place (" + placeResultId + ") already exist for user : NO UPDATE");
                 }
+                incrementCounter(placeResultEntity, false, entry.getValue());
+                entitiesToUpdate.add(placeResultEntity);
             }
             datastore.put(entitiesToUpdate);
         } catch (EntityNotFoundException e) {
-            LOGGER.info("--> error : " + e.getMessage());
         }
-        LOGGER.info("--> updateCounterAndInitRating - END");
     }
 
     @Override
@@ -135,7 +133,6 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
     }
 
     public void updateRating(String placeKeyString, String updaterId, int newRating) {
-        LOGGER.info("--> updateRating - START");
         final Key placeKey = KeyFactory.stringToKey(placeKeyString);
         try {
             final List<Entity> entitiesToUpdate = new ArrayList<>();
@@ -170,33 +167,6 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
             datastore.put(entitiesToUpdate);
         } catch (EntityNotFoundException e) {
         }
-        LOGGER.info("--> updateRating - END");
-    }
-
-    /**
-     * remove place if this is not associated with STEP or TRIP
-     * TODO à revoir
-     *
-     * @param entities
-     * @param kind
-     */
-    public void deletePlaceAssociated(List<Entity> entities, String kind, String propertyName) {
-        LOGGER.info("--> deletePlaceAssociated - START : " + kind + " / size : " + entities.size());
-        /*
-        for (Entity entity : entities) {
-            final String placeId = String.valueOf(entity.getProperty(propertyName));
-            LOGGER.info("--> placeId : " + placeId);
-            final Query.Filter byPlace = new Query.FilterPredicate(propertyName, EQUAL, placeId);
-            final Query queryEntitiesAssociated = new Query(kind).setFilter(byPlace);
-            final List<Entity> entitiesAssociated = datastore.prepare(queryEntitiesAssociated.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-            if (entitiesAssociated.size() > 0) {
-                LOGGER.info("--> place is used");
-            } else {
-                delete(placeId);
-            }
-        }
-        */
-        LOGGER.info("--> deletePlaceAssociated - END");
     }
 
     public void delete() {
@@ -221,4 +191,28 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         placeRatingRepository.deleteCollection(KIND_PLACE_RATING, parent);
     }
 
+    public void decrementCounter(List<Entity> parentEntities, boolean putEntity) {
+        for (Entity entity : parentEntities) {
+            final String placeId = String.valueOf(entity.getProperty(PLACE_RESULT_ID));
+            final List<Entity> entitiesToUpdate = new ArrayList<>();
+            try {
+                final Entity placeResultEntity = datastore.get(KeyFactory.stringToKey(placeId));
+                long counter = (long) placeResultEntity.getProperty(COUNTER);
+                placeResultEntity.setProperty(COUNTER, counter - 1);
+                entitiesToUpdate.add(placeResultEntity);
+            } catch (EntityNotFoundException e) {
+            }
+            if (putEntity && !entitiesToUpdate.isEmpty()) {
+                datastore.put(entitiesToUpdate);
+            }
+        }
+    }
+
+    public void incrementCounter(Entity placeResultEntity, boolean putEntity, long increment) {
+        final long counter = (long) placeResultEntity.getProperty(COUNTER);
+        placeResultEntity.setProperty(COUNTER, counter + increment);
+        if (putEntity) {
+            datastore.put(placeResultEntity);
+        }
+    }
 }

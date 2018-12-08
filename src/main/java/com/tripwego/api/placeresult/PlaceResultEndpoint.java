@@ -4,7 +4,6 @@ import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.tripwego.dto.placeresult.PlaceResultDto;
 import com.tripwego.dto.placeresult.PlaceResultDtoSearchCriteria;
-import com.tripwego.dto.trip.Trip;
 
 import java.util.List;
 
@@ -32,12 +31,6 @@ public class PlaceResultEndpoint {
     @ApiMethod(name = "get_place_details", path = "get_place_details", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
     public PlaceResultDto get_place_details(@Named("id") String id) {
         return placeResultRepository.retrieve(id);
-    }
-
-    @SuppressWarnings("unchecked")
-    @ApiMethod(name = "updateCounter", path = "updateCounter", httpMethod = ApiMethod.HttpMethod.PUT)
-    public void updateCounter(Trip trip) {
-        placeResultRepository.updateCounterAndInitRating(trip);
     }
 
     @SuppressWarnings("unchecked")

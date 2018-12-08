@@ -38,7 +38,7 @@ indexes:
     direction: desc
 #### STEP
 #### get_trip
-#### updateCounterAndInitRating
+#### incrementCounterAndInitializeRating
 - kind: STEP
   ancestor: yes
   properties:

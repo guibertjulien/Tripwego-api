@@ -77,9 +77,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
         entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
         datastore.put(entity);
-        // no step
-        // no user
-        // TODO enhance
+        placeResultRepository.incrementCounter(placeResultEntity, true, 1);
         return tripDtoMapper.map(entity, user);
     }
 
@@ -124,6 +122,7 @@ public class TripRepository extends AbstractRepository<Trip> {
                 updateProvider(trip, entity);
             }
             datastore.put(entity);
+            placeResultRepository.incrementCounterAndInitializeRating(trip);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
@@ -369,16 +368,15 @@ public class TripRepository extends AbstractRepository<Trip> {
         deleteTripEntities(tripQueries.findTripEntitiesCancelledByUser(userId));
     }
 
-    private void deleteTripEntities(List<Entity> tripsToDelete) {
+    private void deleteTripEntities(List<Entity> tripEntitiesToDelete) {
         final List<Key> keysToKill = new ArrayList<>();
-        keysToKill.addAll(extractKeys(tripsToDelete));
-        for (Entity entity : tripsToDelete) {
+        keysToKill.addAll(extractKeys(tripEntitiesToDelete));
+        for (Entity entity : tripEntitiesToDelete) {
             deleteChild(entity);
         }
         if (keysToKill.size() > 0) {
             datastore.delete(keysToKill);
-            // after trip deletion
-            placeResultRepository.deletePlaceAssociated(tripsToDelete, KIND_TRIP, PLACE_RESULT_ID);
+            placeResultRepository.decrementCounter(tripEntitiesToDelete, true);
         }
     }
 

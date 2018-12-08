@@ -16,7 +16,7 @@ import static com.tripwego.api.Constants.*;
 class PlaceResultEntityMapper {
 
     private static final Logger LOGGER = Logger.getLogger(PlaceResultEntityMapper.class.getName());
-    public static final int INIT_COUNTER = 0;
+    public static final long INIT_COUNTER = 0;
     public static final int DEFAULT_ORDER = 9999;
 
     private final GeoPtEntityMapper geoPtEntityMapper;

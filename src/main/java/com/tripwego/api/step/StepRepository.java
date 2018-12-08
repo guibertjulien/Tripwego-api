@@ -42,7 +42,6 @@ public class StepRepository extends AbstractRepository<Step> {
         final List<Entity> stepEntitiesToDelete = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         keysToKill.addAll(extractKeys(stepEntitiesToDelete));
         datastore.delete(keysToKill);
-        // after step deletion
-        placeResultRepository.deletePlaceAssociated(stepEntitiesToDelete, KIND_STEP, PLACE_RESULT_ID);
+        placeResultRepository.decrementCounter(stepEntitiesToDelete, true);
     }
 }
