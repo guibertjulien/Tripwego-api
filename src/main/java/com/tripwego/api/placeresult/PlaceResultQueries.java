@@ -82,6 +82,14 @@ public class PlaceResultQueries {
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
             result.addAll(entities);
         }
+        if (criteria.getCity() != null) {
+            final Filter byCity = new FilterPredicate(CITY_CODE, EQUAL, criteria.getCity().getCode());
+            final CompositeFilter compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCity);
+            final Query query = new Query(KIND_PLACE_RESULT).setFilter(compositeFilter);
+            // TODO add sort
+            final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
+            result.addAll(entities);
+        }
         if (criteria.getBounds() != null) {
             final CompositeFilter latFilter = extractLatFilterWorkaround(criteria);
             final CompositeFilter compositeFilterLat = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, latFilter);

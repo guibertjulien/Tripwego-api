@@ -34,6 +34,10 @@ class PlaceResultEntityMapper {
             entity.setProperty(COUNTRY_CODE, placeResult.getCountry().getCode());
             entity.setProperty(COUNTRY_NAME_EN, I18nUtils.findDefaultCountryName(placeResult.getCountry().getCode()));
         }
+        if (placeResult.getCity() != null) {
+            entity.setProperty(CITY_CODE, placeResult.getCity().getCode());
+            entity.setProperty(CITY_NAME, placeResult.getCity().getName());
+        }
         //
         entity.setProperty(COUNTER, INIT_COUNTER);
         entity.setProperty(CREATED_AT, new Date());

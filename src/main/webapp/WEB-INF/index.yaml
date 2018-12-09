@@ -36,6 +36,14 @@ indexes:
   - name: suggestion_types
   - name: population
     direction: desc
+- kind: PLACE_RESULT
+  properties:
+  - name: suggestion_types
+  - name: latitude
+- kind: PLACE_RESULT
+  properties:
+  - name: suggestion_types
+  - name: longitude
 #### STEP
 #### get_trip
 #### incrementCounterAndInitializeRating

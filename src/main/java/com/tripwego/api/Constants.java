@@ -46,6 +46,8 @@ public class Constants {
     public static final String WAY_TYPE_OLD = "way_type_old";
     public static final String COUNTRY_CODE = "country_code";
     public static final String COUNTRY_NAME_EN = "country_name_en";
+    public static final String CITY_CODE = "city_code";
+    public static final String CITY_NAME = "city_name";
     public static final String DURATION = "duration";
     public static final String END_DATE = "end_date";
     public static final String RATING = "rating";
