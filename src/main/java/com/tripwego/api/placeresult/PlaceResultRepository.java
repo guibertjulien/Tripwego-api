@@ -35,6 +35,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
             // check if place already exist
             final Key key = KeyFactory.createKey(KIND_PLACE_RESULT, placeResult.getPlace_id());
             entity = datastore.get(key);
+            entity.setProperty(IS_ADMIN_AUTOMATIC, placeResult.isAdminAutomatic());
             // update if exist
             update(entity, placeResult);
         } catch (Exception e) {

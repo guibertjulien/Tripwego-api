@@ -69,7 +69,7 @@ public class Constants {
     public static final String NICKNAME = "nickname";
     public static final String USER_ID = "user_id";
     public static final String IS_CANCELLED = "is_cancelled";
-    public static final String IS_TRIP_AUTOMATIC = "is_trip_automatic";
+    public static final String IS_ADMIN_AUTOMATIC = "is_admin_automatic";
     public static final String CANCELLATION_DATE = "cancellation_date";
     public static final String PICTURE = "picture";
     public static final String IS_COPY = "is_copy";// TODO
@@ -84,17 +84,13 @@ public class Constants {
     public static final String LANGUAGE = "language";
     public static final String CODE = "code";
     public static final String COUNTER = "counter";
-    public static final String SHORT_NAME = "short_name";
-    public static final String LONG_NAME = "long_name";
     public static final String TYPES = "types";
-    public static final String CERTIFIED = "certified";// TODO USED ?
     public static final String PHONE_NUMBER = "phone_number";
     public static final String HTML_ATTRIBUTIONS = "html_attributions";
     public static final String ICON = "icon";
     public static final String INTERNATIONAL_PHONE_NUMBER = "international_phone_number";
     public static final String PERMANENTLY_CLOSED = "permanently_closed";
     public static final String PRICE_LEVEL = "price_level";
-    public static final String PROVIDER = "provider";
     public static final String STEP_CATEGORIES = "step_categories";// TODO USED ?
     public static final String STEP_TYPES = "step_types";// TODO USED ?
     public static final String SUGGESTION_TYPES = "suggestion_types";

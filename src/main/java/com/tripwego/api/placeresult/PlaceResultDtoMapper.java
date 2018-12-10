@@ -6,7 +6,6 @@ import com.tripwego.api.utils.I18nUtils;
 import com.tripwego.dto.common.LatLngBoundsDto;
 import com.tripwego.dto.placeresult.PlaceGeometryDto;
 import com.tripwego.dto.placeresult.PlaceResultDto;
-import com.tripwego.dto.placeresult.Provider;
 import com.tripwego.dto.trip.CityDto;
 import com.tripwego.dto.trip.CountryDto;
 
@@ -84,10 +83,6 @@ class PlaceResultDtoMapper {
         result.setEvaluated((Boolean) entity.getProperty(IS_EVALUATED));
         result.setPermanently_closed((Boolean) entity.getProperty(PERMANENTLY_CLOSED));
         result.setPopulation((long) entity.getProperty(POPULATION));
-        // others
-        if (entity.getProperty(PROVIDER) != null) {
-            result.setProvider(Provider.valueOf((String) entity.getProperty(PROVIDER)));
-        }
         updateGeometry(entity, result);
         result.setLanguage(language);
         LOGGER.info("--> PlaceResultDto.map - END");

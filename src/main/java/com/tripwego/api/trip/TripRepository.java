@@ -67,7 +67,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(TAGS, trip.getTags());
         entity.setProperty(IS_STORE_IN_DOCUMENT, false);
         entity.setProperty(IS_CANCELLED, false);
-        entity.setProperty(IS_TRIP_AUTOMATIC, trip.isTripAutomatic());
+        entity.setProperty(IS_ADMIN_AUTOMATIC, trip.isAdminAutomatic());
         entity.setProperty(TRIP_ADMIN_STATUS, CREATED.name());
         entity.setProperty(TRIP_USER_STATUS, PUBLISHED.name());
         entity.setProperty(TRIP_PLAN_STATUS, TO_PLAN.name());

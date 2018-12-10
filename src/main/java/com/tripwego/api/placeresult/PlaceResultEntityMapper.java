@@ -55,7 +55,6 @@ class PlaceResultEntityMapper {
         }
         entity.setProperty(PRICE_LEVEL, placeResult.getPrice_level());
         entity.setProperty(ORDER, DEFAULT_ORDER);
-        entity.setProperty(PROVIDER, placeResult.getProvider().name());
         entity.setProperty(RATING, new Rating(placeResult.getRating()));
         entity.setProperty(TYPES, placeResult.getTypes());
         entity.setProperty(STEP_CATEGORIES, placeResult.getStepCategories());
