@@ -73,20 +73,19 @@ public class PlaceResultQueries {
             final String first = criteria.getSuggestionTypes().get(0);
             byStepCategoryOrSuggestionType = new FilterPredicate(SUGGESTION_TYPES, EQUAL, first);
         }
-        if (criteria.getCountry() != null) {
-            final Filter byCountry = new FilterPredicate(COUNTRY_CODE, EQUAL, criteria.getCountry().getCode());
+        if (criteria.getCity() != null && criteria.getCountryCode() != null) {
+            final Filter byCity = new FilterPredicate(CITY_CODES, EQUAL, criteria.getCity());
+            final Filter byCountry = new FilterPredicate(COUNTRY_CODE, EQUAL, criteria.getCountryCode());
+            final CompositeFilter compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCity, byCountry);
+            final Query query = new Query(KIND_PLACE_RESULT).setFilter(compositeFilter);
+            final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
+            result.addAll(entities);
+        } else if (criteria.getCountryCode() != null) {
+            final Filter byCountry = new FilterPredicate(COUNTRY_CODE, EQUAL, criteria.getCountryCode());
             final CompositeFilter compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCountry);
             final Query query = new Query(KIND_PLACE_RESULT).setFilter(compositeFilter)
                     //.addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
                     .addSort(POPULATION, DESCENDING);
-            final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
-            result.addAll(entities);
-        }
-        if (criteria.getCity() != null) {
-            final Filter byCity = new FilterPredicate(CITY_CODE, EQUAL, criteria.getCity().getCode());
-            final CompositeFilter compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCity);
-            final Query query = new Query(KIND_PLACE_RESULT).setFilter(compositeFilter);
-            // TODO add sort
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
             result.addAll(entities);
         }

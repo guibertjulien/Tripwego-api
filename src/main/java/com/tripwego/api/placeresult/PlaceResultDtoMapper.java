@@ -6,7 +6,6 @@ import com.tripwego.api.utils.I18nUtils;
 import com.tripwego.dto.common.LatLngBoundsDto;
 import com.tripwego.dto.placeresult.PlaceGeometryDto;
 import com.tripwego.dto.placeresult.PlaceResultDto;
-import com.tripwego.dto.trip.CityDto;
 import com.tripwego.dto.trip.CountryDto;
 
 import java.util.ArrayList;
@@ -42,7 +41,6 @@ class PlaceResultDtoMapper {
         // strings
         result.setName(extractNameTranslated(entity, language));
         result.setCountry(extractCountryTranslated(entity, language));
-        result.setCity(extractCity(entity));
         result.setFormatted_phone_number(String.valueOf(entity.getProperty(PHONE_NUMBER)));
         result.setHtml_attributions(String.valueOf(entity.getProperty(HTML_ATTRIBUTIONS)));
         result.setIcon(String.valueOf(entity.getProperty(ICON)));
@@ -61,6 +59,9 @@ class PlaceResultDtoMapper {
         }
         if (entity.getProperty(SUGGESTION_TYPES) != null) {
             result.getSuggestionTypes().addAll((ArrayList<String>) entity.getProperty(SUGGESTION_TYPES));
+        }
+        if (entity.getProperty(CITY_CODES) != null) {
+            result.getCityCodes().addAll((ArrayList<String>) entity.getProperty(CITY_CODES));
         }
         // dates
         result.setCreatedAt(String.valueOf((Date) entity.getProperty(CREATED_AT)));
@@ -122,12 +123,6 @@ class PlaceResultDtoMapper {
             }
         }
         return new CountryDto(code, name);
-    }
-
-    private CityDto extractCity(Entity entity) {
-        final String code = String.valueOf(entity.getProperty(CITY_CODE));
-        String name = String.valueOf(entity.getProperty(CITY_NAME));
-        return new CityDto(code, name);
     }
 
     private void updateGeometry(Entity entity, PlaceResultDto result) {
