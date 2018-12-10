@@ -29,21 +29,20 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
     private PlaceResultQueries placeResultQueries = new PlaceResultQueries();
 
     public Entity create(PlaceResultDto placeResult) {
-        LOGGER.info("--> create - START");
         Entity entity = null;
         try {
             // check if place already exist
             final Key key = KeyFactory.createKey(KIND_PLACE_RESULT, placeResult.getPlace_id());
             entity = datastore.get(key);
-            entity.setProperty(IS_ADMIN_AUTOMATIC, placeResult.isAdminAutomatic());
             // update if exist
             update(entity, placeResult);
         } catch (Exception e) {
-            LOGGER.info("-->  exception : " + e.getMessage());
+            // creation
             entity = placeResultEntityMapper.map(placeResult);
+            // IS_ADMIN_AUTOMATIC just for creation
+            entity.setProperty(IS_ADMIN_AUTOMATIC, placeResult.isAdminAutomatic());
             datastore.put(entity);
         }
-        LOGGER.info("--> create - END");
         return entity;
     }
 
