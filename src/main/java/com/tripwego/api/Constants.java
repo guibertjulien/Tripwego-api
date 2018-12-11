@@ -46,7 +46,6 @@ public class Constants {
     public static final String WAY_TYPE_OLD = "way_type_old";
     public static final String COUNTRY_CODE = "country_code";
     public static final String COUNTRY_NAME_EN = "country_name_en";
-    public static final String CITY_CODES = "city_codes";
     public static final String DURATION = "duration";
     public static final String END_DATE = "end_date";
     public static final String RATING = "rating";
@@ -98,7 +97,6 @@ public class Constants {
     public static final String CENTER_PT = "center_pt";
     public static final String COMMENT = "comment";
     public static final String TAGS = "tags";
-    public static final String ORDER = "order";
     public static final String IS_NO_SPECIFIC_DATES = "is_no_specific_dates";
     public static final String IS_STORE_IN_DOCUMENT = "is_store_in_document";
     public static final String POPULATION = "population";

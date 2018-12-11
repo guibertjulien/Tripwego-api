@@ -36,8 +36,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <endpoints.framework.version>2.0.10</endpoints.framework.version>
+        <endpoints.framework.version>2.2.0</endpoints.framework.version>
         <endpoints.management.version>1.0.6</endpoints.management.version>
+        <appengine.version>1.9.70</appengine.version>
 
         <endpoints.project.id>tripwego-api</endpoints.project.id>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -63,7 +64,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.59</version>
+            <version>${appengine.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

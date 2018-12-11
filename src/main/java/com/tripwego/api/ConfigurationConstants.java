@@ -12,4 +12,5 @@ public class ConfigurationConstants {
     public static final int LIMIT_DESTINATION_SUGGESTION = 5;
     public static final int LIMIT_PLACES = 25;
     public static final String SEARCH_TRIP_INDEX = "searchTripIndex";
+    public static final boolean GEO_SPATIAL_SEARCH_TURN_ON = false;
 }

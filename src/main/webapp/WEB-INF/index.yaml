@@ -38,25 +38,19 @@ indexes:
     direction: desc
 - kind: PLACE_RESULT
   properties:
-  - name: country_code
-  - name: city_codes
-  - name: step_categories
-  - name: population
-    direction: desc
-- kind: PLACE_RESULT
-  properties:
-  - name: country_code
-  - name: city_codes
-  - name: suggestion_types
-  - name: population
-    direction: desc
-- kind: PLACE_RESULT
-  properties:
   - name: suggestion_types
   - name: latitude
 - kind: PLACE_RESULT
   properties:
   - name: suggestion_types
+  - name: longitude
+- kind: PLACE_RESULT
+  properties:
+  - name: step_categories
+  - name: latitude
+- kind: PLACE_RESULT
+  properties:
+  - name: step_categories
   - name: longitude
 #### STEP
 #### get_trip

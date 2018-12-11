@@ -60,9 +60,6 @@ class PlaceResultDtoMapper {
         if (entity.getProperty(SUGGESTION_TYPES) != null) {
             result.getSuggestionTypes().addAll((ArrayList<String>) entity.getProperty(SUGGESTION_TYPES));
         }
-        if (entity.getProperty(CITY_CODES) != null) {
-            result.getCityCodes().addAll((ArrayList<String>) entity.getProperty(CITY_CODES));
-        }
         // dates
         result.setCreatedAt(String.valueOf((Date) entity.getProperty(CREATED_AT)));
         result.setUpdatedAt(String.valueOf((Date) entity.getProperty(UPDATED_AT)));
@@ -75,11 +72,10 @@ class PlaceResultDtoMapper {
         }
         // numbers
         if (entity.getProperty(RATING) != null) {
-            result.setRating(ratingDtoMapper.map((Rating) entity.getProperty(RATING)));
+            result.setRating((double) entity.getProperty(RATING));
         }
         result.setPrice_level((long) entity.getProperty(PRICE_LEVEL));
         result.setCounter((long) entity.getProperty(COUNTER));
-        result.setOrder((long) entity.getProperty(ORDER));
         // booleans
         result.setEvaluated((Boolean) entity.getProperty(IS_EVALUATED));
         result.setPermanently_closed((Boolean) entity.getProperty(PERMANENTLY_CLOSED));

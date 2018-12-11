@@ -17,7 +17,6 @@ class PlaceResultEntityMapper {
 
     private static final Logger LOGGER = Logger.getLogger(PlaceResultEntityMapper.class.getName());
     public static final long INIT_COUNTER = 0;
-    public static final int DEFAULT_ORDER = 9999;
 
     private final GeoPtEntityMapper geoPtEntityMapper;
 
@@ -50,13 +49,11 @@ class PlaceResultEntityMapper {
             entity.setProperty(PLACE_TYPE, new Category(placeResult.getPlaceType()));
         }
         entity.setProperty(PRICE_LEVEL, placeResult.getPrice_level());
-        entity.setProperty(ORDER, DEFAULT_ORDER);
-        entity.setProperty(RATING, new Rating(placeResult.getRating()));
+        entity.setProperty(RATING, placeResult.getRating());
         entity.setProperty(TYPES, placeResult.getTypes());
         entity.setProperty(STEP_CATEGORIES, placeResult.getStepCategories());
         entity.setProperty(STEP_TYPES, placeResult.getStepTypes());
         entity.setProperty(SUGGESTION_TYPES, placeResult.getSuggestionTypes());
-        entity.setProperty(CITY_CODES, placeResult.getCityCodes());
         entity.setProperty(UPDATED_AT, new Date());
         if (placeResult.getUrl() != null) {
             entity.setProperty(URL_SITE, new Link(placeResult.getUrl()));
