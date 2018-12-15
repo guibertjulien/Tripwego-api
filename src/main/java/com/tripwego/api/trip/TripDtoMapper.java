@@ -144,7 +144,6 @@ public class TripDtoMapper {
             seo.setTitle(String.valueOf(embeddedEntity.getProperty(TITLE)));
             seo.setDescription(String.valueOf(embeddedEntity.getProperty(DESCRIPTION)));
             seo.setKeywords(String.valueOf(embeddedEntity.getProperty(KEYWORDS)));
-            seo.setUrl(String.valueOf(embeddedEntity.getProperty(URL_SITE)));
             seo.setUrlParameterName(String.valueOf(embeddedEntity.getProperty(URL_PARAMETER_NAME)));
             trip.setSeo(seo);
         }

@@ -22,6 +22,11 @@ indexes:
   - name: trip_visibility
   - name: created_at
     direction: desc
+- kind: TRIP
+  properties:
+  - name: trip_admin_status
+  - name: created_at
+    direction: desc
 #### PLACE_RESULT
 #### findPlaces
 - kind: PLACE_RESULT

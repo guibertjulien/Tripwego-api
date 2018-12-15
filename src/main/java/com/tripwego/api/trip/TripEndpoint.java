@@ -105,13 +105,6 @@ public class TripEndpoint {
         return CollectionResponse.<Trip>builder().setItems(trips).build();
     }
 
-    @SuppressWarnings({"unchecked", "unused"})
-    @ApiMethod(name = "findAllTripsForAdmin", path = "findAllTripsForAdmin", httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<Trip> findAllTripsForAdmin(@Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit, @Nullable @Named("categoryNames") List<String> categoryNames) {
-        final List<Trip> trips = queries.findAllTripsForAdmin(offset, limit, categoryNames);
-        return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
-    }
-
     @ApiMethod(name = "copyTrip", path = "copyTrip", httpMethod = ApiMethod.HttpMethod.POST)
     public Trip copyTrip(Trip trip) {
         return tripRepository.copy(trip);
@@ -185,6 +178,12 @@ public class TripEndpoint {
     public CollectionResponse<Trip> find(TripSearchCriteria criteria) {
         final List<Trip> trips = queries.find(criteria);
         return CollectionResponse.<Trip>builder().setItems(trips).build();
+    }
+
+    @ApiMethod(name = "findAllTripsForAdmin", path = "findAllTripsForAdmin", httpMethod = ApiMethod.HttpMethod.POST)
+    public CollectionResponse<Trip> findAllTripsForAdmin(TripSearchCriteria criteria, @Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit) {
+        final List<Trip> trips = queries.findAllTripsForAdmin(criteria, offset, limit);
+        return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
     }
 
     @ApiMethod(name = "count", path = "count", httpMethod = ApiMethod.HttpMethod.GET)

@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_QUERY_TRIP;
 import static com.tripwego.api.ConfigurationConstants.LIMIT_TRIP_DOCUMENT_TO_STORE_BY_DAY;
 import static com.tripwego.api.Constants.*;
@@ -107,17 +108,16 @@ public class TripQueries {
         return result;
     }
 
-    public List<Trip> findAllTripsForAdmin(Integer offset, Integer limit, List<String> categoryNames) {
+    public List<Trip> findAllTripsForAdmin(TripSearchCriteria criteria, Integer offset, Integer limit) {
         final List<Trip> result = new ArrayList<>();
-        final Query query;
-        /*
-        if (asList("TRIP_AUTOMATIC", "TRIP_MANUAL").containsAll(categoryNames)) {
-            final Filter isTripAutomatic = new FilterPredicate(IS_TRIP_AUTOMATIC, FilterOperator.EQUAL, asList("TRIP_AUTOMATIC").containsAll(categoryNames));
-            query = new Query(KIND_TRIP).setFilter(isTripAutomatic).addSort(CREATED_AT, SortDirection.DESCENDING);
+        Query query;
+        if (criteria.getAdminStatus() != null && !criteria.getAdminStatus().isEmpty()) {
+            final String first = criteria.getAdminStatus().get(0);
+            Filter byAdminStatus = new FilterPredicate(TRIP_ADMIN_STATUS, EQUAL, first);
+            query = new Query(KIND_TRIP).setFilter(byAdminStatus).addSort(CREATED_AT, SortDirection.DESCENDING);
+        } else {
+            query = new Query(KIND_TRIP).addSort(CREATED_AT, SortDirection.DESCENDING);
         }
-        */
-        query = new Query(KIND_TRIP).addSort(CREATED_AT, SortDirection.DESCENDING);
-        // query
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withOffset(offset).limit(limit));
         for (Entity entity : entities) {
             final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));

@@ -77,7 +77,6 @@ public class TripEntityMapper {
         embeddedEntity.setProperty(TITLE, seo.getTitle());
         embeddedEntity.setProperty(DESCRIPTION, seo.getDescription());
         embeddedEntity.setProperty(KEYWORDS, seo.getKeywords());
-        embeddedEntity.setProperty(URL_SITE, seo.getUrl());
         entity.setProperty(EMBEDDED_SEO, embeddedEntity);
         // ONLY IF CREATED, NOT ALTERABLE
         if (CREATED.name().equals(trip.getTripAdminStatus())) {
