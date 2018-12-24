@@ -5,10 +5,8 @@ import com.tripwego.api.common.mapper.GeoPtEntityMapper;
 import com.tripwego.dto.placeresult.PlaceResultDto;
 import com.tripwego.dto.placeresult.PlaceResultDtoSearchCriteria;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 
 import static com.google.appengine.api.datastore.Query.*;
 import static com.google.appengine.api.datastore.Query.FilterOperator.*;
@@ -108,8 +106,10 @@ public class PlaceResultQueries {
                 result.addAll(entitiesWithLat);
                 result.retainAll(entitiesWithLng);
             }
-            final PlaceComparator byRatingAndCounter = new PlaceComparator();
-            Collections.sort(result, byRatingAndCounter);
+            Comparator<Entity> byRatingThenCounter = Comparator
+                    .comparing((Function<Entity, Double>) p -> (Double) p.getProperty(RATING))
+                    .thenComparing(p -> (Long) p.getProperty(COUNTER));
+            Collections.sort(result, Collections.reverseOrder(byRatingThenCounter));
             if (result.size() > LIMIT_PLACES) {
                 result = result.subList(0, LIMIT_PLACES);
             }
