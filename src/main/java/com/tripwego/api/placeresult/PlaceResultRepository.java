@@ -191,7 +191,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         placeRatingRepository.deleteCollection(KIND_PLACE_RATING, parent);
     }
 
-    public void decrementCounter(List<Entity> parentEntities, boolean putEntity) {
+    public void decrementCounter(List<Entity> parentEntities) {
         for (Entity entity : parentEntities) {
             final String placeId = String.valueOf(entity.getProperty(PLACE_RESULT_ID));
             final List<Entity> entitiesToUpdate = new ArrayList<>();
@@ -202,7 +202,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
                 entitiesToUpdate.add(placeResultEntity);
             } catch (EntityNotFoundException e) {
             }
-            if (putEntity && !entitiesToUpdate.isEmpty()) {
+            if (!entitiesToUpdate.isEmpty()) {
                 datastore.put(entitiesToUpdate);
             }
         }
@@ -213,6 +213,18 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
         placeResultEntity.setProperty(COUNTER, counter + increment);
         if (putEntity) {
             datastore.put(placeResultEntity);
+        }
+    }
+
+    public void updateSuggestionTypes(PlaceResultDto placeResultDto) {
+        final Entity entity;
+        try {
+            entity = datastore.get(KeyFactory.stringToKey(placeResultDto.getPlaceKey()));
+            entity.setProperty(SUGGESTION_TYPES, placeResultDto.getSuggestionTypes());
+            entity.setProperty(UPDATED_AT, new Date());
+            datastore.put(entity);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

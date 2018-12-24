@@ -76,7 +76,6 @@ public class PlaceResultQueries {
             final Filter byCountry = new FilterPredicate(COUNTRY_CODE, EQUAL, criteria.getCountryCode());
             final CompositeFilter compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCountry);
             final Query query = new Query(KIND_PLACE_RESULT).setFilter(compositeFilter)
-                    //.addSort(COUNTER, DESCENDING).addSort(RATING, DESCENDING);
                     .addSort(POPULATION, DESCENDING);
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
             result.addAll(entities);

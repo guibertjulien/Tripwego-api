@@ -129,9 +129,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         return result;
     }
 
-
     public Trip copy(Trip trip) {
-        LOGGER.info("--> copy - START : " + trip.getParentTripId());
         final Optional<MyUser> user = Optional.ofNullable(userRepository.create(trip.getUser()));
         final Entity entity = new Entity(KIND_TRIP);
         tripEntityMapper.map(entity, trip, user);
@@ -147,8 +145,9 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
         //
         datastore.put(entity);
+        placeResultRepository.incrementCounter(placeResultEntity, true, 1);
+        placeResultRepository.incrementCounterAndInitializeRating(trip);
         updateChild(trip, entity);
-        LOGGER.info("--> copy - END");
         return tripDtoMapper.map(entity, user);
     }
 
@@ -376,7 +375,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         }
         if (keysToKill.size() > 0) {
             datastore.delete(keysToKill);
-            placeResultRepository.decrementCounter(tripEntitiesToDelete, true);
+            placeResultRepository.decrementCounter(tripEntitiesToDelete);
         }
     }
 

@@ -40,6 +40,12 @@ public class PlaceResultEndpoint {
     }
 
     @SuppressWarnings("unchecked")
+    @ApiMethod(name = "updateSuggestionTypes", path = "updateSuggestionTypes", httpMethod = ApiMethod.HttpMethod.PUT)
+    public void updateSuggestionTypes(PlaceResultDto placeResultDto) {
+        placeResultRepository.updateSuggestionTypes(placeResultDto);
+    }
+
+    @SuppressWarnings("unchecked")
     @ApiMethod(name = "deletePlacesUnused", path = "deletePlacesUnused", httpMethod = ApiMethod.HttpMethod.GET)
     public void deletePlacesUnused() {
         placeResultRepository.delete();
