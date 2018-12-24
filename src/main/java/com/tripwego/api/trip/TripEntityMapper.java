@@ -28,7 +28,7 @@ public class TripEntityMapper {
         entity.setProperty(DURATION, trip.getDuration());
         entity.setProperty(START_DATE, DateUtil.deserializeDate(trip.getStartDate()));
         entity.setProperty(END_DATE, DateUtil.deserializeDate(trip.getEndDate()));
-        entity.setProperty(IS_CANCELLED, trip.isCancelled());
+        entity.setProperty(IS_CANCELLED_BY_USER, trip.isCancelled());
         entity.setProperty(IS_NO_SPECIFIC_DATES, trip.isNoSpecificDates());
         entity.setProperty(RATING, new Rating(trip.getRating()));
         //

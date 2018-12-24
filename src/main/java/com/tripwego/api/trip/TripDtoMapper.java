@@ -74,8 +74,8 @@ public class TripDtoMapper {
         if (user.isPresent()) {
             trip.setUser(user.get());
         }
-        if (entity.getProperty(IS_CANCELLED) != null) {
-            trip.setCancelled((Boolean) entity.getProperty(IS_CANCELLED));
+        if (entity.getProperty(IS_CANCELLED_BY_USER) != null) {
+            trip.setCancelled((Boolean) entity.getProperty(IS_CANCELLED_BY_USER));
         }
         if (entity.getProperty(IS_NO_SPECIFIC_DATES) != null) {
             trip.setNoSpecificDates((Boolean) entity.getProperty(IS_NO_SPECIFIC_DATES));

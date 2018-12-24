@@ -7,7 +7,6 @@ import com.tripwego.api.document.DocumentService;
 import com.tripwego.api.placeresult.PlaceResultRepository;
 import com.tripwego.api.step.StepDtoMapper;
 import com.tripwego.api.step.StepDtoMapperFactory;
-import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.user.UserQueries;
 import com.tripwego.api.utils.Strings;
 import com.tripwego.dto.common.Counter;
@@ -40,8 +39,8 @@ import static com.tripwego.api.trip.status.TripVisibility.PUBLIC;
 public class TripQueries {
 
     private static final Logger LOGGER = Logger.getLogger(TripQueries.class.getName());
-    public static final List<String> ADMIN_STATUS_VISIBLE = Arrays.asList(UPDATED.name(), FORKED.name(), CHECKED.name());
-    public static final List<String> ADMIN_STATUS_SEO_VISIBLE = Arrays.asList(CHECKED.name());
+    private static final List<String> ADMIN_STATUS_VISIBLE = Arrays.asList(UPDATED.name(), FORKED.name(), CHECKED.name());
+    private static final List<String> ADMIN_STATUS_SEO_VISIBLE = Arrays.asList(CHECKED.name());
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private TripDtoMapper tripDtoMapper = new TripDtoMapperFactory().create();
@@ -69,7 +68,7 @@ public class TripQueries {
     public List<Trip> findAllTripsAlive(Integer offset, Integer limit) {
         final List<Trip> result = new ArrayList<>();
         // filters
-        final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, false);
+        final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED_BY_USER, FilterOperator.EQUAL, false);
         final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
         final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
         final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
@@ -93,7 +92,7 @@ public class TripQueries {
     public List<Trip> findAllTripsForSeo() {
         final List<Trip> result = new ArrayList<>();
         // filters
-        final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, false);
+        final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED_BY_USER, FilterOperator.EQUAL, false);
         final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
         final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
         final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_SEO_VISIBLE);
@@ -245,23 +244,22 @@ public class TripQueries {
     }
 
     public List<Entity> findTripEntitiesInStatusCreated() {
-        final Filter isCreatedStatus = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.EQUAL, TripAdminStatus.CREATED.name());
+        final Filter isCreatedStatus = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.EQUAL, CREATED.name());
         final Query query = new Query(KIND_TRIP).setFilter(isCreatedStatus);
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 
     public List<Entity> findTripEntitiesCancelled() {
-        final Filter isCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
-        final Filter isCancelledByAdmin = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.EQUAL, TripAdminStatus.CANCELLED.name());
-        final Query query = new Query(KIND_TRIP).setFilter(CompositeFilterOperator.or(isCancelledByUser, isCancelledByAdmin));
+        final Filter isCancelled = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.EQUAL, CANCELLED.name());
+        final Query query = new Query(KIND_TRIP).setFilter(isCancelled);
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 
     public List<Entity> findTripEntitiesCancelledByUser(String userId) {
         final Filter byUser = new FilterPredicate(USER_ID, FilterOperator.EQUAL, userId);
-        final Filter isCancelledByUser = new FilterPredicate(IS_CANCELLED, FilterOperator.EQUAL, true);
+        final Filter isCancelledByUser = new FilterPredicate(IS_CANCELLED_BY_USER, FilterOperator.EQUAL, true);
         final Filter filters = CompositeFilterOperator.and(byUser, isCancelledByUser);
-        final Query query = new Query(KIND_TRIP).setFilter(filters).addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
+        final Query query = new Query(KIND_TRIP).setFilter(filters);
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 

@@ -66,7 +66,7 @@ public class Constants {
     public static final String FEDERATED_IDENTITY = "federated_identity";
     public static final String NICKNAME = "nickname";
     public static final String USER_ID = "user_id";
-    public static final String IS_CANCELLED = "is_cancelled";
+    public static final String IS_CANCELLED_BY_USER = "is_cancelled";
     public static final String IS_ADMIN_AUTOMATIC = "is_admin_automatic";
     public static final String CANCELLATION_DATE = "cancellation_date";
     public static final String PICTURE = "picture";

@@ -3,7 +3,6 @@ package com.tripwego.api.trip;
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.common.AbstractRepository;
 import com.tripwego.api.placeresult.PlaceResultRepository;
-import com.tripwego.api.trip.status.TripAdminStatus;
 import com.tripwego.api.tripitem.TripItemQueries;
 import com.tripwego.api.tripitem.dto.*;
 import com.tripwego.api.tripitem.repository.*;
@@ -66,7 +65,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(CANCELLATION_DATE, null);
         entity.setProperty(TAGS, trip.getTags());
         entity.setProperty(IS_STORE_IN_DOCUMENT, false);
-        entity.setProperty(IS_CANCELLED, false);
+        entity.setProperty(IS_CANCELLED_BY_USER, false);
         entity.setProperty(IS_ADMIN_AUTOMATIC, trip.isAdminAutomatic());
         entity.setProperty(TRIP_ADMIN_STATUS, CREATED.name());
         entity.setProperty(TRIP_USER_STATUS, PUBLISHED.name());
@@ -135,7 +134,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         tripEntityMapper.map(entity, trip, user);
         entity.setProperty(IS_DEFAULT, true);
         entity.setProperty(TRIP_ADMIN_STATUS, FORKED.name());
-        entity.setProperty(IS_CANCELLED, false);
+        entity.setProperty(IS_CANCELLED_BY_USER, false);
         entity.setProperty(CREATED_AT, new Date());
         entity.setProperty(UPDATED_AT, new Date());
         updateVersion(trip, entity, NUMBER_VERSION_DEFAULT);
@@ -222,7 +221,7 @@ public class TripRepository extends AbstractRepository<Trip> {
 
     public void deleteOrRestore(Trip trip) throws EntityNotFoundException {
         final Entity entity = datastore.get(KeyFactory.stringToKey(trip.getId()));
-        entity.setProperty(IS_CANCELLED, trip.isCancelled());
+        entity.setProperty(IS_CANCELLED_BY_USER, trip.isCancelled());
         if (trip.isCancelled()) {
             entity.setProperty(CANCELLATION_DATE, new Date());
         } else {
@@ -341,7 +340,6 @@ public class TripRepository extends AbstractRepository<Trip> {
     }
 
     public void deleteTripsCancelled(int delay) {
-        LOGGER.info("--> deleteTripsCancelled - START");
         final Date today = Calendar.getInstance().getTime();
         final List<Entity> trips = tripQueries.findTripEntitiesCancelled();
         final List<Entity> tripsToDelete = new ArrayList<>();
@@ -353,18 +351,24 @@ public class TripRepository extends AbstractRepository<Trip> {
                 final long days = ChronoUnit.DAYS.between(cancellationDate.toInstant(), today.toInstant());
                 delayExpired = days >= delay;
             }
-            if (TripAdminStatus.valueOf(tripAdminStatus) == CANCELLED || delayExpired) {
+            if (valueOf(tripAdminStatus) == CANCELLED || delayExpired) {
                 tripsToDelete.add(entity);
             }
         }
         if (tripsToDelete.size() > 0) {
             deleteTripEntities(tripsToDelete);
         }
-        LOGGER.info("--> deleteTripsCancelled - END");
     }
 
     public void deleteTripsCancelledFromUser(String userId) {
-        deleteTripEntities(tripQueries.findTripEntitiesCancelledByUser(userId));
+        cancelTripEntities(tripQueries.findTripEntitiesCancelledByUser(userId));
+    }
+
+    private void cancelTripEntities(List<Entity> tripEntitiesToCancel) {
+        for (Entity entity : tripEntitiesToCancel) {
+            entity.setProperty(TRIP_ADMIN_STATUS, CANCELLED.name());
+        }
+        datastore.put(tripEntitiesToCancel);
     }
 
     private void deleteTripEntities(List<Entity> tripEntitiesToDelete) {

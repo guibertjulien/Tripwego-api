@@ -6,22 +6,28 @@ import com.tripwego.dto.placeresult.PlaceResultDto;
 import com.tripwego.dto.placeresult.PlaceResultDtoSearchCriteria;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
 import static com.google.appengine.api.datastore.Query.FilterOperator.*;
 import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
 import static com.tripwego.api.ConfigurationConstants.*;
 import static com.tripwego.api.Constants.*;
+import static com.tripwego.api.step.StepCategory.*;
 
 /**
  * Created by JG on 19/02/17.
  */
 public class PlaceResultQueries {
 
-    private static final Logger LOGGER = Logger.getLogger(PlaceResultQueries.class.getName());
+    private static final List<String> IS_ACTIVITY = Arrays.asList(
+            ACTIVITY.name(),
+            FOOD.name(),
+            NIGHT_LIFE.name(),
+            SHOPPING.name());
+    private static final String COUNTRY = "country";
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -31,8 +37,8 @@ public class PlaceResultQueries {
 
     public List<PlaceResultDto> findDestinationSuggestions(PlaceResultDtoSearchCriteria criteria) {
         final List<PlaceResultDto> result = new ArrayList<>();
-        final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, EQUAL, "DESTINATION");
-        final Filter byType = new FilterPredicate(TYPES, EQUAL, "country");
+        final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, EQUAL, DESTINATION.name());
+        final Filter byType = new FilterPredicate(TYPES, EQUAL, COUNTRY);
         final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
         //final Query query = new Query(KIND_PLACE_RESULT).setFilter(byStepCategory);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
@@ -66,7 +72,11 @@ public class PlaceResultQueries {
         Filter byStepCategoryOrSuggestionType = null;
         if (criteria.getStepCategories() != null && !criteria.getStepCategories().isEmpty()) {
             final String first = criteria.getStepCategories().get(0);
-            byStepCategoryOrSuggestionType = new FilterPredicate(STEP_CATEGORIES, EQUAL, first);
+            if (ACTIVITY.name().equals(first)) {
+                byStepCategoryOrSuggestionType = new FilterPredicate(STEP_CATEGORIES, FilterOperator.IN, PlaceResultQueries.IS_ACTIVITY);
+            } else {
+                byStepCategoryOrSuggestionType = new FilterPredicate(STEP_CATEGORIES, EQUAL, first);
+            }
         }
         if (criteria.getSuggestionTypes() != null && !criteria.getSuggestionTypes().isEmpty()) {
             final String first = criteria.getSuggestionTypes().get(0);
