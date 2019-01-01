@@ -10,7 +10,7 @@ public class Constants {
     // tables name
     public static final String KIND_TRIP = "TRIP";
     public static final String KIND_STEP = "STEP";
-    public static final String KIND_PLACE_RESULT = "PLACE_RESULT";
+    public static final String KIND_PLACE = "PLACE";
     public static final String KIND_TAG = "TAG";
     public static final String KIND_USER = "MY_USER";
     public static final String KIND_REGION_COUNTER = "REGION_COUNTER";
@@ -19,7 +19,6 @@ public class Constants {
     public static final String KIND_FLIGHT = "FLIGHT";
     public static final String KIND_RAIL = "RAIL";
     public static final String KIND_RENTAL = "RENTAL";
-    public static final String KIND_PLACE_RATING = "PLACE_RATING";
     // embedded
     public static final String EMBEDDED_VERSION = "version";
     public static final String EMBEDDED_PROVIDER = "provider";
@@ -78,7 +77,8 @@ public class Constants {
     public static final String ICON_TYPE = "icon_type";
     public static final String PARENT_TRIP_ITEM_ID = "parent_trip_item_id";
     public static final String PARENT_TRIP_ID = "parent_trip_id";
-    public static final String PLACE_RESULT_ID = "place_result_id";
+    public static final String PLACE_ID = "place_id";
+    public static final String PLACE_KEY = "place_key";
     public static final String LANGUAGE = "language";
     public static final String CODE = "code";
     public static final String COUNTER = "counter";

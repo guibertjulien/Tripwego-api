@@ -36,7 +36,7 @@ public class PlaceResultEndpoint {
     @SuppressWarnings("unchecked")
     @ApiMethod(name = "updateRating", path = "updateRating", httpMethod = ApiMethod.HttpMethod.PUT)
     public void updateRating(@Named("placeKey") String placeKey, @Named("userId") String userId, @Named("rating") Integer rating) {
-        placeResultRepository.updateRating(placeKey, userId, rating);
+        //placeResultRepository.updateRating(placeKey, userId, rating);
     }
 
     @SuppressWarnings("unchecked")

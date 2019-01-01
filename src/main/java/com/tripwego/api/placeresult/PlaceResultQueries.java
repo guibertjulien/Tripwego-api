@@ -37,8 +37,8 @@ public class PlaceResultQueries {
         final List<PlaceResultDto> result = new ArrayList<>();
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, EQUAL, DESTINATION.name());
         final Filter byType = new FilterPredicate(TYPES, EQUAL, COUNTRY);
-        final Query query = new Query(KIND_PLACE_RESULT).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
-        //final Query query = new Query(KIND_PLACE_RESULT).setFilter(byStepCategory);
+        final Query query = new Query(KIND_PLACE).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
+        //final Query query = new Query(KIND_PLACE).setFilter(byStepCategory);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         Collections.shuffle(entities);
         for (Entity entity : entities.size() > LIMIT_DESTINATION_SUGGESTION ? entities.subList(0, LIMIT_DESTINATION_SUGGESTION) : entities) {
@@ -83,7 +83,7 @@ public class PlaceResultQueries {
         if (criteria.getCountryCode() != null) {
             final Filter byCountry = new FilterPredicate(COUNTRY_CODE, EQUAL, criteria.getCountryCode());
             final CompositeFilter compositeFilter = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, byCountry);
-            final Query query = new Query(KIND_PLACE_RESULT).setFilter(compositeFilter)
+            final Query query = new Query(KIND_PLACE).setFilter(compositeFilter)
                     .addSort(POPULATION, DESCENDING);
             final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_PLACES));
             result.addAll(entities);
@@ -91,16 +91,16 @@ public class PlaceResultQueries {
         if (criteria.getBounds() != null) {
             if (GEO_SPATIAL_SEARCH_TURN_ON) {
                 final StContainsFilter stContainsFilter = extractBoundsFilter(criteria);
-                final Query query = new Query(KIND_PLACE_RESULT).setFilter(stContainsFilter);
+                final Query query = new Query(KIND_PLACE).setFilter(stContainsFilter);
                 final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
                 result.addAll(entities);
             } else {
                 final CompositeFilter latFilter = extractLatFilterWorkaround(criteria);
                 final CompositeFilter compositeFilterLat = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, latFilter);
-                final Query latQuery = new Query(KIND_PLACE_RESULT).setFilter(compositeFilterLat);
+                final Query latQuery = new Query(KIND_PLACE).setFilter(compositeFilterLat);
                 final CompositeFilter lngFilter = extractLngFilterWorkaround(criteria);
                 final CompositeFilter compositeFilterLng = CompositeFilterOperator.and(byStepCategoryOrSuggestionType, lngFilter);
-                final Query lngQuery = new Query(KIND_PLACE_RESULT).setFilter(compositeFilterLng);
+                final Query lngQuery = new Query(KIND_PLACE).setFilter(compositeFilterLng);
                 final List<Entity> entitiesWithLat = datastore.prepare(latQuery).asList(FetchOptions.Builder.withDefaults());
                 final List<Entity> entitiesWithLng = datastore.prepare(lngQuery).asList(FetchOptions.Builder.withDefaults());
                 result.addAll(entitiesWithLat);
@@ -147,7 +147,7 @@ public class PlaceResultQueries {
 
     public List<Entity> findPlaceEntitiesUnused() {
         final Filter hasCounterAtZero = new FilterPredicate(COUNTER, FilterOperator.EQUAL, 0);
-        final Query query = new Query(KIND_PLACE_RESULT).setFilter(hasCounterAtZero);
+        final Query query = new Query(KIND_PLACE).setFilter(hasCounterAtZero);
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 }

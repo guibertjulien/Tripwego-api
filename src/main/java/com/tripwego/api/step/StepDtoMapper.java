@@ -100,7 +100,7 @@ public class StepDtoMapper {
             step.setLevel(String.valueOf(entity.getProperty(STEP_LEVEL)));
         }
         //
-        step.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+        step.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_KEY)));
         LOGGER.info("--> StepDtoMapper.map - END");
         return step;
     }

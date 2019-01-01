@@ -98,7 +98,7 @@ public class TripDtoMapper {
         trip.setMapStyle(String.valueOf(entity.getProperty(MAP_STYLE)));
         trip.setWayTypeDefault(String.valueOf(entity.getProperty(WAY_TYPE_DEFAULT)));
         //
-        trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+        trip.setPlaceResultId(String.valueOf(entity.getProperty(PLACE_KEY)));
         trip.setLanguage(String.valueOf(entity.getProperty(LANGUAGE)));
         if (entity.getProperty(TAGS) != null) {
             Object property = entity.getProperty(TAGS);

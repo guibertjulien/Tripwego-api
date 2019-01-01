@@ -26,8 +26,8 @@ class PlaceResultEntityMapper {
 
     public Entity map(PlaceResultDto placeResult) {
         LOGGER.info("--> PlaceResultEntityMapper.map - START");
-        Entity entity = new Entity(KIND_PLACE_RESULT, placeResult.getPlace_id());
-        entity.setProperty(PLACE_RESULT_ID, placeResult.getPlace_id());
+        Entity entity = new Entity(KIND_PLACE, placeResult.getPlace_id());
+        entity.setProperty(PLACE_ID, placeResult.getPlace_id());
         entity.setProperty(NAME, placeResult.getName());
         if (placeResult.getCountry() != null) {
             entity.setProperty(COUNTRY_CODE, placeResult.getCountry().getCode());

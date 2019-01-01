@@ -74,7 +74,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(TRIP_CERTIFICATE, NONE.name());
         updateVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
-        entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
+        entity.setProperty(PLACE_KEY, KeyFactory.keyToString(placeResultEntity.getKey()));
         datastore.put(entity);
         placeResultRepository.incrementCounter(placeResultEntity, true, 1);
         return tripDtoMapper.map(entity, user);
@@ -103,7 +103,7 @@ public class TripRepository extends AbstractRepository<Trip> {
                 railRepository.createAll(trip.getRails(), entity);
                 rentalRepository.createAll(trip.getRentals(), entity);
                 final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
-                entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
+                entity.setProperty(PLACE_KEY, KeyFactory.keyToString(placeResultEntity.getKey()));
             }
             // update trip
             else {
@@ -121,7 +121,7 @@ public class TripRepository extends AbstractRepository<Trip> {
                 updateProvider(trip, entity);
             }
             datastore.put(entity);
-            placeResultRepository.incrementCounterAndInitializeRating(trip);
+            placeResultRepository.incrementCounter(trip);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
@@ -141,11 +141,11 @@ public class TripRepository extends AbstractRepository<Trip> {
         //
         entity.setProperty(IS_COPY, true);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
-        entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
+        entity.setProperty(PLACE_KEY, KeyFactory.keyToString(placeResultEntity.getKey()));
         //
         datastore.put(entity);
         placeResultRepository.incrementCounter(placeResultEntity, true, 1);
-        placeResultRepository.incrementCounterAndInitializeRating(trip);
+        placeResultRepository.incrementCounter(trip);
         updateChild(trip, entity);
         return tripDtoMapper.map(entity, user);
     }
@@ -414,12 +414,12 @@ public class TripRepository extends AbstractRepository<Trip> {
     public void testQuery() {
         LOGGER.info("--> testQuery - START");
         LOGGER.info("=====================> query 1");
-        final Query query = new Query(KIND_TRIP).addProjection(new PropertyProjection(PLACE_RESULT_ID, String.class));
+        final Query query = new Query(KIND_TRIP).addProjection(new PropertyProjection(PLACE_KEY, String.class));
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         LOGGER.info("--> " + entities.size());
         for (Entity entity : entities) {
             LOGGER.info("key : " + entity.getKind() + " / " + entity.getKey());
-            LOGGER.info("place id : " + String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+            LOGGER.info("place id : " + String.valueOf(entity.getProperty(PLACE_KEY)));
         }
 
         LOGGER.info("=====================> query 2");
@@ -428,7 +428,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         LOGGER.info("--> " + entities.size());
         for (Entity entity : entities2) {
             LOGGER.info("key : " + entity.getKind() + " / " + entity.getKey());
-            LOGGER.info("place id : " + String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+            LOGGER.info("place id : " + String.valueOf(entity.getProperty(PLACE_KEY)));
         }
     }
 }

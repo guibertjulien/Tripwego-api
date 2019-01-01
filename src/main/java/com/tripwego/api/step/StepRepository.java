@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static com.tripwego.api.Constants.KIND_STEP;
-import static com.tripwego.api.Constants.PLACE_RESULT_ID;
+import static com.tripwego.api.Constants.PLACE_KEY;
 
 public class StepRepository extends AbstractRepository<Step> {
 
@@ -32,7 +32,7 @@ public class StepRepository extends AbstractRepository<Step> {
     public Entity entityToCreate(Entity parent, Step step) {
         final Entity entity = stepEntityMapper.map(step, parent);
         final Entity placeResultEntity = placeResultRepository.create(step.getPlaceResultDto());
-        entity.setProperty(PLACE_RESULT_ID, KeyFactory.keyToString(placeResultEntity.getKey()));
+        entity.setProperty(PLACE_KEY, KeyFactory.keyToString(placeResultEntity.getKey()));
         return entity;
     }
 

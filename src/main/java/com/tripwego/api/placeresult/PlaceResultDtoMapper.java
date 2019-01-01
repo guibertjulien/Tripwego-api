@@ -36,7 +36,7 @@ class PlaceResultDtoMapper {
         LOGGER.info("--> PlaceResultDto.map - START");
         final PlaceResultDto result = new PlaceResultDto();
         // ids
-        result.setPlace_id(String.valueOf(entity.getProperty(PLACE_RESULT_ID)));
+        result.setPlace_id(String.valueOf(entity.getProperty(PLACE_ID)));
         result.setPlaceKey(KeyFactory.keyToString(entity.getKey()));
         // strings
         result.setName(extractNameTranslated(entity, language));

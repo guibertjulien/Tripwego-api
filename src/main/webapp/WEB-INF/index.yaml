@@ -7,7 +7,7 @@ indexes:
   properties:
   - name: is_cancelled
   - name: user_id
-  - name: place_result_id
+  - name: place_key
 - kind: TRIP
   properties:
   - name: user_id
@@ -27,39 +27,39 @@ indexes:
   - name: trip_admin_status
   - name: created_at
     direction: desc
-#### PLACE_RESULT
+#### PLACE
 #### findPlaces
-- kind: PLACE_RESULT
+- kind: PLACE
   properties:
   - name: country_code
   - name: step_categories
   - name: population
     direction: desc
-- kind: PLACE_RESULT
+- kind: PLACE
   properties:
   - name: country_code
   - name: suggestion_types
   - name: population
     direction: desc
-- kind: PLACE_RESULT
+- kind: PLACE
   properties:
   - name: suggestion_types
   - name: latitude
-- kind: PLACE_RESULT
+- kind: PLACE
   properties:
   - name: suggestion_types
   - name: longitude
-- kind: PLACE_RESULT
+- kind: PLACE
   properties:
   - name: step_categories
   - name: latitude
-- kind: PLACE_RESULT
+- kind: PLACE
   properties:
   - name: step_categories
   - name: longitude
 #### STEP
 #### get_trip
-#### incrementCounterAndInitializeRating
+#### incrementCounter
 - kind: STEP
   ancestor: yes
   properties:
@@ -67,4 +67,4 @@ indexes:
 - kind: STEP
   ancestor: yes
   properties:
-  - name: place_result_id
+  - name: place_key
