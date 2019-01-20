@@ -34,12 +34,7 @@ public class RentalRepository {
     public void removeAll(Entity parent) {
         final Query query = new Query(KIND_RENTAL).setAncestor(parent.getKey());
         final List<Entity> entitiesWithJustKey = datastore.prepare(query.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-        final Collection<Key> keysToKill = entitiesWithJustKey.stream().map(new java.util.function.Function<Entity, Key>() {
-            @Override
-            public Key apply(Entity entity) {
-                return entity.getKey();
-            }
-        }).collect(Collectors.toList());
+        final Collection<Key> keysToKill = entitiesWithJustKey.stream().map(entity -> entity.getKey()).collect(Collectors.toList());
         for (Entity entity : entitiesWithJustKey) {
             stepRepository.deleteCollection(entity);
         }

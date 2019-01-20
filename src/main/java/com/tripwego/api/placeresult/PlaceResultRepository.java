@@ -114,15 +114,7 @@ public class PlaceResultRepository extends AbstractRepository<PlaceResultDto> {
     }
 
     public void delete() {
-        final List<Entity> placesToDelete = placeResultQueries.findPlaceEntitiesUnused();
-        if (!placesToDelete.isEmpty()) {
-            deletePlaceEntities(placesToDelete);
-        }
-    }
-
-    private void deletePlaceEntities(List<Entity> placesToDelete) {
-        final List<Key> keysToKill = new ArrayList<>();
-        keysToKill.addAll(extractKeys(placesToDelete));
+        final List<Key> keysToKill = placeResultQueries.findPlaceEntitiesUnused();
         if (!keysToKill.isEmpty()) {
             datastore.delete(keysToKill);
         }

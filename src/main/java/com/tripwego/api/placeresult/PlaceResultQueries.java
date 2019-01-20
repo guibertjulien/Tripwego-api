@@ -7,6 +7,7 @@ import com.tripwego.dto.placeresult.PlaceResultDtoSearchCriteria;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.google.appengine.api.datastore.Query.*;
 import static com.google.appengine.api.datastore.Query.FilterOperator.*;
@@ -37,7 +38,7 @@ public class PlaceResultQueries {
         final List<PlaceResultDto> result = new ArrayList<>();
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, EQUAL, DESTINATION.name());
         //final Filter byType = new FilterPredicate(TYPES, EQUAL, COUNTRY);
-        final Query query = new Query(KIND_PLACE).setFilter(CompositeFilterOperator.and(byStepCategory));
+        final Query query = new Query(KIND_PLACE).setFilter(byStepCategory);
         //final Query query = new Query(KIND_PLACE).setFilter(byStepCategory);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         Collections.shuffle(entities);
@@ -144,10 +145,33 @@ public class PlaceResultQueries {
         return new StContainsFilter(CENTER_PT, new GeoRegion.Rectangle(southwest, northeast));
     }
 
-
-    public List<Entity> findPlaceEntitiesUnused() {
+    // TODO fix
+    public List<Entity> findPlaceEntitiesUnusedWithCounter() {
         final Filter hasCounterAtZero = new FilterPredicate(COUNTER, FilterOperator.EQUAL, 0);
         final Query query = new Query(KIND_PLACE).setFilter(hasCounterAtZero);
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    }
+
+    public List<Key> findPlaceEntitiesUnused() {
+        Set<String> placeKeysUsed = new HashSet<>();
+        // list of place with step parent
+        final Query queryStep = new Query(KIND_STEP).addProjection(new PropertyProjection(PLACE_KEY, String.class));
+        final List<Entity> stepEntities = datastore.prepare(queryStep).asList(FetchOptions.Builder.withDefaults());
+        for (Entity stepEntity : stepEntities) {
+            placeKeysUsed.add(String.valueOf(stepEntity.getProperty(PLACE_KEY)));
+        }
+        // list of place with trip parent
+        final Query queryTrip = new Query(KIND_TRIP).addProjection(new PropertyProjection(PLACE_KEY, String.class));
+        final List<Entity> tripEntities = datastore.prepare(queryTrip).asList(FetchOptions.Builder.withDefaults());
+        for (Entity stepEntity : tripEntities) {
+            placeKeysUsed.add(String.valueOf(stepEntity.getProperty(PLACE_KEY)));
+        }
+        // list of places
+        final List<Entity> placeKeys = datastore.prepare(new Query(KIND_PLACE).setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        List<Key> keys = placeKeys.stream().map(p -> p.getKey()).collect(Collectors.toList());
+        // extract all places unused
+        List<Key> keysUsed = placeKeysUsed.stream().map(p -> KeyFactory.stringToKey(p)).collect(Collectors.toList());
+        keys.removeAll(keysUsed);
+        return keys;
     }
 }
