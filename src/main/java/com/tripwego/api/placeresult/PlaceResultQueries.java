@@ -36,8 +36,8 @@ public class PlaceResultQueries {
     public List<PlaceResultDto> findDestinationSuggestions(PlaceResultDtoSearchCriteria criteria) {
         final List<PlaceResultDto> result = new ArrayList<>();
         final Filter byStepCategory = new FilterPredicate(STEP_CATEGORIES, EQUAL, DESTINATION.name());
-        final Filter byType = new FilterPredicate(TYPES, EQUAL, COUNTRY);
-        final Query query = new Query(KIND_PLACE).setFilter(CompositeFilterOperator.and(byStepCategory, byType));
+        //final Filter byType = new FilterPredicate(TYPES, EQUAL, COUNTRY);
+        final Query query = new Query(KIND_PLACE).setFilter(CompositeFilterOperator.and(byStepCategory));
         //final Query query = new Query(KIND_PLACE).setFilter(byStepCategory);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         Collections.shuffle(entities);

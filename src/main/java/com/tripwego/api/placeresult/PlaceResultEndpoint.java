@@ -48,6 +48,6 @@ public class PlaceResultEndpoint {
     @SuppressWarnings("unchecked")
     @ApiMethod(name = "deletePlacesUnused", path = "deletePlacesUnused", httpMethod = ApiMethod.HttpMethod.GET)
     public void deletePlacesUnused() {
-        placeResultRepository.delete();
+        //placeResultRepository.delete();
     }
 }
