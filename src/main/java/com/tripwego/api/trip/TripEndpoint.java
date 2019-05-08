@@ -98,10 +98,9 @@ public class TripEndpoint {
         return CollectionResponse.<Trip>builder().setItems(trips).setNextPageToken(cursorString).build();
     }
 
-    @SuppressWarnings({"unchecked", "unused"})
-    @ApiMethod(name = "findAllTripsForSeo", path = "findAllTripsForSeo", httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<Trip> findAllTripsForSeo(@Nullable @Named("cursor") String cursorString, @Nullable @Named("offset") Integer offset, @Nullable @Named("limit") Integer limit) {
-        final List<Trip> trips = queries.findAllTripsForSeo();
+    @ApiMethod(name = "findAllTripsForSeo", path = "findAllTripsForSeo", httpMethod = ApiMethod.HttpMethod.POST)
+    public CollectionResponse<Trip> findAllTripsForSeo(TripSearchCriteria criteria) {
+        final List<Trip> trips = queries.findAllTripsForSeo(criteria);
         return CollectionResponse.<Trip>builder().setItems(trips).build();
     }
 

@@ -27,4 +27,9 @@ public class BatchEndpoint {
         tripRepository.deleteTripsNotSaved(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
         tripRepository.deleteTripsWithUserUnknown(NB_DAYS_BEFORE_REMOVE_USER_UNKNOWN);
     }
+
+    @ApiMethod(name = "update_continent_in_trip", path = "update_continent_in_trip", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
+    public void update_continent_in_trip() {
+        tripRepository.updateContinent();
+    }
 }

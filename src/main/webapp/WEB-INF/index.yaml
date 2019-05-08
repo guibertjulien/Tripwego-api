@@ -24,7 +24,22 @@ indexes:
     direction: desc
 - kind: TRIP
   properties:
+  - name: is_cancelled
   - name: trip_admin_status
+  - name: trip_user_status
+  - name: trip_visibility
+  - name: continent
+  - name: category
+  - name: created_at
+    direction: desc
+- kind: TRIP
+  properties:
+  - name: trip_admin_status
+  - name: created_at
+    direction: desc
+- kind: TRIP
+  properties:
+  - name: continent
   - name: created_at
     direction: desc
 #### PLACE

@@ -41,6 +41,7 @@ public class TripQueries {
     private static final Logger LOGGER = Logger.getLogger(TripQueries.class.getName());
     private static final List<String> ADMIN_STATUS_VISIBLE = Arrays.asList(UPDATED.name(), FORKED.name(), CHECKED.name());
     private static final List<String> ADMIN_STATUS_SEO_VISIBLE = Arrays.asList(CHECKED.name());
+    private static final int LIMIT_LATEST = 100;
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private TripDtoMapper tripDtoMapper = new TripDtoMapperFactory().create();
@@ -89,17 +90,38 @@ public class TripQueries {
     }
 
     // TODO add projections to optimize ?
-    public List<Trip> findAllTripsForSeo() {
+    public List<Trip> findAllTripsForSeo(TripSearchCriteria criteria) {
         final List<Trip> result = new ArrayList<>();
         // filters
         final Filter notCancelledByUser = new FilterPredicate(IS_CANCELLED_BY_USER, FilterOperator.EQUAL, false);
         final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
         final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
         final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_SEO_VISIBLE);
-        final Filter filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible);
+        final Filter filters;
+
+        boolean latest = false;
+
+        if (criteria.getCategories().isEmpty() && criteria.getContinents().isEmpty()) {
+            // all
+            filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible);
+        } else if (!criteria.getCategories().isEmpty()) {
+            final Filter isContinent = new FilterPredicate(CONTINENT, FilterOperator.EQUAL, criteria.getContinents().get(0));
+            final Filter hasCategories = new FilterPredicate(CATEGORY, FilterOperator.IN, criteria.getCategories());
+            filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible, isContinent, hasCategories);
+        } else {
+            // latest
+            latest = true;
+            final Filter isContinent = new FilterPredicate(CONTINENT, FilterOperator.EQUAL, criteria.getContinents().get(0));
+            filters = CompositeFilterOperator.and(notCancelledByUser, isPublished, isPublic, isAdminStatusVisible, isContinent);
+        }
         // query
         final Query query = new Query(KIND_TRIP).setFilter(filters).addSort(CREATED_AT, SortDirection.DESCENDING);
-        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        List<Entity> entities;
+        if (latest) {
+            entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_LATEST));
+        } else {
+            entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        }
         for (Entity entity : entities) {
             final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
             result.add(trip);

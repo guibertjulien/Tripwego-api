@@ -22,6 +22,7 @@ public class TripEntityMapper {
         LOGGER.info("--> TripEntityMapper.map - START");
         entity.setProperty(PARENT_TRIP_ID, trip.getParentTripId());
         entity.setProperty(NAME, trip.getName());
+        entity.setProperty(CONTINENT, trip.getContinent());
         entity.setProperty(COUNTRY_CODE, trip.getCountryCode());
         entity.setProperty(COUNTRY_NAME_EN, I18nUtils.findDefaultCountryName(trip.getCountryCode()));
         entity.setProperty(DESCRIPTION, new Text(Strings.nullToEmpty(trip.getDescription())));
@@ -39,9 +40,6 @@ public class TripEntityMapper {
         entity.setProperty(MAP_STYLE, trip.getMapStyle());
         entity.setProperty(WAY_TYPE_DEFAULT, trip.getWayTypeDefault());
         //
-        if (trip.getCategory() != null) {
-            entity.setProperty(CATEGORY, new Category(trip.getCategory()));
-        }
         if (trip.getUrlSite() != null) {
             entity.setProperty(URL_SITE, new Link(trip.getUrlSite()));
         }

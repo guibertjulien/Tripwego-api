@@ -3,6 +3,7 @@ package com.tripwego.api.trip;
 import com.google.appengine.api.datastore.*;
 import com.tripwego.api.common.AbstractRepository;
 import com.tripwego.api.placeresult.PlaceResultRepository;
+import com.tripwego.api.trip.continent.Countries;
 import com.tripwego.api.tripitem.TripItemQueries;
 import com.tripwego.api.tripitem.dto.*;
 import com.tripwego.api.tripitem.repository.*;
@@ -72,6 +73,7 @@ public class TripRepository extends AbstractRepository<Trip> {
         entity.setProperty(TRIP_PLAN_STATUS, TO_PLAN.name());
         entity.setProperty(TRIP_VISIBILITY, PUBLIC.name());
         entity.setProperty(TRIP_CERTIFICATE, NONE.name());
+        entity.setProperty(CATEGORY, new Category(trip.getCategory()));
         updateVersion(trip, entity, NUMBER_VERSION_DEFAULT);
         final Entity placeResultEntity = placeResultRepository.create(trip.getPlaceResultDto());
         entity.setProperty(PLACE_KEY, KeyFactory.keyToString(placeResultEntity.getKey()));
@@ -430,5 +432,15 @@ public class TripRepository extends AbstractRepository<Trip> {
             LOGGER.info("key : " + entity.getKind() + " / " + entity.getKey());
             LOGGER.info("place id : " + String.valueOf(entity.getProperty(PLACE_KEY)));
         }
+    }
+
+    public void updateContinent() {
+        final Query query = new Query(KIND_TRIP);
+        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        for (Entity entity : entities) {
+            final String countryCode = String.valueOf(entity.getProperty(COUNTRY_CODE));
+            entity.setProperty(CONTINENT, Countries.valueOf(countryCode).getSubContinent().getContinent().name());
+        }
+        datastore.put(entities);
     }
 }
