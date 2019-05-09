@@ -434,12 +434,32 @@ public class TripRepository extends AbstractRepository<Trip> {
         }
     }
 
+    // RFC
     public void updateContinent() {
         final Query query = new Query(KIND_TRIP);
         final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         for (Entity entity : entities) {
             final String countryCode = String.valueOf(entity.getProperty(COUNTRY_CODE));
             entity.setProperty(CONTINENT, Countries.valueOf(countryCode).getSubContinent().getContinent().name());
+        }
+        datastore.put(entities);
+    }
+
+    // RFC
+    public void updateSeo() {
+        final Query query = new Query(KIND_TRIP);
+        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        for (Entity entity : entities) {
+            EmbeddedEntity embeddedEntity = (EmbeddedEntity) entity.getProperty(EMBEDDED_SEO);
+            final String countryName = String.valueOf(entity.getProperty(COUNTRY_NAME_EN));
+            final String tripName = String.valueOf(entity.getProperty(NAME));
+            String desc = String.valueOf(embeddedEntity.getProperty(DESCRIPTION));
+            if (desc == null || desc.trim().isEmpty()) {
+                embeddedEntity.setProperty(DESCRIPTION, "Make a trip in " + countryName + " with TripWeGo. " +
+                        "Discover " + tripName + " itinerary with days, steps and activities. " +
+                        "Plan and prepare with TripWeGo, you are already traveling, enjoy !");
+            }
+            entity.setProperty(EMBEDDED_SEO, embeddedEntity);
         }
         datastore.put(entities);
     }

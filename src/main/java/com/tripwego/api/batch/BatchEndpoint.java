@@ -30,6 +30,7 @@ public class BatchEndpoint {
 
     @ApiMethod(name = "update_continent_in_trip", path = "update_continent_in_trip", httpMethod = ApiMethod.HttpMethod.GET, apiKeyRequired = AnnotationBoolean.TRUE)
     public void update_continent_in_trip() {
-        tripRepository.updateContinent();
+        //tripRepository.updateContinent();
+        tripRepository.updateSeo();
     }
 }
