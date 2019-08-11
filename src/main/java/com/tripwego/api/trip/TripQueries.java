@@ -25,10 +25,10 @@ import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.Query.*;
 import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
-import static com.tripwego.api.ConfigurationConstants.LIMIT_QUERY_TRIP;
-import static com.tripwego.api.ConfigurationConstants.LIMIT_TRIP_DOCUMENT_TO_STORE_BY_DAY;
+import static com.tripwego.api.ConfigurationConstants.*;
 import static com.tripwego.api.Constants.*;
 import static com.tripwego.api.trip.status.TripAdminStatus.*;
+import static com.tripwego.api.trip.status.TripCertificate.GOLD;
 import static com.tripwego.api.trip.status.TripUserStatus.PUBLISHED;
 import static com.tripwego.api.trip.status.TripVisibility.PUBLIC;
 
@@ -215,6 +215,26 @@ public class TripQueries {
             }
         }
         return resultWithDuration;
+    }
+
+
+    public List<Trip> findHomePageTrips() {
+        final List<Trip> results = new ArrayList<>();
+
+        final Filter isPublished = new FilterPredicate(TRIP_USER_STATUS, FilterOperator.EQUAL, PUBLISHED.name());
+        final Filter isPublic = new FilterPredicate(TRIP_VISIBILITY, FilterOperator.EQUAL, PUBLIC.name());
+        final Filter isAdminStatusVisible = new FilterPredicate(TRIP_ADMIN_STATUS, FilterOperator.IN, ADMIN_STATUS_VISIBLE);
+        final Filter certificate = new FilterPredicate(TRIP_CERTIFICATE, FilterOperator.EQUAL, GOLD.name());
+
+        final Filter filters = CompositeFilterOperator.and(isPublished, isPublic, isAdminStatusVisible, certificate);
+        final Query query = new Query(KIND_TRIP).setFilter(filters);
+        final List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(LIMIT_QUERY_HOME_PAGE_TRIP));
+        for (Entity entity : entities) {
+            final Trip trip = tripDtoMapper.map(entity, retrieveUser(entity));
+            results.add(trip);
+        }
+
+        return results;
     }
 
     // TODO optimize with IN (limit 30) for OR operator ?

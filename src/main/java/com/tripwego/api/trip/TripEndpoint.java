@@ -191,4 +191,10 @@ public class TripEndpoint {
         return counter;
     }
 
+    @SuppressWarnings("unchecked")
+    @ApiMethod(name = "findHomePageTrips", path = "findHomePageTrips", httpMethod = ApiMethod.HttpMethod.GET)
+    public CollectionResponse<Trip> findHomePageTrips() {
+        final List<Trip> trips = queries.findHomePageTrips();
+        return CollectionResponse.<Trip>builder().setItems(trips).build();
+    }
 }
