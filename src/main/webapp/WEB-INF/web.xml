@@ -15,7 +15,8 @@
                 com.tripwego.api.trip.TripEndpoint,
                 com.tripwego.api.region.RegionCounterEndpoint,
                 com.tripwego.api.batch.BatchEndpoint,
-                com.tripwego.api.user.UserEndpoint
+                com.tripwego.api.user.UserEndpoint,
+                com.tripwego.api.step.StepEndpoint
             </param-value>
         </init-param>
         <init-param>

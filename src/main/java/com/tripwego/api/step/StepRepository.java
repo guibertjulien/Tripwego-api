@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static com.tripwego.api.Constants.KIND_STEP;
-import static com.tripwego.api.Constants.PLACE_KEY;
+import static com.tripwego.api.Constants.*;
 
 public class StepRepository extends AbstractRepository<Step> {
 
@@ -43,5 +42,15 @@ public class StepRepository extends AbstractRepository<Step> {
         keysToKill.addAll(extractKeys(stepEntitiesToDelete));
         datastore.delete(keysToKill);
         placeResultRepository.decrementCounter(stepEntitiesToDelete);
+    }
+
+    public void updateStepPhoto(Step step) {
+        try {
+            final Entity entity = datastore.get(KeyFactory.stringToKey(step.getId()));
+            entity.setProperty(URL_PHOTO, new Link(step.getUrlPhoto()));
+            datastore.put(entity);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

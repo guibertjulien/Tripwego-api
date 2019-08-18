@@ -13,8 +13,8 @@ import java.util.List;
 @Api(name = "placeresultendpoint", namespace = @ApiNamespace(ownerDomain = "tripwego.com", ownerName = "tripwego.com", packagePath = "endpoints"))
 public class PlaceResultEndpoint {
 
-    private PlaceResultRepository placeResultRepository = new PlaceResultRepository();
-    private PlaceResultQueries queries = new PlaceResultQueries();
+    private final PlaceResultRepository placeResultRepository = new PlaceResultRepository();
+    private final PlaceResultQueries queries = new PlaceResultQueries();
 
     @ApiMethod(name = "find_destination_suggestions", path = "find_destination_suggestions", httpMethod = ApiMethod.HttpMethod.POST)
     public CollectionResponse<PlaceResultDto> find_destination_suggestions(PlaceResultDtoSearchCriteria criteria) {

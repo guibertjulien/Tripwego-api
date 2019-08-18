@@ -38,8 +38,8 @@ public class TripEndpoint {
 
     private static final Logger _logger = Logger.getLogger(TripEndpoint.class.getName());
 
-    private TripRepository tripRepository = new TripRepository();
-    private TripQueries queries = new TripQueries();
+    private final TripRepository tripRepository = new TripRepository();
+    private final TripQueries queries = new TripQueries();
 
     /**
      * This inserts a new entity into App Engine datastore. If the entity
